@@ -1,0 +1,454 @@
+import { OrderedMap, Set, Record, List } from "immutable";
+import ItemValue from "./ItemValue";
+import sortOptions from "../../common/sortOptions";
+
+const { ipcRenderer } = window.require("electron");
+
+const StateRecord = Record({
+  moment: new Date().getTime(),
+  addMode: "ON_LOAD",
+  itemsTimeLine: OrderedMap(),
+  itemStore: null,
+  itemDisplayRange: { start: 0, stop: 20 },
+  itemListToolTipVisibility: false,
+  itemListRef: null,
+  idsTimeLine: List(),
+  idsFav: List(),
+  itemsFav: OrderedMap(),
+  idSelected: "",
+  prevTab: "",
+  nextTab: "",
+  itemClipboard: { text: "empty", format: "" }, // display on footer
+  menuTabSelected: "TimeLine",
+  keyboardHandler: "",
+  modalVisibility: false,
+  filterSaveModalVisibility: false,
+  prevFocusedElm: null,
+  actionSelected: "",
+  sortOpt: null,
+  // Filter by id ------------------------------------------------
+  idFilterOpt: [],
+  idFilterInputValue: "",
+  // Filter by keyword -------------------------------------------
+  keywordFilterOpt: [],
+  keywordFilterInputValue: "",
+  // Filter by data type -----------------------------------------
+  dataTypeFilterOpt: [],
+  // Filter by status --------------------------------------------
+  statusFilterOpt: [],
+  // Filter by language ------------------------------------------
+  languageFilterOpt: [],
+  // Filter by hot key -------------------------------------------
+  hotKeyFilterOpt: [],
+  hotKeyFilterInputValue: "",
+  // Filter by hash tag ------------------------------------------
+  hashTagFilterOpt: [],
+  hashTagFilterInputValue: "",
+  // hashtag input
+  hashTagOptions: [],
+  hashTagInputValue: "",
+  // hot key
+  keyOptions: [],
+  keyInputValue: ""
+});
+
+class State extends StateRecord {
+  constructor() {
+    const items = ipcRenderer.sendSync("ON_LOAD_FIRST");
+    const mapVal = items.map(item => [item.id, new ItemValue(item)]);
+    const itemsTimeLine = OrderedMap(mapVal);
+    const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
+    const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
+    const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
+    const {
+      sortOpt,
+      dataTypeFilterOpt,
+      keywordFilterOpt,
+      idFilterOpt,
+      statusFilterOpt,
+      languageFilterOpt,
+      hotKeyFilterOpt,
+      hashTagFilterOpt
+    } = ipcRenderer.sendSync("GET_FILTER_SORT_OPTIONS_SELECTED");
+    super({
+      itemsTimeLine,
+      idsTimeLine,
+      // sort filter options
+      sortOpt,
+      dataTypeFilterOpt,
+      keywordFilterOpt,
+      idFilterOpt,
+      statusFilterOpt,
+      languageFilterOpt,
+      hotKeyFilterOpt,
+      hashTagFilterOpt,
+      // item tag options
+      hashTagOptions,
+      keyOptions
+    });
+  }
+
+  addItemClipboard(itemsCopied, dist) {
+    const itemName = `items${dist}`;
+    const idName = `ids${dist}`;
+    const item = itemsCopied[0];
+    const itemValue = new ItemValue(item);
+    return this.addItem(itemValue, itemName, idName);
+  }
+  addItem(item, itemName, idName) {
+    // let skipCount;
+    // if (this.itemsTimeLine.size >= MAX_ITEMS_ON_DISPLAY) {
+    //   skipCount = 1;
+    //   const idDelete = this[itemName].first().get("id");
+    //   this._deleteItemDataStore([idDelete]);
+    // } else {
+    //   skipCount = 0;
+    // }
+    return this.withMutations(itemDist => {
+      itemDist
+        .set(itemName, this[itemName].set(item.id, item))
+        .set(idName, this[idName].unshift(item.id))
+        .set("itemClipboard", {
+          text: item.textData,
+          format: item.mainFormat
+        })
+        // .set(itemName, this[itemName].set(item.id, item).skip(skipCount))
+        .set("addMode", "ON_COPY");
+      // .set("moment", new Date().getTime());
+    });
+  }
+  deleteIds(ids) {
+    const target = Array.isArray(ids) ? ids : [ids];
+    // const idsName = `ids${this.get("menuTabSelected")}`;
+    const idsName = "idsTimeLine";
+    // const nextIds = ipcRenderer.sendSync("TRASH ITEMS");
+    return this.set(
+      idsName,
+      this[idsName].filterNot(id => target.includes(id))
+    );
+  }
+  setIdSelected(id) {
+    return this.set("idSelected", id);
+  }
+  deleteItem(ids) {
+    this._deleteItemDataStore(ids);
+    // const items = `ids${this.get("menuTabSelected")}`;
+    const items = "itemsTimeLine";
+    // const items = `items${this.get("menuTabSelected")}`;
+    // return this.set(items, this[items].deleteAll(ids));
+    return this.set(items, this[items].subtract(ids));
+    // return this.set(
+    //   items,
+    //   this[items].filterNot(v => {
+    //     return v === ids[0];
+    //   })
+    // );
+  }
+  favItem(id) {
+    const keyPath = ["itemsTimeLine", id, "isFaved"];
+    const isFaved = !this.getIn(keyPath);
+    this._updateItems(id, { isFaved });
+    return this.setIn(keyPath, isFaved);
+  }
+  saveTag() {
+    const id = this.get("idSelected");
+    const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
+      "itemsTimeLine",
+      id,
+      prop
+    ]);
+
+    const keyValue = keyPath.reduce((acc, path) => {
+      const prop = path[2];
+      acc[prop] = this.getIn(path);
+      return acc;
+    }, {});
+    this._updateItems(id, keyValue);
+    const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
+    const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
+    return this.withMutations(state => {
+      state.set("keyOptions", keyOptions).set("hashTagOptions", hashTagOptions);
+    });
+  }
+  setItemTagHeight(itemTagHeight) {
+    const idSelected = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", idSelected, "itemTagHeight"];
+    return this.setIn(keyPath, itemTagHeight);
+  }
+  setKeyboardHandler() {
+    const modeCurrent = this.get("keyboardHandler");
+    let modeNext;
+    if (modeCurrent === "") {
+      modeNext = "vim";
+    } else if (modeCurrent === "vim") {
+      modeNext = "emacs";
+    } else {
+      modeNext = "";
+    }
+
+    return this.set("keyboardHandler", modeNext);
+  }
+  setItemTag(tag) {
+    // const items = `items${this.get("menuTabSelected")}`;
+    const items = "itemsTimeLine";
+    const itemKey = this.get("idSelected");
+    const { type, value } = tag;
+    const keyPath = [items, itemKey, type];
+    return this.setIn(keyPath, value);
+  }
+  setItemText(item) {
+    const { id, textData } = item;
+    const keyPath = ["itemsTimeLine", id, "textData"];
+    this._updateItems(id, { textData });
+    return this.setIn(keyPath, textData);
+  }
+  setItemRemoved(id) {
+    // const items = `items${this.get("menuTabSelected")}`;
+    const items = "itemsTimeLine";
+    const setIn = [items, id, "removeFlg"];
+    return this.setIn(setIn, true);
+  }
+  // Action On Item List --------------------------------------------------
+  callActionOnItemList(command) {
+    return this[command]();
+  }
+  addNewItem() {
+    this.get("itemListRef").scrollToRow(0);
+    ipcRenderer.sendSync("ADD_NEW_ITEM");
+    setTimeout(() => {
+      const targetId = document.getElementById("item-list").firstElementChild
+        .firstElementChild.id;
+      document.getElementById(`${targetId}-tab`).focus();
+      setTimeout(() => {
+        document.getElementsByClassName("ace_text-input")[0].focus();
+      }, 500);
+    }, 100);
+    return this;
+  }
+  trashAllItems() {
+    console.log("trash all items");
+    const idsTimeLine = this.get("idsTimeLine");
+    this._updateItems(idsTimeLine.toArray(), { isTrashed: true });
+    return this.withMutations(state => {
+      idsTimeLine.forEach(id => {
+        state.setIn(["itemsTimeLine", id, "isTrashed"], true);
+      });
+    });
+  }
+  trashAllItemsWithoutFaved() {
+    console.log("trash all items without faved");
+    const idsTimeLineNotFaved = this.get("idsTimeLine").filter(id => {
+      return !this.getIn(["itemsTimeLine", id, "isFaved"]);
+    });
+    console.log(idsTimeLineNotFaved);
+
+    this._updateItems(idsTimeLineNotFaved.toArray(), { isTrashed: true });
+    return this.withMutations(state => {
+      idsTimeLineNotFaved.forEach(id => {
+        state.setIn(["itemsTimeLine", id, "isTrashed"], true);
+      });
+    });
+  }
+  showFilterSortSettings() {
+    setTimeout(() => {
+      document.getElementById("filter-sort-settings-tab").focus();
+    }, 100);
+    return this;
+  }
+  saveFilterSortSettings() {
+    console.log("save filter sort settings");
+    return this.set(
+      "filterSaveModalVisibility",
+      !this.get("filterSaveModalVisibility")
+    );
+  }
+  clearFilterSortSettings() {
+    console.log("clear filter sort settings");
+    return this.withMutations(state => {
+      state
+        .set("sortOpt", [])
+        .set("keywordFilterOpt", [])
+        .set("idFilterOpt", [])
+        .set("dataTypeFilterOpt", [])
+        .set("statusFilterOpt", [])
+        .set("hotKeyFilterOpt", [])
+        .set("hashTagFilterOpt", [])
+        .set("languageFilterOpt", []);
+    });
+  }
+  reloadFilterSortSettings() {
+    console.log("reload filter sort settings");
+    return this;
+  }
+  storeItemOnModalOpen() {
+    const listName = "itemsTimeLine";
+    const id = this.get("idSelected");
+    const targetItem = this.getIn([listName, id]);
+    return this.set("itemStore", targetItem);
+  }
+  restoreItemOnCancel() {
+    const listName = "itemsTimeLine";
+    const id = this.get("idSelected");
+    const keyPath = [listName, id];
+    return this.setIn(keyPath, this.get("itemStore"));
+  }
+  setLangOptionsSelected(langOpt) {
+    const id = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", id, "lang"];
+    return this.setIn(keyPath, langOpt);
+  }
+  setIdsFromDatastore() {
+    const sortOpt = this.get("sortOpt");
+    const filterOpt = {
+      keywordFilterOpt: this.get("keywordFilterOpt"),
+      idFilterOpt: this.get("idFilterOpt"),
+      dataTypeFilterOpt: this.get("dataTypeFilterOpt"),
+      statusFilterOpt: this.get("statusFilterOpt"),
+      hotKeyFilterOpt: this.get("hotKeyFilterOpt"),
+      hashTagFilterOpt: this.get("hashTagFilterOpt"),
+      languageFilterOpt: this.get("languageFilterOpt")
+    };
+    const nextIds = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
+    return this.set("idsTimeLine", List(nextIds));
+  }
+  addKeywordFilterOptions(keywords) {
+    const prevKeywords = this.get("keywordFilterOpt");
+    const wordList = prevKeywords.map(keyword => keyword.value);
+    const nextKeywords = wordList.includes(keywords.value)
+      ? prevKeywords
+      : [...prevKeywords, keywords];
+    return this.withMutations(state => {
+      state
+        .set("keywordFilterOpt", nextKeywords)
+        .set("keywordFilterInputValue", "");
+    });
+  }
+  removeKeywordFilterOptions(keywords) {
+    const nextKeywords = keywords === null ? [] : keywords;
+    return this.withMutations(state => {
+      state
+        .set("keywordFilterOpt", nextKeywords)
+        .set("keywordFilterInputValue", "");
+    });
+  }
+  addIdFilterOptions(ids) {
+    const prevIds = this.get("idFilterOpt");
+    const idList = prevIds.map(id => id.value);
+    const nextIds = idList.includes(ids.value) ? prevIds : [...prevIds, ids];
+    return this.withMutations(state => {
+      state.set("idFilterOpt", nextIds).set("idFilterInputValue", "");
+    });
+  }
+  removeIdFilterOptions(ids) {
+    const nextIds = ids === null ? [] : ids;
+    return this.withMutations(state => {
+      state.set("idFilterOpt", nextIds).set("idFilterInputValue", "");
+    });
+  }
+  addHotKeyFilterOptions(option) {
+    const prevOptions = this.get("hotKeyFilterOpt");
+    const prevOptionsValues = prevOptions.map(opt => opt.value);
+    const nextOptions = prevOptionsValues.includes(option.value)
+      ? prevOptions
+      : [...prevOptions, option];
+    return this.withMutations(state => {
+      state
+        .set("hotKeyFilterOpt", nextOptions)
+        .set("hotKeyFilterInputValue", "");
+    });
+  }
+  addHashTagFilterOptions(option) {
+    const prevOptions = this.get("hashTagFilterOpt");
+    const prevOptionsValues = prevOptions.map(opt => opt.value);
+    const nextOptions = prevOptionsValues.includes(option.value)
+      ? prevOptions
+      : [...prevOptions, option];
+    return this.withMutations(state => {
+      state
+        .set("hashTagFilterOpt", nextOptions)
+        .set("hashTagFilterInputValue", "");
+    });
+  }
+  addHashTagValue(keywords) {
+    const id = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", id, "tag"];
+
+    const prevKeywords = this.getIn(keyPath);
+    const wordList = prevKeywords.map(keyword => keyword.value);
+    const nextKeywords = wordList.includes(keywords.value)
+      ? prevKeywords
+      : [...prevKeywords, keywords];
+    return this.withMutations(state => {
+      state.set("hashTagInputValue", "").setIn(keyPath, nextKeywords);
+    });
+  }
+  changeHashTagValue(keywords) {
+    const id = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", id, "tag"];
+    const nextKeywords = keywords === null ? [] : keywords;
+    return this.withMutations(state => {
+      state.set("hashTagInputValue", "").setIn(keyPath, nextKeywords);
+    });
+  }
+  addKeyValue(keywords) {
+    const id = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", id, "key"];
+
+    const prevKeywords = this.getIn(keyPath);
+    const nextKeywords = prevKeywords === keywords ? prevKeywords : keywords;
+    return this.withMutations(state => {
+      state.set("keyInputValue", "").setIn(keyPath, nextKeywords);
+    });
+  }
+  changeKeyValue(keywords) {
+    const id = this.get("idSelected");
+    const keyPath = ["itemsTimeLine", id, "key"];
+    const nextKeywords = keywords === null ? "" : keywords[0].value;
+    return this.withMutations(state => {
+      state.set("keyInputValue", "").setIn(keyPath, nextKeywords);
+    });
+  }
+  toggleItemListToolTipVisibility(flg = "_UNSET_") {
+    const currentVisible = this.get("itemListToolTipVisibility");
+    let nextVisible;
+    if (flg === "_UNSET_") nextVisible = !currentVisible;
+    if (flg === "OFF") {
+      nextVisible = false;
+      if (currentVisible) {
+        setTimeout(() => {
+          this.get("prevFocusedElm").focus();
+        }, 100);
+      }
+    }
+    // console.log(`flg     : ${flg}`);
+    // console.log(`next    : ${nextVisible}`);
+    // console.log(`current : ${currentVisible}`);
+
+    if (nextVisible) {
+      setTimeout(() => {
+        document.getElementById("tooltip-row-0").focus();
+      }, 100);
+      return this.withMutations(item => {
+        item
+          .set("prevFocusedElm", document.activeElement)
+          .set("itemListToolTipVisibility", nextVisible);
+      });
+    } else {
+      return this.set("itemListToolTipVisibility", nextVisible);
+    }
+  }
+
+  _deleteItemDataStore(ids) {
+    ipcRenderer.sendSync("ITEM_ID_TO_BE_DELETED", ids);
+  }
+
+  _getIds(sortOpt, filterOpt) {
+    const ids = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
+    return ids;
+  }
+  _updateItems(id, value) {
+    ipcRenderer.sendSync("UPDATE_ITEMS", id, value);
+  }
+}
+
+export default State;

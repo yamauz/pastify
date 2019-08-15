@@ -1,0 +1,104 @@
+* {
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+}
+
+@font-face {
+  font-family: "empty";
+  src: url("data:application/font-woff; charset=utf-8; base64,d09GRgABAAAAAAQwAA0AAAAABgQAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAABMAAAABwAAAAcgrIpXU9TLzIAAAFMAAAARwAAAGB1n/8iY21hcAAAAZQAAAA+AAABQgAPI9NjdnQgAAAB1AAAAAQAAAAEACECeWdhc3AAAAHYAAAACAAAAAj//wADZ2x5ZgAAAeAAAAB0AAAAdPikRIRoZWFkAAACVAAAADQAAAA2Dd/UAGhoZWEAAAKIAAAAHgAAACQEiP5yaG10eAAAAqgAAAAQAAAAEAK5AZNsb2NhAAACuAAAAAoAAAAKAGQAVG1heHAAAALEAAAAHwAAACAASAA5bmFtZQAAAuQAAAEnAAACGXayv1Vwb3N0AAAEDAAAACMAAAAyoS052QAAAAEAAAAA1aSY2wAAAADWhsfEAAAAANaGyL142mNgYfzCOIGBlYGBqYtpNwMDQw+EZrzPYMjIBBRlYGVmAIMGBlQQkOaawtCgoKGgwazw34IhimkWWJgRSYkCAyMAflALLQB42mNgYGBmgGAZBkYGELAB8hjBfBYGBSDNAoRAvoLG//8Q8v5tqEoGRjYGGJOBkQlIMDGgAkaGYQ8AjKIHAgAAACECeQAAAAH//wACAAIAIQAAASoCmgADAAcALrEBAC88sgcEAO0ysQYF3DyyAwIA7TIAsQMALzyyBQQA7TKyBwYB/DyyAQIA7TIzESERJzMRIyEBCejHxwKa/WYhAlgAAAEBcgFlAZMBfQAFAAABMj4CNQFyDA8DAwFlBgUMAQB42mNgZGBgAOKwC80L4/ltvjJwM78AijBcazt+BEKf2MugCFQymWkWkMvBwAQSBQBnEgwFeNpjYGRgYJrFwMAQBcQM/3IZJzMwMqACFgBGggL8AAABbAAhAAAAAAFNAAAAAAFyAAAAKgAqACoAOgAAeNpjYGRgYGBh4GBgYgABEMnIABJzYNADCQAABIEAggB42oWOMWvCUBSFz9NoyVLEsV3eUlAw4SVDUekmZBC6SHUP+kgCIQnxibh27I/pz+mv6dDz4sOlg4Hkfrn33HMPgEd8Q+D6PGPuWMBH7riHB3w67uMFP449+GLkeICReHM8ZD+lUng+/167LcsCY3w47vFu67iPNb4ce9T8Oh5AiifHQ4zFO1ao0eDCzQIZ8xlITLDHlDWGQsT8M/KZc8N50+mxqptLW2S5kZP9VMYqms/kuTB5U3O4RUWt1ZfQONAH28oUptQH4oa9DCfOUl7FRmenMiUkdLZ7trZU6C5ByAwSS77/Xa/9CAsE/Aa3vEjqyiR1m2kZh0ou5e06OVoEUWAD38u5Y6/FkXObS9LbuoddtZmw0+2xqCupVBQqpeQdwz82wFH4AHjaY2BiAIP/zQxGDNgACxAzMjAxMrGX5mUaGRhZAABRhgPgAA==")
+    format("woff");
+}
+
+@font-face {
+  font-family: HackGen;
+  src: url("../../fonts/HackGen-Regular.ttf") format("truetype");
+  /* src: url("fonts/HackGen-Regular.ttf") format("truetype"); */
+  /* src: url("./HackGen-Regular.ttf") format("truetype"); */
+  /* src: url("fonts/code.ttf") format("truetype"); */
+  /* src: url("code.ttf") format("truetype"); */
+}
+
+.ace_editor > .ace_text-input {
+  padding-top: 1px;
+  padding-left: 1px;
+  letter-spacing: 1px;
+}
+.ace_editor,
+.ace_editor * {
+  font-family: HackGen, empty !important;
+}
+.filelist * {
+  font-size: 12.5px;
+  font-family: HackGen, empty !important;
+}
+
+.ace_layer {
+  min-width: 38px;
+}
+.ace_gutter-cell {
+  padding-left: 0;
+}
+.ace_gutter-layer {
+  /* text-align: left; */
+  margin-left: 15px;
+  /* padding-left: 26px; */
+  background: transparent;
+}
+
+.ace_editor {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.ace_editor:hover .ace_scrollbar-v {
+  background-color: rgba(255, 255, 255, 0.3);
+  -webkit-background-clip: text;
+  transition: background-color 0.3s;
+}
+
+.ace_scrollbar-v {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.ace_scrollbar-v::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ace_scrollbar-v::-webkit-scrollbar-thumb {
+  background-color: inherit;
+}
+
+.searchBar {
+  background-color: red;
+  display: inline-block;
+  width: 100vw;
+  position: relative;
+  margin: 0 5px;
+}
+
+.tagModal {
+  background-color: red;
+}
+
+::-webkit-input-placeholder {
+  text-transform: initial;
+}
+
+.auto-size-input input {
+  outline: 0;
+  border-width: 0 0 1px;
+  border-color: lightgray;
+  color: #dce4ef;
+}
+
+.content-editable {
+  display: inline-block;
+  outline: 0;
+  border-bottom: solid 1px #d4d4d4;
+
+  color: #d4d4d4;
+  min-width: 5px;
+}
+
+.dropdown2 {
+  height: 5px;
+}
