@@ -43,12 +43,26 @@ const GridHeader = styled.div`
 `;
 const GridMain = styled.div`
   grid-area: main;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px 1fr;
+  grid-template-areas:
+    "searchbar"
+    "itempanel";
   background-color: #272822;
 `;
+
+const GridSearchBar = styled.div`
+  grid-area: searchbar;
+`;
+
+const GridItemPanel = styled.div`
+  grid-area: itempanel;
+`;
+
 const GridFooter = styled.div`
   grid-area: footer;
   background-color: #50505f;
-  position: relative;
 `;
 
 const { ipcRenderer } = window.require("electron");
@@ -99,8 +113,12 @@ const Main = props => {
         <TitleBar />
       </GridHeader>
       <GridMain>
-        <SearchBar />
-        <Container ids={idsTimeLine} />
+        <GridSearchBar>
+          <SearchBar />
+        </GridSearchBar>
+        <GridItemPanel>
+          <Container ids={idsTimeLine} />
+        </GridItemPanel>
       </GridMain>
       <GridFooter>
         <Footer />

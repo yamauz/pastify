@@ -61,6 +61,9 @@ export default handleActions(
     SET_ITEM_LIST_REF: (state, { payload: ref }) => {
       return state.set("itemListRef", ref);
     },
+    SET_SCROLL_TO_ROW: (state, { payload: scrollToRow }) => {
+      return state.set("scrollToRow", scrollToRow);
+    },
     SET_ITEM_TEXT: (state, { payload: item }) => {
       return state.setItemText(item);
     },

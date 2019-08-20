@@ -140,7 +140,7 @@ const Container = props => {
 
   return (
     <Wrapper id={id} style={style}>
-      <Tab
+      {/* <Tab
         tabFor={id}
         addmode={addMode}
         delfunc={{ deleteIds }}
@@ -168,38 +168,39 @@ const Container = props => {
             return action[0];
           }
         }}
-      >
-        <ItemContainer>
-          <ContainerLeft>
-            <IconContainer>
-              <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper>
-            </IconContainer>
-          </ContainerLeft>
-          <ContainerRight>
-            <InfoContainer>
-              <InfoTop>
-                <FormatIdBlock>
-                  <Format>{toLowerCase(mainFormat)}</Format>
-                  <Id>{id}</Id>
-                </FormatIdBlock>
-                <DateBlock>
-                  <Date>{diffMoment(moment, date)}</Date>
-                </DateBlock>
-              </InfoTop>
-              <InfoMid>
-                <ItemText text={textData} format={mainFormat} />
-                <ItemImage id={id} format={mainFormat} />
-              </InfoMid>
-              <InfoBottom id={`${id}-taginfo`}>
-                <Key keyTag={key} />
-                <TextLanguage lang={lang} />
-                <Hash tag={tag} />
-              </InfoBottom>
-              <EditButtons id={id} isFaved={isFaved} />
-            </InfoContainer>
-          </ContainerRight>
-        </ItemContainer>
-      </Tab>
+      > */}
+      <ItemContainer>
+        <ContainerLeft>
+          <IconContainer>
+            {id}
+            {/* <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper> */}
+          </IconContainer>
+        </ContainerLeft>
+        <ContainerRight>
+          {/* <InfoContainer>
+            <InfoTop>
+              <FormatIdBlock>
+                <Format>{toLowerCase(mainFormat)}</Format>
+                <Id>{id}</Id>
+              </FormatIdBlock>
+              <DateBlock>
+                <Date>{diffMoment(moment, date)}</Date>
+              </DateBlock>
+            </InfoTop>
+            <InfoMid>
+              <ItemText text={textData} format={mainFormat} />
+              <ItemImage id={id} format={mainFormat} />
+            </InfoMid>
+            <InfoBottom id={`${id}-taginfo`}>
+              <Key keyTag={key} />
+              <TextLanguage lang={lang} />
+              <Hash tag={tag} />
+            </InfoBottom>
+            <EditButtons id={id} isFaved={isFaved} />
+          </InfoContainer> */}
+        </ContainerRight>
+      </ItemContainer>
+      {/* </Tab> */}
     </Wrapper>
   );
 };

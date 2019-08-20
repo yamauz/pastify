@@ -12,6 +12,7 @@ const StateRecord = Record({
   itemDisplayRange: { start: 0, stop: 20 },
   itemListToolTipVisibility: false,
   itemListRef: null,
+  scrollToRow: 0,
   idsTimeLine: List(),
   idsFav: List(),
   itemsFav: OrderedMap(),

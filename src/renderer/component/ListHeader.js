@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   background-color: #404040;
   color: #b5b5b5;
-  height: 23px;
+  height: 100%;
   width: 301px;
   border-bottom: 1px solid #212121;
 `;

@@ -11,8 +11,36 @@ import { connect } from "react-redux";
 import { setIdSelected } from "../actions";
 
 const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "side main";
   box-sizing: border-box;
   height: 100%;
+  width: 100vw;
+`;
+
+const Side = styled.div`
+  grid-area: side;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 23px 1fr;
+  grid-template-areas:
+    "listheader"
+    "listmain";
+`;
+
+const GridListHeader = styled.div`
+  grid-area: listheader;
+`;
+
+const GridListMain = styled.div`
+  grid-area: listmain;
+`;
+
+const Main = styled.div`
+  grid-area: main;
+  background-color: aqua;
 `;
 
 const Container = props => {
@@ -20,7 +48,16 @@ const Container = props => {
 
   return (
     <Wrapper>
-      <Tabs
+      <Side>
+        <GridListHeader>
+          <ListHeader ids={ids} />
+        </GridListHeader>
+        <GridListMain>
+          <ItemList ids={ids} />
+        </GridListMain>
+      </Side>
+      <Main>main</Main>
+      {/* <Tabs
         defaultTab="default"
         vertical
         onChange={tabId => {
@@ -35,7 +72,7 @@ const Container = props => {
           <FilterSetting />
         </TabPanel>
         <ItemDetail ids={ids} />
-      </Tabs>
+      </Tabs> */}
     </Wrapper>
   );
 };
