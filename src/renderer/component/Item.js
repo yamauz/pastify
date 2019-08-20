@@ -140,6 +140,14 @@ const Container = props => {
 
   return (
     <Wrapper id={id} style={style}>
+      <div>{date}</div>
+      <div>{mainFormat}</div>
+      <div>{textData}</div>
+      <div>{date}</div>
+      <div>{lang}</div>
+      <div>{isFaved}</div>
+      <div>{tag}</div>
+
       {/* <Tab
         tabFor={id}
         addmode={addMode}
@@ -169,15 +177,14 @@ const Container = props => {
           }
         }}
       > */}
-      <ItemContainer>
+      {/* <ItemContainer>
         <ContainerLeft>
           <IconContainer>
-            {id}
-            {/* <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper> */}
+            <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper>
           </IconContainer>
         </ContainerLeft>
         <ContainerRight>
-          {/* <InfoContainer>
+          <InfoContainer>
             <InfoTop>
               <FormatIdBlock>
                 <Format>{toLowerCase(mainFormat)}</Format>
@@ -197,9 +204,9 @@ const Container = props => {
               <Hash tag={tag} />
             </InfoBottom>
             <EditButtons id={id} isFaved={isFaved} />
-          </InfoContainer> */}
+          </InfoContainer>
         </ContainerRight>
-      </ItemContainer>
+      </ItemContainer> */}
       {/* </Tab> */}
     </Wrapper>
   );
@@ -210,13 +217,15 @@ const mapStateToProps = state => ({
   actionSelected: state.get("actionSelected")
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    deleteIds,
-    setItemRemoved,
-    favItem,
-    toggleModalVisibility,
-    storeItemOnModalOpen
-  }
-)(Container);
+export default Container;
+
+// export default connect(
+//   mapStateToProps,
+//   {
+//     deleteIds,
+//     setItemRemoved,
+//     favItem,
+//     toggleModalVisibility,
+//     storeItemOnModalOpen
+//   }
+// )(Container);

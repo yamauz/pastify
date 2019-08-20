@@ -20,6 +20,8 @@ const Wrapper = styled.div`
   /* border: solid 2px white; */
 `;
 
+const ListItem = styled.div``;
+
 const Test = styled.div`
   background-color: red;
 `;
@@ -89,13 +91,13 @@ const ItemList = props => {
                 width={300}
                 // rowCount={100}
                 rowCount={ids.size}
-                // rowHeight={50}
+                // rowHeight={200}
                 rowHeight={({ index }) => {
                   const id = ids.get(index);
                   const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
                   return itemHeight + itemTagHeight;
                 }}
-                onSectionRendered={onSectionRendered}
+                onRowsRendered={onSectionRendered}
                 scrollToIndex={scrollToRow}
                 overscanRowCount={8}
                 rowRenderer={params =>
@@ -138,34 +140,45 @@ const itemRenderer = ({
     background: isActive ? "#666" : "inherit"
   };
   const id = ids.get(index);
-  return (
-    <Item
-      key={id}
-      item={itemsTimeLine.get(id)}
-      style={styles}
-      onClick={() =>
-        selectItem({
-          scrollToRow: index,
-          setScrollToRow
-        })
-      }
-    />
-  );
-
+  // const item = itemsTimeLine.get(id);
   // return (
-  //   <li
+  //   <Item
+  //     key={id}
+  //     item={item}
   //     style={styles}
-  //     key={key}
   //     onClick={() =>
   //       selectItem({
   //         scrollToRow: index,
   //         setScrollToRow
   //       })
   //     }
-  //   >
-  //     {index}
-  //   </li>
+  //   />
   // );
+
+  const item = itemsTimeLine.get(id);
+  const { date, mainFormat, textData, lang, tag, isFaved } = item;
+
+  return (
+    <ListItem
+      style={styles}
+      key={id}
+      onClick={() =>
+        selectItem({
+          scrollToRow: index,
+          setScrollToRow
+        })
+      }
+    >
+      <Item item={item} />
+      {/* <div>{date}</div>
+      <div>{mainFormat}</div>
+      <div>{textData}</div>
+      <div>{date}</div>
+      <div>{lang}</div>
+      <div>{isFaved}</div>
+      <div>{tag}</div> */}
+    </ListItem>
+  );
 };
 
 const mapStateToProps = state => ({
