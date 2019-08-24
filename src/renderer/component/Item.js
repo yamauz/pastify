@@ -24,12 +24,8 @@ import TextLanguage from "./TextLanguage";
 import Key from "./Key";
 import Hash from "./Hash";
 
-const Wrapper = styled.div`
-  /* background-color: tan; */
-  height: 100px;
-`;
+const Wrapper = styled.div``;
 const ItemContainer = styled.div`
-  padding-bottom: 5px;
   border-bottom: solid 2px #1d1d1d;
   display: flex;
 `;
@@ -49,6 +45,8 @@ const IconWrapper = styled.div`
   margin-top: 8px;
   width: 48px;
   height: 48px;
+  padding-left: 9px;
+
   border-radius: 50%;
   background-color: #1e1f1c;
 `;
@@ -93,7 +91,7 @@ const InfoMid = styled.div`
   width: 230px;
   /* min-height: 30px; */
   min-height: 30px;
-  margin: 4px 0 5px 0;
+  margin: 4px 0 0px 0;
 `;
 
 const InfoBottom = styled.div`
@@ -139,15 +137,7 @@ const Container = props => {
   const { id, date, mainFormat, textData, key, lang, tag, isFaved } = item;
 
   return (
-    <Wrapper id={id} style={style}>
-      <div>{date}</div>
-      <div>{mainFormat}</div>
-      <div>{textData}</div>
-      <div>{date}</div>
-      <div>{lang}</div>
-      <div>{isFaved}</div>
-      <div>{tag}</div>
-
+    <Wrapper id={id} style={style} className="list-item">
       {/* <Tab
         tabFor={id}
         addmode={addMode}
@@ -177,7 +167,7 @@ const Container = props => {
           }
         }}
       > */}
-      {/* <ItemContainer>
+      <ItemContainer>
         <ContainerLeft>
           <IconContainer>
             <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper>
@@ -206,7 +196,7 @@ const Container = props => {
             <EditButtons id={id} isFaved={isFaved} />
           </InfoContainer>
         </ContainerRight>
-      </ItemContainer> */}
+      </ItemContainer>
       {/* </Tab> */}
     </Wrapper>
   );

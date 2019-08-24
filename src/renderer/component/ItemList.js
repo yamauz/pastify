@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import keyCode from "../../common/keycode";
 import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
 import { Tab } from "../../util/react-web-tabs-item/lib";
 // Components
@@ -9,7 +10,9 @@ import {
   setItemTagHeight,
   setItemDisplayRange,
   setItemListRef,
-  setScrollToRow
+  setScrollToRow,
+  setFocusItemList,
+  deleteIds
 } from "../actions";
 import _ from "lodash";
 
@@ -17,27 +20,11 @@ import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
 
 const Wrapper = styled.div`
   height: 100%;
-  /* border: solid 2px white; */
 `;
 
 const ListItem = styled.div``;
 
-const Test = styled.div`
-  background-color: red;
-`;
-
-const ListWrapper = styled.div`
-  height: 500px;
-`;
-
 let list; // ref to List Component
-let clientHeight = 0;
-let targetId = "";
-let st = 0;
-
-const setDisplayRange = _.debounce((setFn, index) => {
-  setFn(index);
-}, 150);
 
 const ItemList = props => {
   const {
@@ -48,7 +35,10 @@ const ItemList = props => {
     setItemTagHeight,
     setItemDisplayRange,
     setItemListRef,
-    setScrollToRow
+    setScrollToRow,
+    setFocusItemList,
+    focusItemList,
+    deleteIds
   } = props;
   useEffect(() => {
     const tagModalElm = document.getElementById("tag-modal");
@@ -58,12 +48,59 @@ const ItemList = props => {
       setItemTagHeight(taginfo.clientHeight);
     }
     // list.scrollToPosition(st);
-    // list.recomputeRowHeights();
+    list.recomputeRowHeights();
   });
-  console.log("render");
+  // console.log(itemDisplayRange);
 
   return (
-    <Wrapper>
+    <Wrapper
+      tabIndex={1}
+      onBlur={e => {
+        setFocusItemList(false);
+      }}
+      onFocus={e => {
+        setFocusItemList(true);
+      }}
+      onKeyDown={e => {
+        const { DELETE, END, HOME, PAGEDOWN, PAGEUP } = keyCode;
+        let visibleElmCount, distRow;
+
+        e.preventDefault();
+        switch (e.keyCode) {
+          case DELETE:
+            deleteIds(ids.get(scrollToRow));
+            if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
+            break;
+          case HOME:
+            setScrollToRow(0);
+            break;
+          case END:
+            setScrollToRow(ids.size - 1);
+            break;
+          case PAGEUP:
+            visibleElmCount = getVisibleItemCount();
+            distRow = scrollToRow - visibleElmCount + 1;
+            if (distRow > 0) {
+              setScrollToRow(distRow);
+            } else {
+              setScrollToRow(0);
+            }
+            break;
+          case PAGEDOWN:
+            visibleElmCount = getVisibleItemCount();
+            distRow = scrollToRow + visibleElmCount - 1;
+            if (distRow < ids.size - 1) {
+              setScrollToRow(distRow);
+            } else {
+              setScrollToRow(ids.size - 1);
+            }
+            break;
+
+          default:
+            break;
+        }
+      }}
+    >
       {/* below tab must not show!!!! */}
       {/* <Tab
         id="filter-sort-settings"
@@ -76,32 +113,41 @@ const ItemList = props => {
         {({ height }) => (
           <ArrowKeyStepper
             columnCount={1}
-            // rowCount={100}
             rowCount={ids.size}
             // onScrollToChange={selectItem}
-            onScrollToChange={params =>
-              selectItem({ setScrollToRow, ...params })
-            }
+            onScrollToChange={params => {
+              const id = ids.get(params.scrollToRow);
+              selectItem({ id, setScrollToRow, ...params });
+            }}
             mode="cells"
             scrollToRow={scrollToRow}
           >
             {({ onSectionRendered, scrollToRow }) => (
               <List
+                ref={ref => {
+                  list = ref;
+                  setItemListRef(ref);
+                }}
                 height={height}
                 width={300}
-                // rowCount={100}
+                id={"item-list"}
                 rowCount={ids.size}
-                // rowHeight={200}
                 rowHeight={({ index }) => {
                   const id = ids.get(index);
                   const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
                   return itemHeight + itemTagHeight;
                 }}
-                onRowsRendered={onSectionRendered}
+                onRowsRendered={({ overscanStartIndex, overscanStopIndex }) => {
+                  setDisplayRange(setItemDisplayRange, {
+                    start: overscanStartIndex,
+                    stop: overscanStopIndex + 1
+                  });
+                }}
                 scrollToIndex={scrollToRow}
                 overscanRowCount={8}
                 rowRenderer={params =>
                   itemRenderer({
+                    focusItemList,
                     ids,
                     itemsTimeLine,
                     scrollToRow,
@@ -118,13 +164,8 @@ const ItemList = props => {
   );
 };
 
-const selectItem = ({ scrollToRow, setScrollToRow }) => {
-  console.log(scrollToRow);
-  console.log("setScrollToRow");
-  setScrollToRow(scrollToRow);
-};
-
 const itemRenderer = ({
+  focusItemList,
   ids,
   itemsTimeLine,
   index,
@@ -133,30 +174,16 @@ const itemRenderer = ({
   scrollToRow,
   setScrollToRow
 }) => {
+  const isFocused = document.activeElement.id === "item-list";
   const isActive = index === scrollToRow;
   const styles = {
     ...style,
     listStyle: "none",
-    background: isActive ? "#666" : "inherit"
+    // background: isActive && isFocused ? "#666" : "inherit"
+    background: isActive && focusItemList ? "#666" : "inherit"
   };
   const id = ids.get(index);
-  // const item = itemsTimeLine.get(id);
-  // return (
-  //   <Item
-  //     key={id}
-  //     item={item}
-  //     style={styles}
-  //     onClick={() =>
-  //       selectItem({
-  //         scrollToRow: index,
-  //         setScrollToRow
-  //       })
-  //     }
-  //   />
-  // );
-
   const item = itemsTimeLine.get(id);
-  const { date, mainFormat, textData, lang, tag, isFaved } = item;
 
   return (
     <ListItem
@@ -164,32 +191,55 @@ const itemRenderer = ({
       key={id}
       onClick={() =>
         selectItem({
+          id,
           scrollToRow: index,
           setScrollToRow
         })
       }
     >
       <Item item={item} />
-      {/* <div>{date}</div>
-      <div>{mainFormat}</div>
-      <div>{textData}</div>
-      <div>{date}</div>
-      <div>{lang}</div>
-      <div>{isFaved}</div>
-      <div>{tag}</div> */}
     </ListItem>
   );
+};
+
+const selectItem = ({ id, scrollToRow, setScrollToRow }) => {
+  setScrollToRow(scrollToRow);
+};
+
+const setDisplayRange = _.debounce((setFn, index) => {
+  setFn(index);
+}, 150);
+
+const getVisibleItemCount = () => {
+  let elmHeightSum = 0;
+  let visibleElmCount = 0;
+  const listHeight = document.getElementById("item-list").clientHeight;
+  const itemElms = document.getElementsByClassName("list-item");
+  for (const elm of itemElms) {
+    elmHeightSum = elmHeightSum + elm.clientHeight;
+    if (elmHeightSum < listHeight) visibleElmCount++;
+    else break;
+  }
+  return visibleElmCount;
 };
 
 const mapStateToProps = state => ({
   itemsTimeLine: state.get("itemsTimeLine"),
   idSelected: state.get("idSelected"),
-  scrollToRow: state.get("scrollToRow")
+  scrollToRow: state.get("scrollToRow"),
+  focusItemList: state.get("focusItemList")
 });
 
 export default connect(
   mapStateToProps,
-  { setItemDisplayRange, setItemTagHeight, setItemListRef, setScrollToRow }
+  {
+    setItemDisplayRange,
+    setItemTagHeight,
+    setItemListRef,
+    setScrollToRow,
+    setFocusItemList,
+    deleteIds
+  }
 )(ItemList);
 
 // <List

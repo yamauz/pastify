@@ -1,6 +1,8 @@
 const keyCode = {
   END: 35,
   HOME: 36,
+  PAGEUP: 33,
+  PAGEDOWN: 34,
   ENTER: 13,
   LEFT_ARROW: 37,
   UP_ARROW: 38,

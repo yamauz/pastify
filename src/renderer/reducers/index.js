@@ -64,6 +64,9 @@ export default handleActions(
     SET_SCROLL_TO_ROW: (state, { payload: scrollToRow }) => {
       return state.set("scrollToRow", scrollToRow);
     },
+    SET_FOCUS_ITEM_LIST: (state, { payload: focus }) => {
+      return state.set("focusItemList", focus);
+    },
     SET_ITEM_TEXT: (state, { payload: item }) => {
       return state.setItemText(item);
     },

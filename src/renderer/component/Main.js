@@ -105,7 +105,6 @@ const Main = props => {
       true
     );
   }, []);
-  console.log(filterSaveModalVisibility);
 
   return (
     <Wrapper tabIndex="0">

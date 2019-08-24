@@ -4,7 +4,8 @@ import {
   toggleModalVisibility,
   storeItemOnModalOpen,
   deleteItem,
-  setActionSelected
+  setActionSelected,
+  favItem
 } from "../actions";
 import "semantic-ui-css/semantic.min.css";
 import styled from "@emotion/styled";
@@ -20,6 +21,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
+  margin-bottom: 5px;
   padding-left: 20px;
   padding-right: 20px;
 `;
@@ -28,6 +30,7 @@ const IconWrapper = styled.div`
   height: 22px;
   width: 22px;
   padding-top: 2px;
+  padding-left: 2px;
   transition: background-color 0.1s;
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
@@ -35,7 +38,7 @@ const IconWrapper = styled.div`
 `;
 
 const EditButtons = props => {
-  const { id, isFaved } = props;
+  const { id, isFaved, favItem } = props;
   return (
     <Wrapper>
       <IconWrapper
@@ -54,7 +57,8 @@ const EditButtons = props => {
       <IconWrapper
         id={`${id}-action-star`}
         onClick={() => {
-          setActionAttribute(id, "action-star");
+          // setActionAttribute(id, "action-star");
+          favItem(id);
         }}
       >
         {/* <Icon
@@ -84,7 +88,7 @@ const EditButtons = props => {
       <IconWrapper
         id={`${id}-action-delete`}
         onClick={() => {
-          setActionAttribute(id, "action-delete");
+          // setActionAttribute(id, "action-delete");
           // const tabElm = document.getElementById(`${id}-tab`);
           // tabElm.setAttribute("data-action", "DELETE");
           // props.setActionSelected("DELETE");
@@ -130,6 +134,7 @@ const setActionAttribute = (tabId, actionIdSelected) => {
 
   actionIds.forEach(actionId => {
     const tabElm = document.getElementById(`${tabId}-${actionId}`);
+    console.log(tabElm);
     if (actionId === actionIdSelected) {
       tabElm.setAttribute("data-action", actionId);
     } else {
@@ -145,5 +150,11 @@ const mapStateToProps = state => ({
 // export default Container;
 export default connect(
   mapStateToProps,
-  { toggleModalVisibility, storeItemOnModalOpen, deleteItem, setActionSelected }
+  {
+    toggleModalVisibility,
+    storeItemOnModalOpen,
+    deleteItem,
+    setActionSelected,
+    favItem
+  }
 )(EditButtons);
