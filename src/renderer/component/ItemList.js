@@ -50,7 +50,6 @@ const ItemList = props => {
     // list.scrollToPosition(st);
     list.recomputeRowHeights();
   });
-  // console.log(itemDisplayRange);
 
   return (
     <Wrapper
@@ -59,7 +58,8 @@ const ItemList = props => {
         setFocusItemList(false);
       }}
       onFocus={e => {
-        setFocusItemList(true);
+        console.log("onFocus")
+        // setFocusItemList(true);
       }}
       onKeyDown={e => {
         const { DELETE, END, HOME, PAGEDOWN, PAGEUP } = keyCode;
@@ -152,6 +152,7 @@ const ItemList = props => {
                     itemsTimeLine,
                     scrollToRow,
                     setScrollToRow,
+                    setFocusItemList,
                     ...params
                   })
                 }
@@ -172,7 +173,8 @@ const itemRenderer = ({
   key,
   style,
   scrollToRow,
-  setScrollToRow
+  setScrollToRow,
+  setFocusItemList
 }) => {
   const isFocused = document.activeElement.id === "item-list";
   const isActive = index === scrollToRow;
@@ -189,12 +191,16 @@ const itemRenderer = ({
     <ListItem
       style={styles}
       key={id}
-      onClick={() =>
+      onClick={(e) => {
+
+        console.log("onClick")
         selectItem({
           id,
           scrollToRow: index,
           setScrollToRow
         })
+        setFocusItemList(true)
+      }
       }
     >
       <Item item={item} />

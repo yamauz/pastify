@@ -9,21 +9,35 @@ import SheetDetail from "./SheetDetail";
 import FileDetail from "./FileDetail";
 import _ from "lodash";
 
+const DetailWrapper = styled.div`
+  display: ${props => (props.isActive ? "block" : "none")};
+  height: 100%;
+`;
+
 const ItemDetail = props => {
-  const { ids, itemsTimeLine, itemDisplayRange, idSelected } = props;
+  const { ids, itemsTimeLine, itemDisplayRange, scrollToRow } = props;
 
   const { start, stop } = itemDisplayRange;
   let idsDisplay = ids.slice(start, stop);
+  const currentId = scrollToRow === -1 ? "DEFAULT" : ids.get(scrollToRow);
 
-  if (idSelected && idSelected[0] === "@" && !idsDisplay.includes(idSelected))
-    idsDisplay = idsDisplay.push(idSelected);
+  // if (idSelected && idSelected[0] === "@" && !idsDisplay.includes(idSelected))
+  if (currentId !== "DEFAULT" && !idsDisplay.includes(currentId)) {
+    idsDisplay = idsDisplay.push(currentId);
+  }
 
   return idsDisplay.map(id => {
     const data = itemsTimeLine.get(id);
+    const isActive = id === currentId;
+    // console.log(scrollToRow);
     return (
-      <TabPanel key={id} tabId={id}>
+      <DetailWrapper key={id} isActive={isActive}>
+        {/* <div>{id}</div> */}
         {renderItemByFormat(id, data)}
-      </TabPanel>
+      </DetailWrapper>
+      // <TabPanel key={id} tabId={id}>
+      //   {renderItemByFormat(id, data)}
+      // </TabPanel>
     );
   });
 };
@@ -45,7 +59,7 @@ const renderItemByFormat = (id, data) => {
 };
 
 const mapStateToProps = state => ({
-  idSelected: state.get("idSelected"),
+  scrollToRow: state.get("scrollToRow"),
   itemsTimeLine: state.get("itemsTimeLine"),
   itemDisplayRange: state.get("itemDisplayRange")
 });

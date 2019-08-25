@@ -40,7 +40,6 @@ const GridListMain = styled.div`
 
 const Main = styled.div`
   grid-area: main;
-  background-color: aqua;
 `;
 
 const Container = props => {
@@ -56,7 +55,9 @@ const Container = props => {
           <ItemList ids={ids} />
         </GridListMain>
       </Side>
-      <Main>main</Main>
+      <Main>
+        <ItemDetail ids={ids} />
+      </Main>
       {/* <Tabs
         defaultTab="default"
         vertical
