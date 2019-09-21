@@ -22,8 +22,11 @@ export default handleActions(
     GET_MOMENT: (state, { payload: currentTime }) => {
       return state.set("moment", currentTime);
     },
-    TOGGLE_MODAL_VISIBILITY: state => {
-      return state.set("modalVisibility", !state.get("modalVisibility"));
+    // TOGGLE_MODAL_VISIBILITY: state => {
+    //   return state.set("modalVisibility", !state.get("modalVisibility"));
+    // },
+    TOGGLE_MODAL_VISIBILITY: (state, { payload: id }) => {
+      return state.toggleModalVisibility(id)
     },
     TOGGLE_FILTER_SAVE_MODAL_VISIBILITY: state => {
       return state.set(

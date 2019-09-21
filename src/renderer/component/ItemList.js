@@ -42,6 +42,7 @@ const ItemList = props => {
   } = props;
   useEffect(() => {
     const tagModalElm = document.getElementById("tag-modal");
+    console.log(tagModalElm)
     if (!!tagModalElm) {
       const id = tagModalElm.getAttribute("name");
       const taginfo = document.getElementById(`${id}-taginfo`);

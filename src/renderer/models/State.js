@@ -440,6 +440,14 @@ class State extends StateRecord {
     }
   }
 
+  toggleModalVisibility(id = "__UNSET__") {
+    return this.withMutations(item => {
+      item
+        .set("idSelected", id)
+        .set("modalVisibility", !this.get("modalVisibility"));
+    });
+  }
+
   _deleteItemDataStore(ids) {
     ipcRenderer.sendSync("ITEM_ID_TO_BE_DELETED", ids);
   }

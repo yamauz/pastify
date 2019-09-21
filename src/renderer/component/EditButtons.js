@@ -38,7 +38,7 @@ const IconWrapper = styled.div`
 `;
 
 const EditButtons = props => {
-  const { id, isFaved, favItem } = props;
+  const { id, isFaved, favItem, toggleModalVisibility } = props;
   return (
     <Wrapper>
       <IconWrapper
@@ -73,8 +73,8 @@ const EditButtons = props => {
       <IconWrapper
         id={`${id}-action-tag`}
         onClick={() => {
-          setActionAttribute(id, "action-tag");
-          // props.toggleModalVisibility();
+          // setActionAttribute(id, "action-tag");
+          toggleModalVisibility(id);
           // props.storeItemOnModalOpen(id);
         }}
       >
