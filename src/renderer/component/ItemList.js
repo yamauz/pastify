@@ -42,7 +42,6 @@ const ItemList = props => {
   } = props;
   useEffect(() => {
     const tagModalElm = document.getElementById("tag-modal");
-    console.log(tagModalElm)
     if (!!tagModalElm) {
       const id = tagModalElm.getAttribute("name");
       const taginfo = document.getElementById(`${id}-taginfo`);
@@ -56,7 +55,8 @@ const ItemList = props => {
     <Wrapper
       tabIndex={1}
       onBlur={e => {
-        setFocusItemList(false);
+        // setFocusItemList(false);
+        console.log("onBlur")
       }}
       onFocus={e => {
         console.log("onFocus")
