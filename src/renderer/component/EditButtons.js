@@ -13,8 +13,10 @@ import Icon from "react-eva-icons";
 import Star from "../../icon/editbutton/star.svg";
 import StarSolid from "../../icon/editbutton/star-solid.svg";
 import Tag from "../../icon/editbutton/tag.svg";
-import TrashAlt from "../../icon/editbutton/trash-alt.svg";
-import ClipboardList from "../../icon/editbutton/clipboard-list.svg";
+import TagSolid from "../../icon/editbutton/tag-solid.svg";
+// import Tag from "../../icon/editbutton/tag.svg";
+// import TrashAlt from "../../icon/editbutton/trash-alt.svg";
+// import ClipboardList from "../../icon/editbutton/clipboard-list.svg";
 
 const Wrapper = styled.div`
   flex-basis: 20px;
@@ -38,7 +40,7 @@ const IconWrapper = styled.div`
 `;
 
 const EditButtons = props => {
-  const { id, isFaved, favItem, toggleModalVisibility } = props;
+  const { id, isFaved, favItem, hasTags, toggleModalVisibility, storeItemOnModalOpen } = props;
   return (
     <Wrapper>
       <IconWrapper
@@ -57,33 +59,25 @@ const EditButtons = props => {
       <IconWrapper
         id={`${id}-action-star`}
         onClick={() => {
-          // setActionAttribute(id, "action-star");
           favItem(id);
         }}
       >
-        {/* <Icon
-          // name="star-outline"
-          name={starIcon}
-          // fill="#bab586"
-          fill={fill}
-          size="medium" // small, medium, large, xlarge
-        /> */}
         {toggleStarIcon(isFaved)}
       </IconWrapper>
       <IconWrapper
         id={`${id}-action-tag`}
         onClick={() => {
-          // setActionAttribute(id, "action-tag");
           toggleModalVisibility(id);
-          // props.storeItemOnModalOpen(id);
+          storeItemOnModalOpen(id);
         }}
       >
-        <Icon
+        {/* <Icon
           name="pricetags-outline"
           width="5px"
           height="5px"
           fill="#af86ba"
-        />
+        /> */}
+        {toggleTagIcon(hasTags)}
       </IconWrapper>
       <IconWrapper
         id={`${id}-action-delete`}
@@ -118,6 +112,30 @@ const toggleStarIcon = isFaved => {
           fill: "#bab586",
           width: "17px",
           marginTop: "1px"
+        }}
+      />
+    );
+  }
+};
+const toggleTagIcon = hasTags => {
+  if (hasTags) {
+    return (
+      <TagSolid
+        style={{
+          fill: "#af86ba",
+          width: "15px",
+          marginTop: "2px",
+          marginLeft: "2px"
+        }}
+      />
+    );
+  } else {
+    return (
+      <Tag
+        style={{
+          fill: "#af86ba",
+          width: "15px",
+          marginTop: "2px"
         }}
       />
     );

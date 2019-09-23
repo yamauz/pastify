@@ -193,7 +193,7 @@ const Container = props => {
               <TextLanguage lang={lang} />
               <Hash tag={tag} />
             </InfoBottom>
-            <EditButtons id={id} isFaved={isFaved} />
+            <EditButtons id={id} isFaved={isFaved} hasTags={checkTags(key, tag, lang)} />
           </InfoContainer>
         </ContainerRight>
       </ItemContainer>
@@ -201,6 +201,21 @@ const Container = props => {
     </Wrapper>
   );
 };
+
+
+const checkTags = (key, tag, lang) => {
+  const hasKey = key === "" ? false : true;
+  const hasHashTags = tag.length === 0 ? false : true;
+  const hasLang = lang === "" ? false : true;
+  let hasTag
+  if (hasKey || hasHashTags || hasLang) {
+    hasTag = true
+  } else {
+    hasTag = false
+  }
+  return hasTag
+}
+
 
 const mapStateToProps = state => ({
   addMode: state.get("addMode"),

@@ -292,6 +292,7 @@ class State extends StateRecord {
     const listName = "itemsTimeLine";
     const id = this.get("idSelected");
     const keyPath = [listName, id];
+    console.log(keyPath)
     return this.setIn(keyPath, this.get("itemStore"));
   }
   setLangOptionsSelected(langOpt) {

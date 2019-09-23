@@ -25,9 +25,9 @@ const SelectButton = props => {
         compact
         inverted
         onClick={e => {
-          toggleModalVisibility();
+          toggleModalVisibility(id);
           restoreItemOnCancel();
-          const elm = document.getElementById(`${id}-tab`);
+          const elm = document.getElementById("item-list");
           elm.focus();
         }}
       >
@@ -39,9 +39,9 @@ const SelectButton = props => {
         compact
         inverted
         onClick={e => {
-          toggleModalVisibility();
+          toggleModalVisibility(id);
           saveTag();
-          const elm = document.getElementById(`${id}-tab`);
+          const elm = document.getElementById("item-list");
           elm.focus();
         }}
         onKeyDown={e => {

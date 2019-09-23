@@ -36,11 +36,9 @@ const Modal = props => {
         height={300}
         visible={modalVisibility}
         onClose={() => {
-          toggleModalVisibility();
+          toggleModalVisibility(idSelected);
           restoreItemOnCancel();
-          // const elm = document.getElementById(idSelected).parentElement;
           const elm = document.getElementById("item-list");
-          console.log(elm)
           elm.focus();
         }}
         // animation="fade"
