@@ -79,6 +79,9 @@ export default handleActions(
     SET_IDS_FROM_DATASTORE: state => {
       return state.setIdsFromDatastore();
     },
+    SET_DETAIL_TYPE: (state, { payload: type }) => {
+      return state.set("detailType", type);
+    },
     // Sort ---------------------------------------------------------
     SET_SORT_OPTIONS: (state, { payload: options }) => {
       return state.set("sortOpt", options);

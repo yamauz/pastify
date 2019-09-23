@@ -12,6 +12,7 @@ import {
   setItemListRef,
   setScrollToRow,
   setFocusItemList,
+  setDetailType,
   deleteIds
 } from "../actions";
 import _ from "lodash";
@@ -37,6 +38,7 @@ const ItemList = props => {
     setItemListRef,
     setScrollToRow,
     setFocusItemList,
+    setDetailType,
     focusItemList,
     deleteIds
   } = props;
@@ -60,6 +62,7 @@ const ItemList = props => {
       }}
       onFocus={e => {
         console.log("onFocus")
+        setDetailType("ITEM")
         // setFocusItemList(true);
       }}
       onKeyDown={e => {
@@ -194,7 +197,6 @@ const itemRenderer = ({
       key={id}
       onClick={(e) => {
 
-        console.log("onClick")
         selectItem({
           id,
           scrollToRow: index,
@@ -245,6 +247,7 @@ export default connect(
     setItemListRef,
     setScrollToRow,
     setFocusItemList,
+    setDetailType,
     deleteIds
   }
 )(ItemList);

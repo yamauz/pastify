@@ -25,6 +25,7 @@ export const {
   setDataTypeOptionsSelected,
   setLangOptionsSelected,
   setIdsFromDatastore,
+  setDetailType,
   // Sort --------------------------------------------------------
   setSortOptions,
   // Filter by keyword --------------------------------------------
@@ -92,6 +93,7 @@ export const {
   SET_DATA_TYPE_OPTIONS_SELECTED: options => options,
   SET_LANG_OPTIONS_SELECTED: options => options,
   SET_IDS_FROM_DATASTORE: () => { },
+  SET_DETAIL_TYPE: type => type,
   // Sort --------------------------------------------------------
   SET_SORT_OPTIONS: options => options,
   // Filter by keyword --------------------------------------------

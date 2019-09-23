@@ -5,6 +5,7 @@ import sortOptions from "../../common/sortOptions";
 const { ipcRenderer } = window.require("electron");
 
 const StateRecord = Record({
+  detailType: "DEFAULT",
   moment: new Date().getTime(),
   addMode: "ON_LOAD",
   itemsTimeLine: OrderedMap(),
@@ -252,10 +253,10 @@ class State extends StateRecord {
     });
   }
   showFilterSortSettings() {
-    setTimeout(() => {
-      document.getElementById("filter-sort-settings-tab").focus();
-    }, 100);
-    return this;
+    // setTimeout(() => {
+    //   document.getElementById("filter-sort-settings-tab").focus();
+    // }, 100);
+    return this.set("detailType", "filter-sort-settings");
   }
   saveFilterSortSettings() {
     console.log("save filter sort settings");

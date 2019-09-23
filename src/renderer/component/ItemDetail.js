@@ -7,6 +7,7 @@ import TextDetail from "./TextDetail";
 import ImageDetail from "./ImageDetail";
 import SheetDetail from "./SheetDetail";
 import FileDetail from "./FileDetail";
+import FilterSettings from './MainPanel/FilterSettings/FilterSettings'
 import _ from "lodash";
 
 const DetailWrapper = styled.div`
@@ -15,31 +16,33 @@ const DetailWrapper = styled.div`
 `;
 
 const ItemDetail = props => {
-  const { ids, itemsTimeLine, itemDisplayRange, scrollToRow } = props;
+  const { ids, itemsTimeLine, itemDisplayRange, scrollToRow, detailType } = props;
 
   const { start, stop } = itemDisplayRange;
   let idsDisplay = ids.slice(start, stop);
   const currentId = scrollToRow === -1 ? "DEFAULT" : ids.get(scrollToRow);
 
-  // if (idSelected && idSelected[0] === "@" && !idsDisplay.includes(idSelected))
   if (currentId !== "DEFAULT" && !idsDisplay.includes(currentId)) {
     idsDisplay = idsDisplay.push(currentId);
   }
 
-  return idsDisplay.map(id => {
-    const data = itemsTimeLine.get(id);
-    const isActive = id === currentId;
-    // console.log(scrollToRow);
-    return (
-      <DetailWrapper key={id} isActive={isActive}>
-        {/* <div>{id}</div> */}
-        {renderItemByFormat(id, data)}
-      </DetailWrapper>
-      // <TabPanel key={id} tabId={id}>
-      //   {renderItemByFormat(id, data)}
-      // </TabPanel>
-    );
-  });
+  switch (detailType) {
+    case "filter-sort-settings":
+      return <FilterSettings></FilterSettings>
+    case "ITEM":
+      return idsDisplay.map(id => {
+        const data = itemsTimeLine.get(id);
+        const isActive = id === currentId;
+        return (
+          <DetailWrapper key={id} isActive={isActive}>
+            {renderItemByFormat(id, data)}
+          </DetailWrapper>
+        );
+      });
+    case "DEFAULT":
+      return <div>default</div>
+  }
+
 };
 
 const renderItemByFormat = (id, data) => {
@@ -59,6 +62,7 @@ const renderItemByFormat = (id, data) => {
 };
 
 const mapStateToProps = state => ({
+  detailType: state.get("detailType"),
   scrollToRow: state.get("scrollToRow"),
   itemsTimeLine: state.get("itemsTimeLine"),
   itemDisplayRange: state.get("itemDisplayRange")
