@@ -6,7 +6,8 @@ import { connect } from "react-redux";
 import {
   callActionOnItemList,
   setIdsFromDatastore,
-  toggleItemListToolTipVisibility
+  toggleItemListToolTipVisibility,
+  setDetailType
 } from "../actions";
 // Common
 import keyCode from "../../common/keycode";
@@ -90,14 +91,22 @@ const callAction = (command, props) => {
   const {
     callActionOnItemList,
     setIdsFromDatastore,
-    toggleItemListToolTipVisibility
+    toggleItemListToolTipVisibility,
+    setDetailType
   } = props;
   callActionOnItemList(command);
 
   switch (command) {
     case "trashAllItems":
+      setDetailType("DEFAULT");
+      setIdsFromDatastore();
+      break;
     case "trashAllItemsWithoutFaved":
+      setIdsFromDatastore();
+      break;
     case "clearFilterSortSettings":
+      setIdsFromDatastore();
+      break;
     case "reloadFilterSortSettings":
       setIdsFromDatastore();
       break;
@@ -144,5 +153,5 @@ const actionList = [
 
 export default connect(
   null,
-  { callActionOnItemList, setIdsFromDatastore, toggleItemListToolTipVisibility }
+  { callActionOnItemList, setIdsFromDatastore, toggleItemListToolTipVisibility, setDetailType }
 )(ToolTipList);
