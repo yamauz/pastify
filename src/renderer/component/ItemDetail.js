@@ -46,18 +46,19 @@ const ItemDetail = props => {
 };
 
 const renderItemByFormat = (id, data) => {
-  switch (data.mainFormat) {
-    case "TEXT":
-      return <TextDetail id={id} data={data} />;
-    case "IMAGE":
-      return <ImageDetail id={id} data={data} />;
-    case "SHEET":
-      return <SheetDetail id={id} data={data} />;
-    case "FILE":
-      return <FileDetail id={id} data={data} />;
-
-    default:
-      return <></>;
+  if (data) {
+    switch (data.mainFormat) {
+      case "TEXT":
+        return <TextDetail id={id} data={data} />;
+      case "IMAGE":
+        return <ImageDetail id={id} data={data} />;
+      case "SHEET":
+        return <SheetDetail id={id} data={data} />;
+      case "FILE":
+        return <FileDetail id={id} data={data} />;
+      default:
+        return <></>;
+    }
   }
 };
 

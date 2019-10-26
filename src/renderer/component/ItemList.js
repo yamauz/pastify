@@ -160,6 +160,9 @@ const ItemList = props => {
                     ...params
                   })
                 }
+                noRowsRenderer={
+                  () => <div>No Item Found</div>
+                }
               />
             )}
           </ArrowKeyStepper>
