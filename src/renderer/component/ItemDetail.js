@@ -7,16 +7,21 @@ import TextDetail from "./TextDetail";
 import ImageDetail from "./ImageDetail";
 import SheetDetail from "./SheetDetail";
 import FileDetail from "./FileDetail";
-import FilterSettings from './MainPanel/FilterSettings/FilterSettings'
+import FilterSettings from "./MainPanel/FilterSettings/FilterSettings";
 import _ from "lodash";
 
 const DetailWrapper = styled.div`
   display: ${props => (props.isActive ? "block" : "none")};
-  height: 100%;
 `;
 
 const ItemDetail = props => {
-  const { ids, itemsTimeLine, itemDisplayRange, scrollToRow, detailType } = props;
+  const {
+    ids,
+    itemsTimeLine,
+    itemDisplayRange,
+    scrollToRow,
+    detailType
+  } = props;
 
   const { start, stop } = itemDisplayRange;
   let idsDisplay = ids.slice(start, stop);
@@ -28,7 +33,7 @@ const ItemDetail = props => {
 
   switch (detailType) {
     case "filter-sort-settings":
-      return <FilterSettings></FilterSettings>
+      return <FilterSettings></FilterSettings>;
     case "ITEM":
       return idsDisplay.map(id => {
         const data = itemsTimeLine.get(id);
@@ -40,9 +45,8 @@ const ItemDetail = props => {
         );
       });
     case "DEFAULT":
-      return <div>default</div>
+      return <div>default</div>;
   }
-
 };
 
 const renderItemByFormat = (id, data) => {

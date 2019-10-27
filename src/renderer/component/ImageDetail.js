@@ -8,12 +8,13 @@ const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 
 const Wrapper = styled.div`
   display: grid;
-  box-sizing: border-box;
   grid-template-columns: 58px 1fr;
   grid-template-rows: 100%;
   grid-template-areas: "left right";
-  height: 100%;
   width: 100%;
+  /* height: 400px; */
+  /* height: 100vh; */
+  height: calc(100vh - 90px);
 `;
 const ContainerLeft = styled.div`
   grid-area: left;
@@ -49,10 +50,10 @@ const FileExtention = styled.div`
 `;
 
 const BottomContainer = styled.div`
-  overflow: overlay;
   grid-area: image;
   display: flex;
   justify-content: center;
+  overflow: overlay;
   -webkit-background-clip: text;
   transition: background-color 0.3s;
   &::-webkit-scrollbar {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { setItemText } from "../actions";
+import styled from "@emotion/styled";
 
 import AceEditor from "react-ace";
 import "brace/mode/c_cpp";
@@ -38,33 +39,41 @@ import "brace/mode/yaml";
 import "brace/theme/monokai";
 import "brace/keybinding/vim";
 import "brace/keybinding/emacs";
+
+const Wrapper = styled.div`
+  background-color: red;
+  height: calc(100vh - 80px);
+`;
+
 const TextDetail = props => {
   const { id, data, keyboardHandler, setItemText } = props;
   return (
-    <AceEditor
-      name={id}
-      mode={setModeByLang(data.lang)}
-      theme="monokai"
-      width="100%"
-      height="100%"
-      editorProps={{ $blockScrolling: Infinity }}
-      value={data.textData}
-      wrapEnabled={true}
-      showPrintMargin={false}
-      style={{ lineHeight: 1.5 }}
-      fontSize={"13px"}
-      keyboardHandler={keyboardHandler}
-      debounceChangePeriod={1000}
-      onChange={textData => {
-        setItemText({ id, textData });
-      }}
-      setOptions={{
-        indentedSoftWrap: false,
-        tabSize: 4,
-        showLineNumbers: true,
-        useWorker: false
-      }}
-    />
+    <Wrapper>
+      <AceEditor
+        name={id}
+        mode={setModeByLang(data.lang)}
+        theme="monokai"
+        width="100%"
+        height="100%"
+        editorProps={{ $blockScrolling: Infinity }}
+        value={data.textData}
+        wrapEnabled={true}
+        showPrintMargin={false}
+        style={{ lineHeight: 1.5 }}
+        fontSize={"13px"}
+        keyboardHandler={keyboardHandler}
+        debounceChangePeriod={1000}
+        onChange={textData => {
+          setItemText({ id, textData });
+        }}
+        setOptions={{
+          indentedSoftWrap: false,
+          tabSize: 4,
+          showLineNumbers: true,
+          useWorker: false
+        }}
+      />
+    </Wrapper>
   );
 };
 
