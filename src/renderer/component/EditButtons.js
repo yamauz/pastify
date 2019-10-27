@@ -7,7 +7,6 @@ import {
   setActionSelected,
   favItem
 } from "../actions";
-import "semantic-ui-css/semantic.min.css";
 import styled from "@emotion/styled";
 import Icon from "react-eva-icons";
 import Star from "../../icon/editbutton/star.svg";

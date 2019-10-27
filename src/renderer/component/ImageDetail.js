@@ -8,13 +8,11 @@ const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 58px 1fr;
+  grid-template-columns: 53px 1fr;
   grid-template-rows: 100%;
   grid-template-areas: "left right";
   width: 100%;
-  /* height: 400px; */
-  /* height: 100vh; */
-  height: calc(100vh - 90px);
+  height: 100%;
 `;
 const ContainerLeft = styled.div`
   grid-area: left;

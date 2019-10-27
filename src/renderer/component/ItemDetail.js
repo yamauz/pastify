@@ -12,6 +12,7 @@ import _ from "lodash";
 
 const DetailWrapper = styled.div`
   display: ${props => (props.isActive ? "block" : "none")};
+  height: calc(100vh - 91px);
 `;
 
 const ItemDetail = props => {

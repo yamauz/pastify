@@ -41,8 +41,7 @@ import "brace/keybinding/vim";
 import "brace/keybinding/emacs";
 
 const Wrapper = styled.div`
-  background-color: red;
-  height: calc(100vh - 80px);
+  height: 100%;
 `;
 
 const TextDetail = props => {
