@@ -11,41 +11,21 @@ const APP_PATH = window.require("electron").remote.app.getAppPath();
 const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 
 const Wrapper = styled.div`
-  display: grid;
-  box-sizing: border-box;
-  grid-template-columns: 58px 1fr;
-  grid-template-rows: 100%;
-  grid-template-areas: "left right";
   height: 100%;
-  width: 100%;
-`;
-
-const ContainerLeft = styled.div`
-  grid-area: left;
-  background-color: #2f3129;
-  width: 100%;
-`;
-const ContainerRight = styled.div`
-  grid-area: right;
-  display: flex;
-  transition: background-color 0.3s;
-  position: relative;
-  z-index: 1;
-  height: auto;
   width: 100%;
 `;
 
 const FileList = styled.ol`
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  counter-reset: ol_li;
+  margin: 0;
   height: 100%;
-  list-style-type: none;
-  counter-reset: level1;
-  margin-left: 0;
-  padding: 0 0 0 0px;
-  position: absolute;
-  top: -15px;
-  z-index: 1;
+  width: 100%;
   overflow: overlay;
   -webkit-background-clip: text;
+  transition: background-color 0.3s;
   &::-webkit-scrollbar {
     width: 0.5em;
   }
@@ -57,28 +37,37 @@ const FileList = styled.ol`
   }
 `;
 const List = styled.li`
-  margin: 0;
+  font-family: sans-serif;
+  margin-left: 22px;
   word-break: break-all;
-  padding-left: 7.2em;
-  text-indent: -7.4em;
+  padding-left: 3em;
+  text-indent: -3em;
   &:before {
+    vertical-align: middle;
+    line-height: 10px;
+    counter-increment: ol_li;
+    /* content: counter(ol_li) "　"; */
+    content: counter(ol_li) "　　"
+      url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBmaWxsPSIjZmZlNjhlIiBkPSJNNTI3Ljk1IDIyNEg0ODB2LTQ4YzAtMjYuNTEtMjEuNDktNDgtNDgtNDhIMjcybC02NC02NEg0OEMyMS40OSA2NCAwIDg1LjQ5IDAgMTEydjI4OGMwIDI2LjUxIDIxLjQ5IDQ4IDQ4IDQ4aDM4NS4wNTdjMjguMDY4IDAgNTQuMTM1LTE0LjczMyA2OC41OTktMzguODRsNjcuNDUzLTExMi40NjRDNTg4LjI0IDI2NC44MTIgNTY1LjI4NSAyMjQgNTI3Ljk1IDIyNHpNNDggOTZoMTQ2Ljc0NWw2NCA2NEg0MzJjOC44MzcgMCAxNiA3LjE2MyAxNiAxNnY0OEgxNzEuMTc3Yy0yOC4wNjggMC01NC4xMzUgMTQuNzMzLTY4LjU5OSAzOC44NEwzMiAzODAuNDdWMTEyYzAtOC44MzcgNy4xNjMtMTYgMTYtMTZ6bTQ5My42OTUgMTg0LjIzMmwtNjcuNDc5IDExMi40NjRBNDcuOTk3IDQ3Ljk5NyAwIDAgMSA0MzMuMDU3IDQxNkg0NC44MjNsODIuMDE3LTEzNi42OTZBNDggNDggMCAwIDEgMTY4IDI1NmgzNTkuOTc1YzEyLjQzNyAwIDIwLjExOSAxMy41NjggMTMuNzIgMjQuMjMyeiIvPjwvc3ZnPg==");
     display: inline-block;
-    content: counter(level1) " ";
-    counter-increment: level1;
-    color: white;
-    opacity: 0.3;
+    width: 13px;
+    color: #8f908a;
+    font-size: 12px;
+    padding-top: 0px;
+    /* margin-left: 70px; */
     text-align: right;
-    width: 35px;
   }
 `;
 
 const IconWrapper = styled.span`
   width: 20px;
-  margin-left: 33px;
+  margin-left: 5px;
 `;
 
 const FileName = styled.a`
-  margin-left: 7px;
+  margin-left: 5px;
+  font-size: 13px;
+  font-family: sans-serif;
   ${props =>
     props.fileExists
       ? css`
@@ -93,6 +82,14 @@ const FileName = styled.a`
           color: gray;
           pointer-events: none;
         `}
+`;
+
+const Gutter = styled.div`
+  position: absolute;
+  z-index: 1;
+  height: calc(100vh - 91px);
+  width: 53px;
+  background-color: #2f3129;
 `;
 
 const isDir = filepath => {
@@ -120,14 +117,13 @@ const FileDetail = props => {
 
   return (
     <Wrapper>
-      <ContainerLeft />
-      <ContainerRight />
+      <Gutter></Gutter>
       <FileList className="filelist">
         {fileList.map((item, index) => {
           const fileExists = fs.existsSync(item);
           return (
-            <List key={index}>
-              <IconWrapper>{selectFileIcon(item, fileExists)}</IconWrapper>
+            <List key={index} className="filelist">
+              {/* <IconWrapper>{selectFileIcon(item, fileExists)}</IconWrapper> */}
               <FileName
                 onClick={e => childProcess.exec(`start "" "${item}"`)}
                 href="#"
