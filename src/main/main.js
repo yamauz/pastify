@@ -125,4 +125,4 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {});
+app.on("activate", () => { });

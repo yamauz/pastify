@@ -6,7 +6,7 @@ const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 const Wrapper = styled.div`
   display: grid;
   box-sizing: border-box;
-  grid-template-columns: 58px 1fr;
+  grid-template-columns: 53px 1fr;
   grid-template-rows: 100%;
   grid-template-areas: "left right";
   height: 100%;

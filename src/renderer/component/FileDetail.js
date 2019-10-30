@@ -13,6 +13,8 @@ const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
+  font: 12px / normal "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+    "source-code-pro", monospace;
 `;
 
 const FileList = styled.ol`
@@ -77,7 +79,6 @@ const IconWrapper = styled.span`
 const FileName = styled.a`
   margin-left: 5px;
   font-size: 13px;
-  font-family: sans-serif;
   ${props =>
     props.fileExists
       ? css`
