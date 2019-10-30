@@ -28,15 +28,17 @@ const Text = styled.p`
   font-size: 12px;
 `;
 
-const renderText = (text, format) => {
-  // add image file extention
+const renderTitle = (text, format) => {
   const ext = ".png";
-  const component = format === "IMAGE" ? `${text}${ext}` : text;
+  // insert blank title when text has only line break code.
+  const title = text === "\r\n" ? "　" : text;
+  const component = format === "IMAGE" ? `${title}${ext}` : title;
   return <Text format={format}>{component}</Text>;
 };
 
 const ItemText = props => {
-  return <Wrapper>{renderText(props.text, props.format)}</Wrapper>;
+  return <Wrapper>{renderTitle(props.text, props.format)}</Wrapper>;
 };
+
 
 export default ItemText;
