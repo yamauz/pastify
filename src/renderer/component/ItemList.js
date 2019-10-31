@@ -21,6 +21,7 @@ import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
 
 const Wrapper = styled.div`
   height: 100%;
+  user-select:none;
 `;
 
 const ListItem = styled.div``;
