@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 // import AutosizeInput from "react-input-autosize";
 import ContentEditable from "react-contenteditable";
+import { setItemText } from "../actions";
+import { connect } from "react-redux";
+import _ from "lodash";
 import { maxlengthContentEditable } from "maxlength-contenteditable";
 const APP_PATH = window.require("electron").remote.app.getAppPath();
 const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
@@ -77,7 +80,7 @@ const Image = styled.img`
 `;
 
 const ImageDetail = props => {
-  const { id, data } = props;
+  const { id, data, setItemText } = props;
   const imageSrc = `${TEMP_PATH}${id}`;
 
   useEffect(() => {
@@ -93,6 +96,10 @@ const ImageDetail = props => {
               data-max-length="30"
               html={data.textData}
               className="content-editable"
+              onChange={_.debounce(e => {
+                const textData = e.target.value;
+                setItemText({ id, textData });
+              }, 500)}
             />
             <FileExtention>.png</FileExtention>
           </InputWrapper>
@@ -107,4 +114,7 @@ const ImageDetail = props => {
   );
 };
 
-export default ImageDetail;
+export default connect(
+  null,
+  { setItemText }
+)(ImageDetail);
