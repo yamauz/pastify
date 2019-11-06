@@ -134,7 +134,8 @@ const toggleTagIcon = hasTags => {
         style={{
           fill: "#af86ba",
           width: "15px",
-          marginTop: "2px"
+          marginTop: "2px",
+          marginLeft: "2px"
         }}
       />
     );
