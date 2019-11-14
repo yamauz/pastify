@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { maxlengthContentEditable } from "maxlength-contenteditable";
 const APP_PATH = window.require("electron").remote.app.getAppPath();
-const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 
 const Wrapper = styled.div`
   display: grid;
@@ -81,7 +80,8 @@ const Image = styled.img`
 
 const ImageDetail = props => {
   const { id, data, setItemText } = props;
-  const imageSrc = `${TEMP_PATH}${id}`;
+  const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
+  const imagePath = `file:///${distDir}/resource/temp/${id}`;
 
   useEffect(() => {
     maxlengthContentEditable();
@@ -106,7 +106,7 @@ const ImageDetail = props => {
         </TopContainer>
         <BottomContainer>
           <ImageWrapper>
-            <Image src={imageSrc} />
+            <Image src={imagePath} />
           </ImageWrapper>
         </BottomContainer>
       </ContainerRight>
@@ -114,7 +114,4 @@ const ImageDetail = props => {
   );
 };
 
-export default connect(
-  null,
-  { setItemText }
-)(ImageDetail);
+export default connect(null, { setItemText })(ImageDetail);
