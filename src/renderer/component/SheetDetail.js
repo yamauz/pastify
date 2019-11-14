@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 const APP_PATH = window.require("electron").remote.app.getAppPath();
-const TEMP_PATH = `file:///${APP_PATH}/resource/temp/`;
 
 const Wrapper = styled.div`
   display: grid;
@@ -48,14 +47,15 @@ const Image = styled.img`
 
 const SheetDetail = props => {
   const { id } = props;
-  const imageSrc = `${TEMP_PATH}${id}`;
+  const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
+  const imagePath = `file:///${distDir}/resource/temp/${id}`;
 
   return (
     <Wrapper>
       <ContainerLeft />
       <ContainerRight>
         <ImageWrapper>
-          <Image src={imageSrc} />
+          <Image src={imagePath} />
         </ImageWrapper>
       </ContainerRight>
     </Wrapper>
