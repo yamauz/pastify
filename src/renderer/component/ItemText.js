@@ -31,7 +31,9 @@ const Text = styled.p`
 const renderTitle = (text, format) => {
   const ext = ".png";
   // insert blank title when text has only line break code.
-  const title = text === "\r\n" ? "　" : text;
+  const regex = /^\s+$/;
+  // const title = text === "\r\n" ? "　" : text;
+  const title = regex.test(text) ? "　" : text;
   const component = format === "IMAGE" ? `${title}${ext}` : title;
   return <Text format={format}>{component}</Text>;
 };
@@ -39,6 +41,5 @@ const renderTitle = (text, format) => {
 const ItemText = props => {
   return <Wrapper>{renderTitle(props.text, props.format)}</Wrapper>;
 };
-
 
 export default ItemText;
