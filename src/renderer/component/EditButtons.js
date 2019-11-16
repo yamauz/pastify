@@ -13,6 +13,8 @@ import Star from "../../icon/editbutton/star.svg";
 import StarSolid from "../../icon/editbutton/star-solid.svg";
 import Tag from "../../icon/editbutton/tag.svg";
 import TagSolid from "../../icon/editbutton/tag-solid.svg";
+import Trash from "../../icon/editbutton/trash.svg";
+import TrashFill from "../../icon/editbutton/trash-fill.svg";
 // import Tag from "../../icon/editbutton/tag.svg";
 // import TrashAlt from "../../icon/editbutton/trash-alt.svg";
 // import ClipboardList from "../../icon/editbutton/clipboard-list.svg";
@@ -87,7 +89,14 @@ const EditButtons = props => {
           // props.setActionSelected("DELETE");
         }}
       >
-        <Icon name="trash-2-outline" width="5px" height="5px" fill="#b6b3b7" />
+        {/* <Icon name="trash-2-outline" width="5px" height="5px" fill="#b6b3b7" /> */}
+        <TrashFill
+          style={{
+            width: "14px",
+            marginTop: "1px",
+            marginLeft: "2px"
+          }}
+        />
       </IconWrapper>
     </Wrapper>
   );
