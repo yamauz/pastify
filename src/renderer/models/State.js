@@ -120,15 +120,17 @@ class State extends StateRecord {
       // .set("moment", new Date().getTime());
     });
   }
-  deleteIds(ids) {
-    const target = Array.isArray(ids) ? ids : [ids];
-    // const idsName = `ids${this.get("menuTabSelected")}`;
-    const idsName = "idsTimeLine";
+  deleteIds(id) {
     // const nextIds = ipcRenderer.sendSync("TRASH ITEMS");
-    return this.set(
-      idsName,
-      this[idsName].filterNot(id => target.includes(id))
-    );
+
+    this._updateItems(id, { isTrashed: true });
+
+    return this.withMutations(state => {
+      state.setIn(["itemsTimeLine", id, "isTrashed"], true).set(
+        "idsTimeLine",
+        this.idsTimeLine.filterNot(_id => _id === id)
+      );
+    });
   }
   setIdSelected(id) {
     return this.set("idSelected", id);
@@ -293,7 +295,7 @@ class State extends StateRecord {
     const listName = "itemsTimeLine";
     const id = this.get("idSelected");
     const keyPath = [listName, id];
-    console.log(keyPath)
+    console.log(keyPath);
     return this.setIn(keyPath, this.get("itemStore"));
   }
   setLangOptionsSelected(langOpt) {

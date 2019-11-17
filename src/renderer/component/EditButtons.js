@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {
   toggleModalVisibility,
   storeItemOnModalOpen,
-  deleteItem,
+  deleteIds,
   setActionSelected,
   favItem
 } from "../actions";
@@ -45,7 +45,8 @@ const EditButtons = props => {
     favItem,
     hasTags,
     toggleModalVisibility,
-    storeItemOnModalOpen
+    storeItemOnModalOpen,
+    deleteIds
   } = props;
   return (
     <Wrapper>
@@ -82,10 +83,8 @@ const EditButtons = props => {
       <IconWrapper
         id={`${id}-action-delete`}
         onClick={() => {
-          // setActionAttribute(id, "action-delete");
-          // const tabElm = document.getElementById(`${id}-tab`);
-          // tabElm.setAttribute("data-action", "DELETE");
-          // props.setActionSelected("DELETE");
+          console.log("trashed");
+          deleteIds(id);
         }}
       >
         {toggleTrashIcon(isTrashed)}
@@ -144,7 +143,6 @@ const toggleTagIcon = hasTags => {
 };
 
 const toggleTrashIcon = isTrashed => {
-  console.log(isTrashed);
   const style = {
     width: "14px",
     marginTop: "1px",
@@ -180,11 +178,10 @@ const mapStateToProps = state => ({
   modalVisibility: state.get("modalVisibility")
 });
 
-// export default Container;
 export default connect(mapStateToProps, {
   toggleModalVisibility,
   storeItemOnModalOpen,
-  deleteItem,
+  deleteIds,
   setActionSelected,
   favItem
 })(EditButtons);

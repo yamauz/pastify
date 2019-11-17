@@ -21,7 +21,7 @@ import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
 
 const Wrapper = styled.div`
   height: 100%;
-  user-select:none;
+  user-select: none;
 `;
 
 const ListItem = styled.div``;
@@ -59,11 +59,11 @@ const ItemList = props => {
       tabIndex={1}
       onBlur={e => {
         // setFocusItemList(false);
-        console.log("onBlur")
+        console.log("onBlur");
       }}
       onFocus={e => {
-        console.log("onFocus")
-        setDetailType("ITEM")
+        console.log("onFocus");
+        setDetailType("ITEM");
         // setFocusItemList(true);
       }}
       onKeyDown={e => {
@@ -161,9 +161,7 @@ const ItemList = props => {
                     ...params
                   })
                 }
-                noRowsRenderer={
-                  () => <div>No Item Found</div>
-                }
+                noRowsRenderer={() => <div>No Item Found</div>}
               />
             )}
           </ArrowKeyStepper>
@@ -199,16 +197,14 @@ const itemRenderer = ({
     <ListItem
       style={styles}
       key={id}
-      onClick={(e) => {
-
+      onClick={e => {
         selectItem({
           id,
           scrollToRow: index,
           setScrollToRow
-        })
-        setFocusItemList(true)
-      }
-      }
+        });
+        setFocusItemList(true);
+      }}
     >
       <Item item={item} />
     </ListItem>
@@ -243,18 +239,15 @@ const mapStateToProps = state => ({
   focusItemList: state.get("focusItemList")
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    setItemDisplayRange,
-    setItemTagHeight,
-    setItemListRef,
-    setScrollToRow,
-    setFocusItemList,
-    setDetailType,
-    deleteIds
-  }
-)(ItemList);
+export default connect(mapStateToProps, {
+  setItemDisplayRange,
+  setItemTagHeight,
+  setItemListRef,
+  setScrollToRow,
+  setFocusItemList,
+  setDetailType,
+  deleteIds
+})(ItemList);
 
 // <List
 //   id="item-list"

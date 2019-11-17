@@ -15,7 +15,7 @@ module.exports = class ProcessBridge {
         key,
         textData,
         isFaved,
-        isTrashd,
+        isTrashed,
         itemHeight,
         itemTagHeight
       } = item;
@@ -28,7 +28,7 @@ module.exports = class ProcessBridge {
         key,
         textData,
         isFaved,
-        isTrashd,
+        isTrashed,
         itemHeight,
         itemTagHeight
       };
