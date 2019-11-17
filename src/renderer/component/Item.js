@@ -134,7 +134,17 @@ const Container = props => {
     item
   } = props;
 
-  const { id, date, mainFormat, textData, key, lang, tag, isFaved } = item;
+  const {
+    id,
+    date,
+    mainFormat,
+    textData,
+    key,
+    lang,
+    tag,
+    isFaved,
+    isTrashed
+  } = item;
 
   return (
     <Wrapper id={id} style={style} className="list-item">
@@ -193,7 +203,12 @@ const Container = props => {
               <TextLanguage lang={lang} />
               <Hash tag={tag} />
             </InfoBottom>
-            <EditButtons id={id} isFaved={isFaved} hasTags={checkTags(key, tag, lang)} />
+            <EditButtons
+              id={id}
+              isFaved={isFaved}
+              isTrashed={isTrashed}
+              hasTags={checkTags(key, tag, lang)}
+            />
           </InfoContainer>
         </ContainerRight>
       </ItemContainer>
@@ -202,20 +217,18 @@ const Container = props => {
   );
 };
 
-
 const checkTags = (key, tag, lang) => {
   const hasKey = key === "" ? false : true;
   const hasHashTags = tag.length === 0 ? false : true;
   const hasLang = lang === "" ? false : true;
-  let hasTag
+  let hasTag;
   if (hasKey || hasHashTags || hasLang) {
-    hasTag = true
+    hasTag = true;
   } else {
-    hasTag = false
+    hasTag = false;
   }
-  return hasTag
-}
-
+  return hasTag;
+};
 
 const mapStateToProps = state => ({
   addMode: state.get("addMode"),

@@ -15,9 +15,6 @@ import Tag from "../../icon/editbutton/tag.svg";
 import TagSolid from "../../icon/editbutton/tag-solid.svg";
 import Trash from "../../icon/editbutton/trash.svg";
 import TrashFill from "../../icon/editbutton/trash-fill.svg";
-// import Tag from "../../icon/editbutton/tag.svg";
-// import TrashAlt from "../../icon/editbutton/trash-alt.svg";
-// import ClipboardList from "../../icon/editbutton/clipboard-list.svg";
 
 const Wrapper = styled.div`
   flex-basis: 20px;
@@ -41,7 +38,15 @@ const IconWrapper = styled.div`
 `;
 
 const EditButtons = props => {
-  const { id, isFaved, favItem, hasTags, toggleModalVisibility, storeItemOnModalOpen } = props;
+  const {
+    id,
+    isFaved,
+    isTrashed,
+    favItem,
+    hasTags,
+    toggleModalVisibility,
+    storeItemOnModalOpen
+  } = props;
   return (
     <Wrapper>
       <IconWrapper
@@ -72,12 +77,6 @@ const EditButtons = props => {
           storeItemOnModalOpen(id);
         }}
       >
-        {/* <Icon
-          name="pricetags-outline"
-          width="5px"
-          height="5px"
-          fill="#af86ba"
-        /> */}
         {toggleTagIcon(hasTags)}
       </IconWrapper>
       <IconWrapper
@@ -89,14 +88,7 @@ const EditButtons = props => {
           // props.setActionSelected("DELETE");
         }}
       >
-        {/* <Icon name="trash-2-outline" width="5px" height="5px" fill="#b6b3b7" /> */}
-        <TrashFill
-          style={{
-            width: "14px",
-            marginTop: "1px",
-            marginLeft: "2px"
-          }}
-        />
+        {toggleTrashIcon(isTrashed)}
       </IconWrapper>
     </Wrapper>
   );
@@ -151,6 +143,20 @@ const toggleTagIcon = hasTags => {
   }
 };
 
+const toggleTrashIcon = isTrashed => {
+  console.log(isTrashed);
+  const style = {
+    width: "14px",
+    marginTop: "1px",
+    marginLeft: "2px"
+  };
+  if (isTrashed) {
+    return <TrashFill style={style} />;
+  } else {
+    return <Trash style={style} />;
+  }
+};
+
 const setActionAttribute = (tabId, actionIdSelected) => {
   const actionIds = [
     "action-paste",
@@ -175,13 +181,10 @@ const mapStateToProps = state => ({
 });
 
 // export default Container;
-export default connect(
-  mapStateToProps,
-  {
-    toggleModalVisibility,
-    storeItemOnModalOpen,
-    deleteItem,
-    setActionSelected,
-    favItem
-  }
-)(EditButtons);
+export default connect(mapStateToProps, {
+  toggleModalVisibility,
+  storeItemOnModalOpen,
+  deleteItem,
+  setActionSelected,
+  favItem
+})(EditButtons);
