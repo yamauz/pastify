@@ -149,7 +149,24 @@ module.exports = class DataStore {
       .push(data)
       .write();
   }
+
   update(type, id, value) {
+    if (value.hasOwnProperty("isTrashed")) {
+      const { isTrashed } = value;
+
+      if (isTrashed) {
+        const isTrashedMaster = this.DATA_STORE.get(type)
+          .find({ id })
+          .value().isTrashed;
+
+        if (isTrashedMaster) {
+          this.DATA_STORE.get(type)
+            .remove({ id })
+            .write();
+          return;
+        }
+      }
+    }
     this.DATA_STORE.get(type)
       .find({ id: id })
       .assign(value)
