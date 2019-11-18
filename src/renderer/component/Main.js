@@ -136,12 +136,9 @@ const mapStateToProps = state => ({
   modalVisibility: state.get("modalVisibility"),
   filterSaveModalVisibility: state.get("filterSaveModalVisibility")
 });
-export default connect(
-  mapStateToProps,
-  {
-    loadItem,
-    addItemClipboard,
-    deleteItem,
-    toggleItemListToolTipVisibility
-  }
-)(Main);
+export default connect(mapStateToProps, {
+  loadItem,
+  addItemClipboard,
+  deleteItem,
+  toggleItemListToolTipVisibility
+})(Main);
