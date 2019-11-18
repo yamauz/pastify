@@ -22,8 +22,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
 `;
 const IconWrapper = styled.div`
   border-radius: 50%;
@@ -50,19 +50,6 @@ const EditButtons = props => {
   } = props;
   return (
     <Wrapper>
-      <IconWrapper
-        id={`${id}-action-paste`}
-        onClick={() => {
-          setActionAttribute(id, "action-paste");
-        }}
-      >
-        <Icon
-          name="clipboard-outline"
-          width="5px"
-          height="5px"
-          fill="#869cba"
-        />
-      </IconWrapper>
       <IconWrapper
         id={`${id}-action-star`}
         onClick={() => {

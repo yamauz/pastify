@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { TitleBar } from "electron-react-titlebar";
-
 // Redux
 import { connect } from "react-redux";
 import {
@@ -12,6 +10,7 @@ import {
 // Components
 import Container from "./Container";
 import SearchBar from "./SearchBar";
+import TitleBar from "./TitleBar";
 import Modal from "./Modal";
 import FilterSaveModal from "./FilterSaveModal/FilterSaveModal";
 import Footer from "./Footer";
