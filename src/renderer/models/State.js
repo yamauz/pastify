@@ -5,6 +5,7 @@ import sortOptions from "../../common/sortOptions";
 const { ipcRenderer } = window.require("electron");
 
 const StateRecord = Record({
+  alwaysOnTop: false,
   detailType: "DEFAULT",
   moment: new Date().getTime(),
   addMode: "ON_LOAD",
@@ -73,7 +74,11 @@ class State extends StateRecord {
       hotKeyFilterOpt,
       hashTagFilterOpt
     } = ipcRenderer.sendSync("GET_FILTER_SORT_OPTIONS_SELECTED");
+    const { alwaysOnTop } = ipcRenderer.sendSync("GET_WIN_SETTINGS");
     super({
+      // windows settings
+      alwaysOnTop,
+      // itmeline
       itemsTimeLine,
       idsTimeLine,
       // sort filter options
@@ -131,6 +136,10 @@ class State extends StateRecord {
         this.idsTimeLine.filterNot(_id => _id === id)
       );
     });
+  }
+  setAlwaysOnTop(alwaysOnTop) {
+    this._updateWinSettings({ alwaysOnTop: !alwaysOnTop });
+    return this.set("alwaysOnTop", !alwaysOnTop);
   }
   setIdSelected(id) {
     return this.set("idSelected", id);
@@ -462,6 +471,9 @@ class State extends StateRecord {
   }
   _updateItems(id, value) {
     ipcRenderer.sendSync("UPDATE_ITEMS", id, value);
+  }
+  _updateWinSettings(value) {
+    ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
   }
 }
 

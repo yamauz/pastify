@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 // Components
 import { connect } from "react-redux";
-import { setIdSelected } from "../actions";
+import { setAlwaysOnTop } from "../actions";
 import Close from "../../icon/titlebar/close.svg";
 import Maximize from "../../icon/titlebar/maximize.svg";
 import Minimize from "../../icon/titlebar/minimize.svg";
@@ -52,31 +52,22 @@ const ControlWrapperClose = styled.div`
 `;
 
 const TitleBar = props => {
+  const { setAlwaysOnTop, alwaysOnTop } = props;
+
   return (
     <Wrapper>
       <LeftBlock>left</LeftBlock>
       <RightBlock>
-        <ControlWrapper>
-          <StickOff
-            style={{
-              width: "13px"
-            }}
-          ></StickOff>
+        <ControlWrapper onClick={() => setAlwaysOnTop(alwaysOnTop)}>
+          {changeStickIcon(alwaysOnTop)}
         </ControlWrapper>
-        <ControlWrapper>
-          <StickOn
-            style={{
-              width: "13px"
-            }}
-          ></StickOn>
-        </ControlWrapper>
-        <ControlWrapper>
+        {/* <ControlWrapper>
           <Restore
             style={{
               width: "12px"
             }}
           ></Restore>
-        </ControlWrapper>
+        </ControlWrapper> */}
         <ControlWrapper>
           <Minimize
             style={{
@@ -103,4 +94,19 @@ const TitleBar = props => {
   );
 };
 
-export default connect(null, { setIdSelected })(TitleBar);
+const changeStickIcon = alwaysOnTop => {
+  const style = {
+    width: "13px"
+  };
+  if (alwaysOnTop) {
+    return <StickOn style={style}></StickOn>;
+  } else {
+    return <StickOff style={style}></StickOff>;
+  }
+};
+
+const mapStateToProps = state => ({
+  alwaysOnTop: state.get("alwaysOnTop")
+});
+
+export default connect(mapStateToProps, { setAlwaysOnTop })(TitleBar);

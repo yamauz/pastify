@@ -26,7 +26,7 @@ export default handleActions(
     //   return state.set("modalVisibility", !state.get("modalVisibility"));
     // },
     TOGGLE_MODAL_VISIBILITY: (state, { payload: id }) => {
-      return state.toggleModalVisibility(id)
+      return state.toggleModalVisibility(id);
     },
     TOGGLE_FILTER_SAVE_MODAL_VISIBILITY: state => {
       return state.set(
@@ -39,6 +39,9 @@ export default handleActions(
     },
     SAVE_TAG: state => {
       return state.saveTag();
+    },
+    SET_ALWAYS_ON_TOP: (state, { payload: alwaysOnTop }) => {
+      return state.setAlwaysOnTop(alwaysOnTop);
     },
     SET_ID_SELECTED: (state, { payload: id }) => {
       return state.set("idSelected", id);

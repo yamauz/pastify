@@ -10,19 +10,20 @@ const DataStore = require("./DataStore");
 const Settings = require("./Settings");
 
 app.on("ready", () => {
-  const win = new Window();
+  const clipboardListener = new ClipboardListener();
+  const clipboardFormatFinder = new ClipboardFormatFinder();
+  const dataStore = new DataStore();
+  const settings = new Settings();
+  const processBridge = new ProcessBridge();
+
+  const winSettings = settings.getWinSettings();
+  const win = new Window(winSettings);
   win.open();
 
   const key = new Key(win);
   // key.register("shift", "");
   key.register("alt", "F11");
   // key.register("ctrl", "a");
-
-  const clipboardListener = new ClipboardListener();
-  const clipboardFormatFinder = new ClipboardFormatFinder();
-  const dataStore = new DataStore();
-  const settings = new Settings();
-  const processBridge = new ProcessBridge();
 
   ipcMain.on("ON_LOAD_FIRST", (event, arg) => {
     const dataTimeLine = dataStore.initialLoad("TIME_LINE");
@@ -35,6 +36,15 @@ app.on("ready", () => {
     const filterSettings = settings.getFilterSettings("CURRENT");
     const ids = dataStore.getIds3("TIME_LINE", sortSettings, filterSettings);
     event.returnValue = ids;
+  });
+  ipcMain.on("GET_WIN_SETTINGS", event => {
+    const options = winSettings;
+    event.returnValue = options;
+  });
+  ipcMain.on("SET_WIN_SETTINGS", (event, winSettings) => {
+    settings.setWinSettings(winSettings);
+    win.setWinSettings(winSettings);
+    event.returnValue = null;
   });
   ipcMain.on("GET_FILTER_SORT_OPTIONS_SELECTED", event => {
     const options = settings.getFilterSortOptions("CURRENT");
@@ -125,4 +135,4 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => { });
+app.on("activate", () => {});

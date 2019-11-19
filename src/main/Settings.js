@@ -8,6 +8,9 @@ module.exports = class Settings {
     this.storeName = "SETTINGS";
     this.store = `${this.resourcePath}//${this.storeName}`;
     this.storeCategory = {
+      WIN: {
+        alwaysOnTop: false
+      },
       CURRENT: {
         sortOpt: [],
         dataTypeFilterOpt: [],
@@ -40,6 +43,10 @@ module.exports = class Settings {
     };
   }
 
+  getWinSettings() {
+    return this.SETTINGS.get("WIN").value();
+  }
+
   // Options for select-box---------------------------------------------
   getFilterSortOptions(type) {
     return this.SETTINGS.get(type).value();
@@ -58,6 +65,7 @@ module.exports = class Settings {
         : sortOpt.map(option => option.order);
     return { sortBy, orderBy };
   }
+
   getFilterSettings(type) {
     const {
       keywordFilterOpt,
@@ -105,6 +113,11 @@ module.exports = class Settings {
   setFilterOptions(type, filterOpt) {
     this.SETTINGS.get(type)
       .assign({ ...filterOpt })
+      .write();
+  }
+  setWinSettings(settings) {
+    this.SETTINGS.get("WIN")
+      .assign({ ...settings })
       .write();
   }
 

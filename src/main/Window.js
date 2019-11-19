@@ -26,7 +26,9 @@ const kernel32 = new ffi.Library("kernel32", {
 });
 
 module.exports = class Window {
-  constructor() {
+  constructor(settings) {
+    const { alwaysOnTop } = settings;
+    console.log(alwaysOnTop);
     this.window = new BrowserWindow({
       title: "Pastify",
       width: 1200,
@@ -39,7 +41,8 @@ module.exports = class Window {
         nodeIntegration: true,
         experimentalFeatures: true,
         blinkFeatures: "CSSBackdropFilter"
-      }
+      },
+      alwaysOnTop
     });
     this.window.setMenu(null);
 
@@ -66,6 +69,13 @@ module.exports = class Window {
     console.log(`running on ${MODE} mode...`);
 
     this._openDevTools();
+  }
+
+  setWinSettings(winSettings) {
+    if (winSettings.hasOwnProperty("alwaysOnTop")) {
+      const { alwaysOnTop } = winSettings;
+      this.window.setAlwaysOnTop(alwaysOnTop);
+    }
   }
 
   _openDevTools() {
