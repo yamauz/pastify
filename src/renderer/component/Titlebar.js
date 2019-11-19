@@ -10,6 +10,8 @@ import UnMaximize from "../../icon/titlebar/unMaximize.svg";
 import StickOff from "../../icon/titlebar/stickoff.svg";
 import StickOn from "../../icon/titlebar/stickon.svg";
 
+const { ipcRenderer } = window.require("electron");
+
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -62,8 +64,12 @@ const TitleBar = props => {
         <ControlWrapper onClick={() => setAlwaysOnTop(alwaysOnTop)}>
           {setIcon("Stick", props)}
         </ControlWrapper>
-        <ControlWrapper>{setIcon("Minimize", props)}</ControlWrapper>
-        <ControlWrapper>{setIcon("Maximize", props)}</ControlWrapper>
+        <ControlWrapper onClick={() => minimizeWindow()}>
+          {setIcon("Minimize", props)}
+        </ControlWrapper>
+        <ControlWrapper onClick={() => maximizeWindow()}>
+          {setIcon("Maximize", props)}
+        </ControlWrapper>
         <ControlWrapperClose>{setIcon("Close", props)}</ControlWrapperClose>
       </RightBlock>
     </Wrapper>
@@ -100,17 +106,11 @@ const setIcon = (type, props) => {
   }
 };
 
-const changeStickIcon = (alwaysOnTop, winFocus) => {
-  const style = {
-    width: "13px",
-    opacity: winFocus ? "1" : 0.5,
-    transition: "opacity 0.1s"
-  };
-  if (alwaysOnTop) {
-    return <StickOn style={style}></StickOn>;
-  } else {
-    return <StickOff style={style}></StickOff>;
-  }
+const minimizeWindow = () => {
+  ipcRenderer.sendSync("MINIMIZE_WINDOW");
+};
+const maximizeWindow = () => {
+  ipcRenderer.sendSync("MAXIMIZE_WINDOW");
 };
 
 const mapStateToProps = state => ({

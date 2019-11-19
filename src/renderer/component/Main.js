@@ -89,11 +89,9 @@ const Main = props => {
       setWinFocus(true);
     });
     ipcRenderer.on("ON_MAXIMIZE", () => {
-      console.log("maximize");
       setWinMaximize(true);
     });
     ipcRenderer.on("ON_UNMAXIMIZE", () => {
-      console.log("unmaximize");
       setWinMaximize(false);
     });
     document.getElementById("searchbar").focus();

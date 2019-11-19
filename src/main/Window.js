@@ -85,6 +85,17 @@ module.exports = class Window {
     }
   }
 
+  minimizeWindow() {
+    this.window.minimize();
+  }
+  maximizeWindow() {
+    if (this.window.isMaximized()) {
+      this.window.unmaximize();
+    } else {
+      this.window.maximize();
+    }
+  }
+
   _openDevTools() {
     loadDevtool(loadDevtool.REDUX_DEVTOOLS);
     loadDevtool(loadDevtool.REACT_DEVELOPER_TOOLS);

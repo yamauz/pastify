@@ -46,6 +46,14 @@ app.on("ready", () => {
     win.setWinSettings(winSettings);
     event.returnValue = null;
   });
+  ipcMain.on("MINIMIZE_WINDOW", event => {
+    win.minimizeWindow();
+    event.returnValue = null;
+  });
+  ipcMain.on("MAXIMIZE_WINDOW", event => {
+    win.maximizeWindow();
+    event.returnValue = null;
+  });
   ipcMain.on("GET_FILTER_SORT_OPTIONS_SELECTED", event => {
     const options = settings.getFilterSortOptions("CURRENT");
     event.returnValue = options;
