@@ -46,10 +46,11 @@ module.exports = class Window {
     });
     this.window.setMenu(null);
 
-    this.window.on("blur", e => {
-      console.log("onBlur");
-      // e.preventDefault();
-      // this.window.hide();
+    this.window.on("blur", () => {
+      this.sendToRenderer("ON_BLUR");
+    });
+    this.window.on("focus", () => {
+      this.sendToRenderer("ON_FOCUS");
     });
 
     this.window.on("closed", () => {

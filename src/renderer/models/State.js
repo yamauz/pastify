@@ -6,6 +6,7 @@ const { ipcRenderer } = window.require("electron");
 
 const StateRecord = Record({
   alwaysOnTop: false,
+  winFocus: true,
   detailType: "DEFAULT",
   moment: new Date().getTime(),
   addMode: "ON_LOAD",

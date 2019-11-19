@@ -43,6 +43,9 @@ export default handleActions(
     SET_ALWAYS_ON_TOP: (state, { payload: alwaysOnTop }) => {
       return state.setAlwaysOnTop(alwaysOnTop);
     },
+    SET_WIN_FOCUS: (state, { payload: winFocus }) => {
+      return state.set("winFocus", winFocus);
+    },
     SET_ID_SELECTED: (state, { payload: id }) => {
       return state.set("idSelected", id);
     },

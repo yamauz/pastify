@@ -52,14 +52,14 @@ const ControlWrapperClose = styled.div`
 `;
 
 const TitleBar = props => {
-  const { setAlwaysOnTop, alwaysOnTop } = props;
+  const { setAlwaysOnTop, alwaysOnTop, winFocus } = props;
 
   return (
     <Wrapper>
       <LeftBlock>left</LeftBlock>
       <RightBlock>
         <ControlWrapper onClick={() => setAlwaysOnTop(alwaysOnTop)}>
-          {changeStickIcon(alwaysOnTop)}
+          {setIcon("Stick", winFocus, alwaysOnTop)}
         </ControlWrapper>
         {/* <ControlWrapper>
           <Restore
@@ -83,20 +83,37 @@ const TitleBar = props => {
           ></Maximize>
         </ControlWrapper>
         <ControlWrapperClose>
-          <Close
-            style={{
-              width: "12px"
-            }}
-          ></Close>
+          {setIcon("Close", winFocus, alwaysOnTop)}
         </ControlWrapperClose>
       </RightBlock>
     </Wrapper>
   );
 };
 
-const changeStickIcon = alwaysOnTop => {
+const setIcon = (type, winFocus, alwaysOnTop) => {
   const style = {
-    width: "13px"
+    opacity: winFocus ? "1" : 0.5,
+    transition: "opacity 0.1s"
+  };
+  switch (type) {
+    case "Close":
+      style.width = "12px";
+      return <Close style={style}></Close>;
+    case "Stick":
+      style.width = "13px";
+      if (alwaysOnTop) {
+        return <StickOn style={style}></StickOn>;
+      } else {
+        return <StickOff style={style}></StickOff>;
+      }
+  }
+};
+
+const changeStickIcon = (alwaysOnTop, winFocus) => {
+  const style = {
+    width: "13px",
+    opacity: winFocus ? "1" : 0.5,
+    transition: "opacity 0.1s"
   };
   if (alwaysOnTop) {
     return <StickOn style={style}></StickOn>;
@@ -106,7 +123,8 @@ const changeStickIcon = alwaysOnTop => {
 };
 
 const mapStateToProps = state => ({
-  alwaysOnTop: state.get("alwaysOnTop")
+  alwaysOnTop: state.get("alwaysOnTop"),
+  winFocus: state.get("winFocus")
 });
 
 export default connect(mapStateToProps, { setAlwaysOnTop })(TitleBar);

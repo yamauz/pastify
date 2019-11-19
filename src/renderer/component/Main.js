@@ -5,7 +5,8 @@ import {
   loadItem,
   addItemClipboard,
   deleteItem,
-  toggleItemListToolTipVisibility
+  toggleItemListToolTipVisibility,
+  setWinFocus
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -72,11 +73,18 @@ const Main = props => {
     filterSaveModalVisibility,
     addItemClipboard,
     idsTimeLine,
-    toggleItemListToolTipVisibility
+    toggleItemListToolTipVisibility,
+    setWinFocus
   } = props;
   useEffect(() => {
     ipcRenderer.on("ON_COPY", (event, item) => {
       addItemClipboard(item, "TimeLine");
+    });
+    ipcRenderer.on("ON_BLUR", () => {
+      setWinFocus(false);
+    });
+    ipcRenderer.on("ON_FOCUS", () => {
+      setWinFocus(true);
     });
     document.getElementById("searchbar").focus();
     window.addEventListener(
@@ -140,5 +148,6 @@ export default connect(mapStateToProps, {
   loadItem,
   addItemClipboard,
   deleteItem,
-  toggleItemListToolTipVisibility
+  toggleItemListToolTipVisibility,
+  setWinFocus
 })(Main);
