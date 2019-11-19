@@ -6,7 +6,8 @@ import {
   addItemClipboard,
   deleteItem,
   toggleItemListToolTipVisibility,
-  setWinFocus
+  setWinFocus,
+  setWinMaximize
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -74,7 +75,8 @@ const Main = props => {
     addItemClipboard,
     idsTimeLine,
     toggleItemListToolTipVisibility,
-    setWinFocus
+    setWinFocus,
+    setWinMaximize
   } = props;
   useEffect(() => {
     ipcRenderer.on("ON_COPY", (event, item) => {
@@ -85,6 +87,14 @@ const Main = props => {
     });
     ipcRenderer.on("ON_FOCUS", () => {
       setWinFocus(true);
+    });
+    ipcRenderer.on("ON_MAXIMIZE", () => {
+      console.log("maximize");
+      setWinMaximize(true);
+    });
+    ipcRenderer.on("ON_UNMAXIMIZE", () => {
+      console.log("unmaximize");
+      setWinMaximize(false);
     });
     document.getElementById("searchbar").focus();
     window.addEventListener(
@@ -149,5 +159,6 @@ export default connect(mapStateToProps, {
   addItemClipboard,
   deleteItem,
   toggleItemListToolTipVisibility,
-  setWinFocus
+  setWinFocus,
+  setWinMaximize
 })(Main);

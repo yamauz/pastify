@@ -46,6 +46,9 @@ export default handleActions(
     SET_WIN_FOCUS: (state, { payload: winFocus }) => {
       return state.set("winFocus", winFocus);
     },
+    SET_WIN_MAXIMIZE: (state, { payload: winMaximize }) => {
+      return state.set("winMaximize", winMaximize);
+    },
     SET_ID_SELECTED: (state, { payload: id }) => {
       return state.set("idSelected", id);
     },

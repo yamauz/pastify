@@ -6,7 +6,7 @@ import { setAlwaysOnTop } from "../actions";
 import Close from "../../icon/titlebar/close.svg";
 import Maximize from "../../icon/titlebar/maximize.svg";
 import Minimize from "../../icon/titlebar/minimize.svg";
-import Restore from "../../icon/titlebar/restore.svg";
+import UnMaximize from "../../icon/titlebar/unMaximize.svg";
 import StickOff from "../../icon/titlebar/stickoff.svg";
 import StickOn from "../../icon/titlebar/stickon.svg";
 
@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   background-color: #0c0d19;
   display: flex;
   justify-content: space-between;
+  opacity: ${props => (props.winFocus ? 1 : 0.98)};
 `;
 
 const LeftBlock = styled.div`
@@ -55,42 +56,22 @@ const TitleBar = props => {
   const { setAlwaysOnTop, alwaysOnTop, winFocus } = props;
 
   return (
-    <Wrapper>
+    <Wrapper winFocus={winFocus}>
       <LeftBlock>left</LeftBlock>
       <RightBlock>
         <ControlWrapper onClick={() => setAlwaysOnTop(alwaysOnTop)}>
-          {setIcon("Stick", winFocus, alwaysOnTop)}
+          {setIcon("Stick", props)}
         </ControlWrapper>
-        {/* <ControlWrapper>
-          <Restore
-            style={{
-              width: "12px"
-            }}
-          ></Restore>
-        </ControlWrapper> */}
-        <ControlWrapper>
-          <Minimize
-            style={{
-              width: "12px"
-            }}
-          ></Minimize>
-        </ControlWrapper>
-        <ControlWrapper>
-          <Maximize
-            style={{
-              width: "11px"
-            }}
-          ></Maximize>
-        </ControlWrapper>
-        <ControlWrapperClose>
-          {setIcon("Close", winFocus, alwaysOnTop)}
-        </ControlWrapperClose>
+        <ControlWrapper>{setIcon("Minimize", props)}</ControlWrapper>
+        <ControlWrapper>{setIcon("Maximize", props)}</ControlWrapper>
+        <ControlWrapperClose>{setIcon("Close", props)}</ControlWrapperClose>
       </RightBlock>
     </Wrapper>
   );
 };
 
-const setIcon = (type, winFocus, alwaysOnTop) => {
+const setIcon = (type, props) => {
+  const { alwaysOnTop, winFocus, winMaximize } = props;
   const style = {
     opacity: winFocus ? "1" : 0.5,
     transition: "opacity 0.1s"
@@ -99,6 +80,16 @@ const setIcon = (type, winFocus, alwaysOnTop) => {
     case "Close":
       style.width = "12px";
       return <Close style={style}></Close>;
+    case "Minimize":
+      style.width = "12px";
+      return <Minimize style={style}></Minimize>;
+    case "Maximize":
+      style.width = "12px";
+      if (winMaximize) {
+        return <UnMaximize style={style}></UnMaximize>;
+      } else {
+        return <Maximize style={style}></Maximize>;
+      }
     case "Stick":
       style.width = "13px";
       if (alwaysOnTop) {
@@ -124,7 +115,8 @@ const changeStickIcon = (alwaysOnTop, winFocus) => {
 
 const mapStateToProps = state => ({
   alwaysOnTop: state.get("alwaysOnTop"),
-  winFocus: state.get("winFocus")
+  winFocus: state.get("winFocus"),
+  winMaximize: state.get("winMaximize")
 });
 
 export default connect(mapStateToProps, { setAlwaysOnTop })(TitleBar);

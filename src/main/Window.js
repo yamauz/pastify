@@ -52,6 +52,12 @@ module.exports = class Window {
     this.window.on("focus", () => {
       this.sendToRenderer("ON_FOCUS");
     });
+    this.window.on("maximize", () => {
+      this.sendToRenderer("ON_MAXIMIZE");
+    });
+    this.window.on("unmaximize", () => {
+      this.sendToRenderer("ON_UNMAXIMIZE");
+    });
 
     this.window.on("closed", () => {
       console.log("onClosed");
