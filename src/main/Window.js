@@ -2,6 +2,7 @@ const ffi = require("ffi");
 const ref = require("ref");
 const loadDevtool = require("electron-load-devtool");
 const robot = require("robotjs");
+const _ = require("lodash");
 const { BrowserWindow } = require("electron");
 const user32 = new ffi.Library("user32", {
   GetActiveWindow: ["pointer", []],
@@ -27,12 +28,11 @@ const kernel32 = new ffi.Library("kernel32", {
 
 module.exports = class Window {
   constructor(settings) {
-    const { alwaysOnTop } = settings;
-    console.log(alwaysOnTop);
+    const { alwaysOnTop, width, height } = settings;
     this.window = new BrowserWindow({
       title: "Pastify",
-      width: 1200,
-      height: 600,
+      width,
+      height,
       minWidth: 301,
       minHeight: 400,
       frame: false,
@@ -46,23 +46,6 @@ module.exports = class Window {
     });
     this.window.setMenu(null);
 
-    this.window.on("blur", () => {
-      this.sendToRenderer("ON_BLUR");
-    });
-    this.window.on("focus", () => {
-      this.sendToRenderer("ON_FOCUS");
-    });
-    this.window.on("maximize", () => {
-      this.sendToRenderer("ON_MAXIMIZE");
-    });
-    this.window.on("unmaximize", () => {
-      this.sendToRenderer("ON_UNMAXIMIZE");
-    });
-
-    this.window.on("closed", () => {
-      console.log("onClosed");
-      win = null;
-    });
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
   }
   open() {
@@ -78,11 +61,45 @@ module.exports = class Window {
     this._openDevTools();
   }
 
+  setEventListener(settings) {
+    this.window.on("blur", () => {
+      this.sendToRenderer("ON_BLUR");
+    });
+    this.window.on("focus", () => {
+      this.sendToRenderer("ON_FOCUS");
+    });
+    this.window.on("maximize", () => {
+      this.sendToRenderer("ON_MAXIMIZE");
+    });
+    this.window.on("unmaximize", () => {
+      this.sendToRenderer("ON_UNMAXIMIZE");
+    });
+    this.window.on(
+      "resize",
+      _.debounce(() => {
+        const width = this.window.getSize()[0];
+        const height = this.window.getSize()[1];
+        settings.setWinSettings({ width, height });
+      }, 200)
+    );
+
+    this.window.on("closed", () => {
+      console.log("onClosed");
+      win = null;
+    });
+  }
+
   setWinSettings(winSettings) {
-    if (winSettings.hasOwnProperty("alwaysOnTop")) {
-      const { alwaysOnTop } = winSettings;
-      this.window.setAlwaysOnTop(alwaysOnTop);
-    }
+    const keys = Object.keys(winSettings);
+    keys.forEach(key => {
+      switch (key) {
+        case "alwaysOnTop":
+          this.window.setAlwaysOnTop(winSettings[key]);
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   minimizeWindow() {

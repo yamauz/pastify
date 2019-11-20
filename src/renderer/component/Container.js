@@ -78,7 +78,4 @@ const Container = props => {
   );
 };
 
-export default connect(
-  null,
-  { setIdSelected }
-)(Container);
+export default connect(null, { setIdSelected })(Container);

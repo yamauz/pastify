@@ -30,7 +30,7 @@ const FileList = styled.ol`
     width: 0.5em;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: inherit;
+    background-color: inherit
   }
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);

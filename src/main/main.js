@@ -18,6 +18,7 @@ app.on("ready", () => {
 
   const winSettings = settings.getWinSettings();
   const win = new Window(winSettings);
+  win.setEventListener(settings);
   win.open();
 
   const key = new Key(win);

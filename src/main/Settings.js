@@ -9,7 +9,9 @@ module.exports = class Settings {
     this.store = `${this.resourcePath}//${this.storeName}`;
     this.storeCategory = {
       WIN: {
-        alwaysOnTop: false
+        alwaysOnTop: false,
+        width: 1200,
+        height: 600
       },
       CURRENT: {
         sortOpt: [],
