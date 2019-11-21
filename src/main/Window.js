@@ -69,17 +69,23 @@ module.exports = class Window {
       this.sendToRenderer("ON_FOCUS");
     });
     this.window.on("maximize", () => {
+      settings.setWinSettings({ isMaximized: true });
       this.sendToRenderer("ON_MAXIMIZE");
     });
     this.window.on("unmaximize", () => {
+      settings.setWinSettings({ isMaximized: false });
+      const { width, height } = settings.getWinSettings();
+      this.window.setSize(width, height);
       this.sendToRenderer("ON_UNMAXIMIZE");
     });
     this.window.on(
       "resize",
       _.debounce(() => {
-        const width = this.window.getSize()[0];
-        const height = this.window.getSize()[1];
-        settings.setWinSettings({ width, height });
+        if (!this.window.isMaximized()) {
+          const width = this.window.getSize()[0];
+          const height = this.window.getSize()[1];
+          settings.setWinSettings({ width, height });
+        }
       }, 200)
     );
 

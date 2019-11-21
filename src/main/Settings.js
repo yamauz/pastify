@@ -11,7 +11,8 @@ module.exports = class Settings {
       WIN: {
         alwaysOnTop: false,
         width: 1200,
-        height: 600
+        height: 600,
+        isMaximized: false
       },
       CURRENT: {
         sortOpt: [],
