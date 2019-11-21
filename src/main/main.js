@@ -16,10 +16,9 @@ app.on("ready", () => {
   const settings = new Settings();
   const processBridge = new ProcessBridge();
 
-  const winSettings = settings.getWinSettings();
-  const win = new Window(winSettings);
+  const win = new Window(settings);
   win.setEventListener(settings);
-  win.open();
+  win.open(settings);
 
   const key = new Key(win);
   // key.register("shift", "");
@@ -39,7 +38,7 @@ app.on("ready", () => {
     event.returnValue = ids;
   });
   ipcMain.on("GET_WIN_SETTINGS", event => {
-    const options = winSettings;
+    const options = settings.getWinSettings();
     event.returnValue = options;
   });
   ipcMain.on("SET_WIN_SETTINGS", (event, winSettings) => {

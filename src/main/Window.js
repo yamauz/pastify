@@ -28,9 +28,19 @@ const kernel32 = new ffi.Library("kernel32", {
 
 module.exports = class Window {
   constructor(settings) {
-    const { alwaysOnTop, width, height } = settings;
+    const {
+      alwaysOnTop,
+      width,
+      height,
+      x,
+      y,
+      isMaximized
+    } = settings.getWinSettings();
+
     this.window = new BrowserWindow({
       title: "Pastify",
+      x,
+      y,
       width,
       height,
       minWidth: 301,
@@ -45,6 +55,10 @@ module.exports = class Window {
       alwaysOnTop
     });
     this.window.setMenu(null);
+
+    if (isMaximized) {
+      this.window.maximize();
+    }
 
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
   }
@@ -85,6 +99,16 @@ module.exports = class Window {
           const width = this.window.getSize()[0];
           const height = this.window.getSize()[1];
           settings.setWinSettings({ width, height });
+        }
+      }, 200)
+    );
+    this.window.on(
+      "move",
+      _.debounce(() => {
+        if (!this.window.isMaximized()) {
+          const x = this.window.getPosition()[0];
+          const y = this.window.getPosition()[1];
+          settings.setWinSettings({ x, y });
         }
       }, 200)
     );
