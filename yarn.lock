@@ -7390,7 +7390,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-ace@^7.0.1:
+react-ace@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-7.0.1.tgz#470628d5861b588249ebe6fcb8e44499556c3348"
   integrity sha512-79SNgh05mbJDVJcSrhWHMdkU1ChZbq1aw8liEcDwAfOS4+m+RS4++G+ZGZ0AV+EPApqCwLUTA86m49lLeF+niQ==

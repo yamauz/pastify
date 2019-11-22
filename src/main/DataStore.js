@@ -15,6 +15,55 @@ module.exports = class DataStore {
     this.adapter = new FileSync(this.store);
     this.DATA_STORE = low(this.adapter);
     this.DATA_STORE.defaults(this.storeCategory).write();
+
+    this.initialize();
+  }
+
+  initialize() {
+    const computeDiff = (from, diffType) => {
+      const to = new Date().getTime();
+      const diff = to - from;
+      let devide;
+      switch (diffType) {
+        case "DAY":
+          devide = 1000 * 60 * 60 * 24;
+          break;
+        case "HOUR":
+          devide = 1000 * 60 * 60;
+          break;
+        case "MINUTE":
+          devide = 1000 * 60;
+          break;
+        case "SECOND":
+          devide = 1000;
+          break;
+      }
+      return Math.floor(diff / devide);
+    };
+
+    const TRASH_LIMIT_DAY = 24;
+    const DELETE_LIMIT_DAY = 5;
+
+    // Trash item by limit day
+    this.DATA_STORE.get("TIME_LINE")
+      .each(item => {
+        const timeDiff = computeDiff(item.date, "HOUR");
+        // if (timeDiff > TRASH_LIMIT) {
+        if (timeDiff > TRASH_LIMIT_DAY) {
+          return (item.isTrashed = true);
+        } else {
+          return;
+        }
+      })
+      .write();
+
+    // Delete item by limit day
+    this.DATA_STORE.get("TIME_LINE")
+      .remove(item => {
+        const timeDiff = computeDiff(item.date, "MINUTE");
+        return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
+      })
+      .write();
   }
 
   initialLoad(type) {

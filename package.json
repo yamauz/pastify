@@ -67,7 +67,7 @@
     "raw-loader": "^2.0.0",
     "rc-tooltip": "^3.7.3",
     "react": "^16.8.6",
-    "react-ace": "^7.0.1",
+    "react-ace": "7.0.1",
     "react-contenteditable": "^3.2.6",
     "react-dom": "^16.8.6",
     "react-electron-titlebar": "^1.0.7",
