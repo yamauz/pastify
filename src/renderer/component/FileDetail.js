@@ -30,7 +30,7 @@ const FileList = styled.ol`
     width: 0.5em;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: inherit
+    background-color: inherit;
   }
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);
@@ -44,18 +44,18 @@ const List = styled.li`
   text-indent: -3em;
   &:before {
     vertical-align: middle;
-    line-height: 10px;
+    line-height: 1.6;
     counter-increment: ol_li;
     display: inline-block;
     ${props =>
-    props.isDir
-      ? css`
+      props.isDir
+        ? css`
             width: 13px;
             content: counter(ol_li) "　　"
               url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBmaWxsPSIjZmZlNjhlIiBkPSJNNTI3Ljk1IDIyNEg0ODB2LTQ4YzAtMjYuNTEtMjEuNDktNDgtNDgtNDhIMjcybC02NC02NEg0OEMyMS40OSA2NCAwIDg1LjQ5IDAgMTEydjI4OGMwIDI2LjUxIDIxLjQ5IDQ4IDQ4IDQ4aDM4NS4wNTdjMjguMDY4IDAgNTQuMTM1LTE0LjczMyA2OC41OTktMzguODRsNjcuNDUzLTExMi40NjRDNTg4LjI0IDI2NC44MTIgNTY1LjI4NSAyMjQgNTI3Ljk1IDIyNHpNNDggOTZoMTQ2Ljc0NWw2NCA2NEg0MzJjOC44MzcgMCAxNiA3LjE2MyAxNiAxNnY0OEgxNzEuMTc3Yy0yOC4wNjggMC01NC4xMzUgMTQuNzMzLTY4LjU5OSAzOC44NEwzMiAzODAuNDdWMTEyYzAtOC44MzcgNy4xNjMtMTYgMTYtMTZ6bTQ5My42OTUgMTg0LjIzMmwtNjcuNDc5IDExMi40NjRBNDcuOTk3IDQ3Ljk5NyAwIDAgMSA0MzMuMDU3IDQxNkg0NC44MjNsODIuMDE3LTEzNi42OTZBNDggNDggMCAwIDEgMTY4IDI1NmgzNTkuOTc1YzEyLjQzNyAwIDIwLjExOSAxMy41NjggMTMuNzIgMjQuMjMyeiIvPjwvc3ZnPg==");
           `
-      : css`
-            width: 10px;
+        : css`
+            width: 9px;
             content: counter(ol_li) "　　"
               url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIj48cGF0aCBmaWxsPSIjZGRkZGRkIiBkPSJNMzY5LjkgOTcuOUwyODYgMTRDMjc3IDUgMjY0LjgtLjEgMjUyLjEtLjFINDhDMjEuNSAwIDAgMjEuNSAwIDQ4djQxNmMwIDI2LjUgMjEuNSA0OCA0OCA0OGgyODhjMjYuNSAwIDQ4LTIxLjUgNDgtNDhWMTMxLjljMC0xMi43LTUuMS0yNS0xNC4xLTM0em0tMjIuNiAyMi43YzIuMSAyLjEgMy41IDQuNiA0LjIgNy40SDI1NlYzMi41YzIuOC43IDUuMyAyLjEgNy40IDQuMmw4My45IDgzLjl6TTMzNiA0ODBINDhjLTguOCAwLTE2LTcuMi0xNi0xNlY0OGMwLTguOCA3LjItMTYgMTYtMTZoMTc2djEwNGMwIDEzLjMgMTAuNyAyNCAyNCAyNGgxMDR2MzA0YzAgOC44LTcuMiAxNi0xNiAxNnptLTQ4LTI0NHY4YzAgNi42LTUuNCAxMi0xMiAxMkgxMDhjLTYuNiAwLTEyLTUuNC0xMi0xMnYtOGMwLTYuNiA1LjQtMTIgMTItMTJoMTY4YzYuNiAwIDEyIDUuNCAxMiAxMnptMCA2NHY4YzAgNi42LTUuNCAxMi0xMiAxMkgxMDhjLTYuNiAwLTEyLTUuNC0xMi0xMnYtOGMwLTYuNiA1LjQtMTIgMTItMTJoMTY4YzYuNiAwIDEyIDUuNCAxMiAxMnptMCA2NHY4YzAgNi42LTUuNCAxMi0xMiAxMkgxMDhjLTYuNiAwLTEyLTUuNC0xMi0xMnYtOGMwLTYuNiA1LjQtMTIgMTItMTJoMTY4YzYuNiAwIDEyIDUuNCAxMiAxMnoiLz48L3N2Zz4=");
           `}
@@ -68,7 +68,7 @@ const List = styled.li`
 
 const FileName = styled.a`
   margin-left: 5px;
-  font-size: 13px;
+  font-size: 12px;
   ${props =>
     props.fileExists
       ? css`
@@ -104,7 +104,6 @@ const Gutter = styled.div`
 const isDir = filepath => {
   return fs.existsSync(filepath) && fs.statSync(filepath).isDirectory();
 };
-
 
 const FileDetail = props => {
   const { id, data } = props;

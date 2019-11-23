@@ -23,15 +23,15 @@ const LanguageTag = styled.div`
       case "css":
         return "#1E5FA9";
       case "dockerfile":
-        return "#0998E6";
+        return "#005d90";
       case "elm":
-        return "#89D135";
+        return "#72af2a";
       case "erlang":
         return "#A40532";
       case "gitignore":
         return "#E9423E";
       case "golang":
-        return "#4CC9DA";
+        return "#208390";
       case "haskell":
         return "#5B4C84";
       case "html":
@@ -39,23 +39,23 @@ const LanguageTag = styled.div`
       case "java":
         return "#1462BB";
       case "javascript":
-        return "#b3a320";
+        return "#948823";
       case "json":
-        return "#F7D573";
+        return "#ad9140";
       case "jsx":
         return "#B072DA";
       case "kotlin":
-        return "#EB7833";
+        return "#ce5e1b";
       case "latex":
-        return "#7CCFF3";
+        return "#488aa7";
       case "lua":
         return "#00007F";
       case "markdown":
-        return "#7E98AD";
+        return "#5e7384";
       case "mysql":
         return "#007A9B";
       case "ocaml":
-        return "#EB8702";
+        return "#c77303";
       case "perl":
         return "#003E61";
       case "php":
@@ -63,7 +63,7 @@ const LanguageTag = styled.div`
       case "powershell":
         return "#0273BE";
       case "python":
-        return "#F1C13B";
+        return "#af8921";
       case "ruby":
         return "#DF3734";
       case "rust":
@@ -89,7 +89,7 @@ const IconWrapper = styled.span`
   margin-right: 3px;
 `;
 const LangName = styled.span`
-  color: #dcdcdc;
+  color: #efefef;
   font-weight: lighter;
 `;
 
