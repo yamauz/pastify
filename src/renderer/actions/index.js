@@ -1,6 +1,7 @@
 import { createActions } from "redux-actions";
 
 export const {
+  pasteItem,
   loadItem,
   addItemClipboard,
   deleteIds,
@@ -71,6 +72,7 @@ export const {
   increment,
   decrement
 } = createActions({
+  PASTE_ITEM: id => id,
   LOAD_ITEM: item => item,
   ADD_ITEM_CLIPBOARD: (item, dist) => ({ item, dist }),
   DELETE_IDS: ids => ids,

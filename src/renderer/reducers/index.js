@@ -4,6 +4,9 @@ import _ from "lodash";
 
 export default handleActions(
   {
+    PASTE_ITEM: (state, { payload: id }) => {
+      return state.pasteItem(id);
+    },
     LOAD_ITEM: (state, { payload: item }) => {
       return state.loadItem(item);
     },

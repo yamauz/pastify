@@ -44,9 +44,8 @@ const CF = new Map([
     "TEXT",
     {
       fNum: 1,
-      extract: () => {
-        return clipboard.readText();
-      }
+      extract: () => clipboard.readText(),
+      write: text => clipboard.writeText(text)
     }
   ]
 ]);

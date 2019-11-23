@@ -1,9 +1,11 @@
 const { app, ipcMain } = require("electron");
+const robot = require("robotjs");
 const Window = require("./Window");
 const Key = require("./Key");
 const ClipboardListener = require("./ClipboardListener");
 const ClipboardFormatFinder = require("./ClipboardFormatFinder");
 const ClipboardExtractor = require("./ClipboardExtractor");
+const CF = require("./CF");
 const ProcessBridge = require("./ProcessBridge");
 const Pastify = require("./Pastify");
 const DataStore = require("./DataStore");
@@ -21,9 +23,9 @@ app.on("ready", () => {
   win.open(settings);
 
   const key = new Key(win);
-  // key.register("shift", "");
+  key.register("shift", "");
   key.register("alt", "F11");
-  // key.register("ctrl", "a");
+  key.register("ctrl", "a");
 
   ipcMain.on("ON_LOAD_FIRST", (event, arg) => {
     const dataTimeLine = dataStore.initialLoad("TIME_LINE");
@@ -101,6 +103,13 @@ app.on("ready", () => {
     processBridge.sendItemToRenderer([dataTimeLine], itemToRenderer => {
       win.sendToRenderer("ON_COPY", itemToRenderer);
     });
+    event.returnValue = null;
+  });
+  ipcMain.on("PASTE_ITEM", (event, id) => {
+    const text = dataStore.getTextById(id);
+    CF.get("TEXT").write(text);
+    win.showLastActiveWindow(settings);
+    robot.keyTap("v", "control");
     event.returnValue = null;
   });
   // ipcMain.on("ITEM_ID_TO_BE_DELETED", (event, idList) => {

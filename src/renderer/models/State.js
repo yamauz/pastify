@@ -98,6 +98,11 @@ class State extends StateRecord {
     });
   }
 
+  pasteItem(id) {
+    ipcRenderer.sendSync("PASTE_ITEM", id);
+    return this;
+  }
+
   addItemClipboard(itemsCopied, dist) {
     const itemName = `items${dist}`;
     const idName = `ids${dist}`;

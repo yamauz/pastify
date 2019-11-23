@@ -176,10 +176,14 @@ module.exports = class Window {
     robot.keyTap("f11", "alt");
   }
 
-  showLastActiveWindow() {
+  showLastActiveWindow(settings) {
+    const { alwaysOnTop } = settings.getWinSettings();
     const desktopClassName = ["Progman", "WorkerW"];
 
     this.window.setSkipTaskbar(false);
+    if (alwaysOnTop) {
+      this.window.setAlwaysOnTop(false);
+    }
     const curerntHandle = user32.GetActiveWindow();
     let tempHandle = user32.GetWindow(curerntHandle, 2);
     let lastWindowHandle;
@@ -207,6 +211,10 @@ module.exports = class Window {
     user32.AttachThreadInput(currentThreadId, windowThreadProcessId, 1);
     user32.SetForegroundWindow(distHandle);
     user32.AttachThreadInput(currentThreadId, windowThreadProcessId, 0);
+
+    if (alwaysOnTop) {
+      this.window.setAlwaysOnTop(true);
+    }
     this.window.setSkipTaskbar(true);
   }
 

@@ -258,6 +258,12 @@ module.exports = class DataStore {
     return keysOptions;
   }
 
+  getTextById(id) {
+    return this.DATA_STORE.get("TIME_LINE")
+      .find({ id })
+      .value().textData;
+  }
+
   _createResoucePath() {
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const resourcePath = path.resolve(distDir, "resource");

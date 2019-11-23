@@ -24,7 +24,12 @@ import TextLanguage from "./TextLanguage";
 import Key from "./Key";
 import Hash from "./Hash";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  transition: background-color 0.1s;
+  &:hover {
+    background-color: rgba(110, 148, 255, 0.05);
+  }
+`;
 const ItemContainer = styled.div`
   border-bottom: solid 2px #1d1d1d;
   display: flex;
@@ -148,35 +153,6 @@ const Container = props => {
 
   return (
     <Wrapper id={id} style={style} className="list-item">
-      {/* <Tab
-        tabFor={id}
-        addmode={addMode}
-        delfunc={{ deleteIds }}
-        favfunc={{ favItem }}
-        tagfunc={{ toggleModalVisibility }}
-        storefunc={{ storeItemOnModalOpen }}
-        onClick={e => {
-          const targetTag = ["i", "rect", "g", "path", "svg"];
-          const actionIds = [
-            // "action-paste",
-            "action-star",
-            "action-tag",
-            "action-delete"
-          ];
-          const dataAction = e.target.getAttribute("data-action");
-          if (
-            targetTag.includes(e.target.tagName) ||
-            dataAction === "action-star" ||
-            dataAction === "action-delete"
-          ) {
-            const action = actionIds.filter(actionId => {
-              const tabElm = document.getElementById(`${id}-${actionId}`);
-              return tabElm.getAttribute("data-action") === actionId;
-            });
-            return action[0];
-          }
-        }}
-      > */}
       <ItemContainer>
         <ContainerLeft>
           <IconContainer>
@@ -212,7 +188,6 @@ const Container = props => {
           </InfoContainer>
         </ContainerRight>
       </ItemContainer>
-      {/* </Tab> */}
     </Wrapper>
   );
 };

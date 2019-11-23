@@ -13,7 +13,8 @@ import {
   setScrollToRow,
   setFocusItemList,
   setDetailType,
-  deleteIds
+  deleteIds,
+  pasteItem
 } from "../actions";
 import _ from "lodash";
 
@@ -33,7 +34,6 @@ const ItemList = props => {
     ids,
     itemsTimeLine,
     scrollToRow,
-    idSelected,
     setItemTagHeight,
     setItemDisplayRange,
     setItemListRef,
@@ -41,7 +41,8 @@ const ItemList = props => {
     setFocusItemList,
     setDetailType,
     focusItemList,
-    deleteIds
+    deleteIds,
+    pasteItem
   } = props;
   useEffect(() => {
     const tagModalElm = document.getElementById("tag-modal");
@@ -66,8 +67,11 @@ const ItemList = props => {
         setDetailType("ITEM");
         // setFocusItemList(true);
       }}
+      onDoubleClick={e => {
+        pasteItem(ids.get(scrollToRow));
+      }}
       onKeyDown={e => {
-        const { DELETE, END, HOME, PAGEDOWN, PAGEUP } = keyCode;
+        const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
         let visibleElmCount, distRow;
 
         e.preventDefault();
@@ -99,6 +103,9 @@ const ItemList = props => {
             } else {
               setScrollToRow(ids.size - 1);
             }
+            break;
+          case ENTER:
+            pasteItem(ids.get(scrollToRow));
             break;
 
           default:
@@ -188,7 +195,9 @@ const itemRenderer = ({
     ...style,
     listStyle: "none",
     // background: isActive && isFocused ? "#666" : "inherit"
-    background: isActive && focusItemList ? "#666" : "inherit"
+    transition: "background 0.1s",
+    background:
+      isActive && focusItemList ? "rgba(110, 148, 255, 0.12)" : "inherit"
   };
   const id = ids.get(index);
   const item = itemsTimeLine.get(id);
@@ -246,7 +255,8 @@ export default connect(mapStateToProps, {
   setScrollToRow,
   setFocusItemList,
   setDetailType,
-  deleteIds
+  deleteIds,
+  pasteItem
 })(ItemList);
 
 // <List
