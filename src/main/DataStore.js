@@ -42,14 +42,14 @@ module.exports = class DataStore {
     };
 
     const TRASH_LIMIT_DAY = 24;
-    const DELETE_LIMIT_DAY = 5;
+    const DELETE_LIMIT_DAY = 24;
 
     // Trash item by limit day
     this.DATA_STORE.get("TIME_LINE")
       .each(item => {
         const timeDiff = computeDiff(item.date, "HOUR");
         // if (timeDiff > TRASH_LIMIT) {
-        if (timeDiff > TRASH_LIMIT_DAY) {
+        if (!item.isFaved && timeDiff > TRASH_LIMIT_DAY) {
           return (item.isTrashed = true);
         } else {
           return;
@@ -60,7 +60,7 @@ module.exports = class DataStore {
     // Delete item by limit day
     this.DATA_STORE.get("TIME_LINE")
       .remove(item => {
-        const timeDiff = computeDiff(item.date, "MINUTE");
+        const timeDiff = computeDiff(item.date, "HOUR");
         return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
       })
       .write();
