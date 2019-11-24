@@ -1,5 +1,6 @@
 const { globalShortcut } = require("electron");
 const ioHook = require("../util/iohook");
+const robot = require("robotjs");
 
 module.exports = class Key {
   constructor(win) {
@@ -18,7 +19,7 @@ module.exports = class Key {
   }
 
   _on_shift() {
-    const DURATION = 500;
+    const DURATION = 300;
     ioHook.on("keyup", e => {
       if (e.keycode === this.key.SHIFT) {
         if (!this.pressed) {
@@ -27,7 +28,10 @@ module.exports = class Key {
             this.pressed = false;
           }, DURATION);
         } else {
-          this.win.foreground();
+          robot.keyTap("f11", "alt");
+          // this.win.show();
+          // this.win.focus();
+          // this.win.foreground();
         }
       }
     });

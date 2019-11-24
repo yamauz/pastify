@@ -74,7 +74,7 @@ export const {
 } = createActions({
   PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
-  ADD_ITEM_CLIPBOARD: (item, dist) => ({ item, dist }),
+  ADD_ITEM_CLIPBOARD: (item, dist, addMode) => ({ item, dist, addMode }),
   DELETE_IDS: ids => ids,
   DELETE_ITEM: ids => ids,
   FAV_ITEM: id => id,
@@ -94,7 +94,10 @@ export const {
   SET_ITEM_DISPLAY_RANGE: range => range,
   SET_ITEM_TAG_HEIGHT: itemTagHeight => itemTagHeight,
   SET_ITEM_LIST_REF: ref => ref,
-  SET_SCROLL_TO_ROW: scrollToRow => scrollToRow,
+  SET_SCROLL_TO_ROW: (scrollToRow, itemIdAddedManually = "_UNSET_") => ({
+    scrollToRow,
+    itemIdAddedManually
+  }),
   SET_FOCUS_ITEM_LIST: focus => focus,
   SET_ITEM_TEXT: item => item,
   SET_SCROLL_TOP: scrollTop => scrollTop,

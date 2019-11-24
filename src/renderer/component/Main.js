@@ -79,8 +79,8 @@ const Main = props => {
     setWinMaximize
   } = props;
   useEffect(() => {
-    ipcRenderer.on("ON_COPY", (event, item) => {
-      addItemClipboard(item, "TimeLine");
+    ipcRenderer.on("ON_COPY", (event, item, addMode) => {
+      addItemClipboard(item, "TimeLine", addMode);
     });
     ipcRenderer.on("ON_BLUR", () => {
       setWinFocus(false);

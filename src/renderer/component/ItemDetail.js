@@ -74,7 +74,4 @@ const mapStateToProps = state => ({
   itemDisplayRange: state.get("itemDisplayRange")
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(ItemDetail);
+export default connect(mapStateToProps, null)(ItemDetail);

@@ -98,12 +98,12 @@ app.on("ready", () => {
   //   const item = dataStore.getItem("TIME_LINE", id);
   //   event.returnValue = item;
   // });
-  ipcMain.on("ADD_NEW_ITEM", event => {
+  ipcMain.on("ADD_NEW_ITEM", (event, addMode) => {
     const pastify = new Pastify("TEXT", new Map([["TEXT", ""]]));
     const dataTimeLine = pastify.createPastifyData();
     dataStore.write("TIME_LINE", dataTimeLine);
     processBridge.sendItemToRenderer([dataTimeLine], itemToRenderer => {
-      win.sendToRenderer("ON_COPY", itemToRenderer);
+      win.sendToRenderer("ON_COPY", itemToRenderer, addMode);
     });
     event.returnValue = null;
   });
@@ -148,9 +148,10 @@ app.on("ready", () => {
       clipboardExtractor.extractDataList
     );
     const dataTimeLine = pastify.createPastifyData();
+    const addMode = "AUTO";
     dataStore.write("TIME_LINE", dataTimeLine);
     processBridge.sendItemToRenderer([dataTimeLine], itemToRenderer => {
-      win.sendToRenderer("ON_COPY", itemToRenderer);
+      win.sendToRenderer("ON_COPY", itemToRenderer, addMode);
     });
   });
 });

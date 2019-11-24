@@ -10,13 +10,14 @@ const StateRecord = Record({
   winMaximize: false,
   detailType: "DEFAULT",
   moment: new Date().getTime(),
-  addMode: "ON_LOAD",
+  addMode: "",
   itemsTimeLine: OrderedMap(),
   itemStore: null,
   itemDisplayRange: { start: 0, stop: 20 },
   itemListToolTipVisibility: false,
   itemListRef: null,
   scrollToRow: -1,
+  itemIdAddedManually: "_UNSET_",
   focusItemList: false,
   idsTimeLine: List(),
   idsFav: List(),
@@ -98,27 +99,27 @@ class State extends StateRecord {
     });
   }
 
+  setScrollToRow(scrollToRow, itemIdAddedManually) {
+    return this.withMutations(state => {
+      state
+        .set("scrollToRow", scrollToRow)
+        .set("itemIdAddedManually", itemIdAddedManually);
+    });
+  }
+
   pasteItem(id, mode) {
     ipcRenderer.sendSync("PASTE_ITEM", { id, mode });
     return this;
   }
 
-  addItemClipboard(itemsCopied, dist) {
+  addItemClipboard(itemsCopied, dist, addMode) {
     const itemName = `items${dist}`;
     const idName = `ids${dist}`;
     const item = itemsCopied[0];
     const itemValue = new ItemValue(item);
-    return this.addItem(itemValue, itemName, idName);
+    return this.addItem(itemValue, itemName, idName, addMode);
   }
-  addItem(item, itemName, idName) {
-    // let skipCount;
-    // if (this.itemsTimeLine.size >= MAX_ITEMS_ON_DISPLAY) {
-    //   skipCount = 1;
-    //   const idDelete = this[itemName].first().get("id");
-    //   this._deleteItemDataStore([idDelete]);
-    // } else {
-    //   skipCount = 0;
-    // }
+  addItem(item, itemName, idName, addMode) {
     return this.withMutations(itemDist => {
       itemDist
         .set(itemName, this[itemName].set(item.id, item))
@@ -127,14 +128,10 @@ class State extends StateRecord {
           text: item.textData,
           format: item.mainFormat
         })
-        // .set(itemName, this[itemName].set(item.id, item).skip(skipCount))
-        .set("addMode", "ON_COPY");
-      // .set("moment", new Date().getTime());
+        .set("addMode", addMode);
     });
   }
   deleteIds(id) {
-    // const nextIds = ipcRenderer.sendSync("TRASH ITEMS");
-
     this._updateItems(id, { isTrashed: true });
 
     return this.withMutations(state => {
@@ -235,15 +232,16 @@ class State extends StateRecord {
   }
   addNewItem() {
     this.get("itemListRef").scrollToRow(0);
-    ipcRenderer.sendSync("ADD_NEW_ITEM");
-    setTimeout(() => {
-      const targetId = document.getElementById("item-list").firstElementChild
-        .firstElementChild.id;
-      document.getElementById(`${targetId}-tab`).focus();
-      setTimeout(() => {
-        document.getElementsByClassName("ace_text-input")[0].focus();
-      }, 500);
-    }, 100);
+    const addMode = "MANUAL";
+    ipcRenderer.sendSync("ADD_NEW_ITEM", addMode);
+    // setTimeout(() => {
+    //   const targetId = document.getElementById("item-list").firstElementChild
+    //     .firstElementChild.firstElementChild.id;
+    //   document.getElementById(`${targetId}`).focus();
+    //   setTimeout(() => {
+    //     document.getElementsByClassName("ace_text-input")[0].focus();
+    //   }, 500);
+    // }, 100);
     return this;
   }
   trashAllItems() {

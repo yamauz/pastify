@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
+import shortid from "shortid";
 import keyCode from "../../common/keycode";
 import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
 import { Tab } from "../../util/react-web-tabs-item/lib";
@@ -29,8 +30,17 @@ const ListItem = styled.div``;
 
 let list; // ref to List Component
 
+const usePrevious = value => {
+  const ref = useRef(null);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
 const ItemList = props => {
   const {
+    addMode,
     ids,
     itemsTimeLine,
     scrollToRow,
@@ -44,7 +54,19 @@ const ItemList = props => {
     deleteIds,
     pasteItem
   } = props;
+  const prevItemSize = usePrevious(ids.size);
+
   useEffect(() => {
+    if (!!prevItemSize) {
+      const currentItemSize = ids.size;
+      if (currentItemSize === prevItemSize + 1) {
+        if (addMode == "MANUAL") {
+          document.getElementById("item-list").focus();
+          setScrollToRow(0, ids.get(scrollToRow));
+        }
+      }
+    }
+
     const tagModalElm = document.getElementById("tag-modal");
     if (!!tagModalElm) {
       const id = tagModalElm.getAttribute("name");
@@ -115,14 +137,6 @@ const ItemList = props => {
         }
       }}
     >
-      {/* below tab must not show!!!! */}
-      {/* <Tab
-        id="filter-sort-settings"
-        tabFor="filter-sort-settings"
-        style={{ background: "red", height: "0px", position: "absolute" }}
-      >
-        {""}
-      </Tab> */}
       <AutoSizer disableWidth>
         {({ height }) => (
           <ArrowKeyStepper
@@ -245,6 +259,7 @@ const getVisibleItemCount = () => {
 
 const mapStateToProps = state => ({
   itemsTimeLine: state.get("itemsTimeLine"),
+  addMode: state.get("addMode"),
   idSelected: state.get("idSelected"),
   scrollToRow: state.get("scrollToRow"),
   focusItemList: state.get("focusItemList")
@@ -260,35 +275,3 @@ export default connect(mapStateToProps, {
   deleteIds,
   pasteItem
 })(ItemList);
-
-// <List
-//   id="item-list"
-//   ref={ref => {
-//     list = ref;
-//     setItemListRef(ref);
-//   }}
-//   height={height}
-//   rowCount={ids.size}
-//   rowHeight={({ index }) => {
-//     const id = ids.get(index);
-//     const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
-//     return itemHeight + itemTagHeight;
-//   }}
-//   onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
-//     st = scrollTop;
-//   }}
-//   rowRenderer={({ key, index, style, parent, isVisible }) => {
-//     const id = ids.get(index);
-//     return (
-//       <Item key={id} item={itemsTimeLine.get(id)} style={style} />
-//     );
-//   }}
-//   onRowsRendered={({ overscanStartIndex, overscanStopIndex }) => {
-//     setDisplayRange(setItemDisplayRange, {
-//       start: overscanStartIndex,
-//       stop: overscanStopIndex + 1
-//     });
-//   }}
-//   width={300}
-//   overscanRowCount={8}
-// />

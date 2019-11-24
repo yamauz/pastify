@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { setItemText } from "../actions";
 import styled from "@emotion/styled";
@@ -44,8 +44,28 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
+const usePrevious = value => {
+  const ref = useRef(null);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
 const TextDetail = props => {
-  const { id, data, keyboardHandler, setItemText } = props;
+  const { id, data, itemIdAddedManually, keyboardHandler, setItemText } = props;
+
+  const prevItemIdAddedManually = usePrevious(itemIdAddedManually);
+  useEffect(() => {
+    if (!!prevItemIdAddedManually) {
+      if (prevItemIdAddedManually !== itemIdAddedManually) {
+        console.log("new item");
+        setTimeout(() => {
+          document.getElementsByClassName("ace_text-input")[0].focus();
+        }, 200);
+      }
+    }
+  });
   return (
     <Wrapper>
       <AceEditor
@@ -82,10 +102,8 @@ const setModeByLang = lang => {
 };
 
 const mapStateToProps = state => ({
-  keyboardHandler: state.get("keyboardHandler")
+  keyboardHandler: state.get("keyboardHandler"),
+  itemIdAddedManually: state.get("itemIdAddedManually")
 });
 
-export default connect(
-  mapStateToProps,
-  { setItemText }
-)(TextDetail);
+export default connect(mapStateToProps, { setItemText })(TextDetail);

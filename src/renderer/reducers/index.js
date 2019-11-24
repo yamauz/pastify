@@ -10,8 +10,8 @@ export default handleActions(
     LOAD_ITEM: (state, { payload: item }) => {
       return state.loadItem(item);
     },
-    ADD_ITEM_CLIPBOARD: (state, { payload: { item, dist } }) => {
-      return state.addItemClipboard(item, dist);
+    ADD_ITEM_CLIPBOARD: (state, { payload: { item, dist, addMode } }) => {
+      return state.addItemClipboard(item, dist, addMode);
     },
     DELETE_IDS: (state, { payload: ids }) => {
       return state.deleteIds(ids);
@@ -76,8 +76,12 @@ export default handleActions(
     SET_ITEM_LIST_REF: (state, { payload: ref }) => {
       return state.set("itemListRef", ref);
     },
-    SET_SCROLL_TO_ROW: (state, { payload: scrollToRow }) => {
-      return state.set("scrollToRow", scrollToRow);
+    SET_SCROLL_TO_ROW: (
+      state,
+      { payload: { scrollToRow, itemIdAddedManually } }
+    ) => {
+      // return state.set("scrollToRow", scrollToRow, itemIdAddedManually);
+      return state.setScrollToRow(scrollToRow, itemIdAddedManually);
     },
     SET_FOCUS_ITEM_LIST: (state, { payload: focus }) => {
       return state.set("focusItemList", focus);

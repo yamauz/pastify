@@ -149,8 +149,8 @@ module.exports = class Window {
     this.window.webContents.openDevTools();
   }
 
-  sendToRenderer(event, data) {
-    this.window.webContents.send(event, data);
+  sendToRenderer(event, data, addMode) {
+    this.window.webContents.send(event, data, addMode);
   }
 
   show() {

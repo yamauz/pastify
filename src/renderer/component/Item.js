@@ -131,7 +131,6 @@ const Container = props => {
     // id,
     // itemsTimeLine,
     moment,
-    addMode,
     favItem,
     deleteIds,
     toggleModalVisibility,
@@ -206,7 +205,6 @@ const checkTags = (key, tag, lang) => {
 };
 
 const mapStateToProps = state => ({
-  addMode: state.get("addMode"),
   actionSelected: state.get("actionSelected")
 });
 

@@ -151,7 +151,9 @@ const actionList = [
 //   itemListToolTipVisibility: state.get("itemListToolTipVisibility")
 // });
 
-export default connect(
-  null,
-  { callActionOnItemList, setIdsFromDatastore, toggleItemListToolTipVisibility, setDetailType }
-)(ToolTipList);
+export default connect(null, {
+  callActionOnItemList,
+  setIdsFromDatastore,
+  toggleItemListToolTipVisibility,
+  setDetailType
+})(ToolTipList);
