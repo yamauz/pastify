@@ -72,7 +72,7 @@ export const {
   increment,
   decrement
 } = createActions({
-  PASTE_ITEM: id => id,
+  PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
   ADD_ITEM_CLIPBOARD: (item, dist) => ({ item, dist }),
   DELETE_IDS: ids => ids,

@@ -68,7 +68,8 @@ const ItemList = props => {
         // setFocusItemList(true);
       }}
       onDoubleClick={e => {
-        pasteItem(ids.get(scrollToRow));
+        const mode = e.shiftKey ? "RETURN" : "NORMAL";
+        pasteItem(ids.get(scrollToRow), mode);
       }}
       onKeyDown={e => {
         const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
@@ -105,7 +106,8 @@ const ItemList = props => {
             }
             break;
           case ENTER:
-            pasteItem(ids.get(scrollToRow));
+            const mode = e.shiftKey ? "RETURN" : "NORMAL";
+            pasteItem(ids.get(scrollToRow), mode);
             break;
 
           default:

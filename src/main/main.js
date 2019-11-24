@@ -11,6 +11,8 @@ const Pastify = require("./Pastify");
 const DataStore = require("./DataStore");
 const Settings = require("./Settings");
 
+let isCopiedSelf = false;
+
 app.on("ready", () => {
   const clipboardListener = new ClipboardListener();
   const clipboardFormatFinder = new ClipboardFormatFinder();
@@ -25,7 +27,7 @@ app.on("ready", () => {
   const key = new Key(win);
   key.register("shift", "");
   key.register("alt", "F11");
-  key.register("ctrl", "a");
+  // key.register("ctrl", "a");
 
   ipcMain.on("ON_LOAD_FIRST", (event, arg) => {
     const dataTimeLine = dataStore.initialLoad("TIME_LINE");
@@ -105,11 +107,15 @@ app.on("ready", () => {
     });
     event.returnValue = null;
   });
-  ipcMain.on("PASTE_ITEM", (event, id) => {
+  ipcMain.on("PASTE_ITEM", (event, { id, mode }) => {
+    isCopiedSelf = true;
     const text = dataStore.getTextById(id);
     CF.get("TEXT").write(text);
     win.showLastActiveWindow(settings);
     robot.keyTap("v", "control");
+
+    if (mode === "RETURN") win.focus();
+
     event.returnValue = null;
   });
   // ipcMain.on("ITEM_ID_TO_BE_DELETED", (event, idList) => {
@@ -124,6 +130,10 @@ app.on("ready", () => {
     // check the condition of clipboard listener
     if (uMsg !== 797) return;
     if (wParam === 0) return;
+    if (isCopiedSelf) {
+      isCopiedSelf = false;
+      return;
+    }
 
     const validFormats = clipboardFormatFinder.getFormat();
 

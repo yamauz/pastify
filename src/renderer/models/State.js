@@ -98,8 +98,8 @@ class State extends StateRecord {
     });
   }
 
-  pasteItem(id) {
-    ipcRenderer.sendSync("PASTE_ITEM", id);
+  pasteItem(id, mode) {
+    ipcRenderer.sendSync("PASTE_ITEM", { id, mode });
     return this;
   }
 

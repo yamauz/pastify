@@ -173,7 +173,9 @@ module.exports = class Window {
     user32.AttachThreadInput(windowThreadProcessId, currentThreadId, 1);
     user32.AttachThreadInput(windowThreadProcessId, currentThreadId, 0);
     this.window.setSkipTaskbar(true);
-    robot.keyTap("f11", "alt");
+
+    // robot.keyTap("f11", "alt");
+    this.window.focus();
   }
 
   showLastActiveWindow(settings) {
