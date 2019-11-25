@@ -118,13 +118,6 @@ app.on("ready", () => {
 
     event.returnValue = null;
   });
-  // ipcMain.on("ITEM_ID_TO_BE_DELETED", (event, idList) => {
-  //   dataStore.delete("TIME_LINE", idList);
-  //   event.returnValue = null;
-  // });
-  // ipcMain.on("ON_MODAL_CLOSED", (event, id) => {
-  //   win.sendToRenderer("ON_MODAL_CLOSED", id);
-  // });
 
   clipboardListener.subscribe((hwnd, uMsg, wParam, lParam) => {
     // check the condition of clipboard listener

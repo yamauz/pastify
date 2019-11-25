@@ -91,6 +91,15 @@ const TextDetail = props => {
           showLineNumbers: true,
           useWorker: false
         }}
+        commands={[
+          {
+            name: "Alt+j",
+            bindKey: { win: "Alt-J" },
+            exec: () => {
+              console.log("alt + j");
+            }
+          }
+        ]}
       />
     </Wrapper>
   );
