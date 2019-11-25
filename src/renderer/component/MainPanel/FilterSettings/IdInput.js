@@ -25,6 +25,7 @@ const IdInput = props => {
   return (
     <Wrapper>
       <CreatableSelect
+        autoFocus={true}
         components={components}
         inputValue={idFilterInputValue}
         isClearable
@@ -64,12 +65,9 @@ const mapStateToProps = state => ({
   idFilterInputValue: state.get("idFilterInputValue")
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    addIdFilterOptions,
-    removeIdFilterOptions,
-    changeIdFilterInputValue,
-    setIdsFromDatastore
-  }
-)(IdInput);
+export default connect(mapStateToProps, {
+  addIdFilterOptions,
+  removeIdFilterOptions,
+  changeIdFilterInputValue,
+  setIdsFromDatastore
+})(IdInput);

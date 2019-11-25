@@ -100,6 +100,7 @@ class State extends StateRecord {
   }
 
   setScrollToRow(scrollToRow, itemIdAddedManually) {
+    console.log(itemIdAddedManually);
     return this.withMutations(state => {
       state
         .set("scrollToRow", scrollToRow)
@@ -231,7 +232,7 @@ class State extends StateRecord {
     return this[command]();
   }
   addNewItem() {
-    this.get("itemListRef").scrollToRow(0);
+    // this.get("itemListRef").scrollToRow(0);
     const addMode = "MANUAL";
     ipcRenderer.sendSync("ADD_NEW_ITEM", addMode);
     // setTimeout(() => {
@@ -272,7 +273,12 @@ class State extends StateRecord {
     // setTimeout(() => {
     //   document.getElementById("filter-sort-settings-tab").focus();
     // }, 100);
-    return this.set("detailType", "filter-sort-settings");
+    // return this.set("detailType", "filter-sort-settings");
+    return this.withMutations(state => {
+      state
+        .set("detailType", "filter-sort-settings")
+        .set("itemIdAddedManually", "_UNSET_");
+    });
   }
   saveFilterSortSettings() {
     console.log("save filter sort settings");

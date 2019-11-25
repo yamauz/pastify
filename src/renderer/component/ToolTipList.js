@@ -94,6 +94,7 @@ const callAction = (command, props) => {
     toggleItemListToolTipVisibility,
     setDetailType
   } = props;
+  toggleItemListToolTipVisibility();
   callActionOnItemList(command);
 
   switch (command) {
@@ -113,7 +114,6 @@ const callAction = (command, props) => {
     default:
       break;
   }
-  toggleItemListToolTipVisibility();
 };
 
 const actionList = [

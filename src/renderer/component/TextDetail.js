@@ -44,26 +44,12 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-const usePrevious = value => {
-  const ref = useRef(null);
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-};
-
 const TextDetail = props => {
   const { id, data, itemIdAddedManually, keyboardHandler, setItemText } = props;
 
-  const prevItemIdAddedManually = usePrevious(itemIdAddedManually);
   useEffect(() => {
-    if (!!prevItemIdAddedManually) {
-      if (prevItemIdAddedManually !== itemIdAddedManually) {
-        console.log("new item");
-        setTimeout(() => {
-          document.getElementsByClassName("ace_text-input")[0].focus();
-        }, 200);
-      }
+    if (itemIdAddedManually !== "_UNSET_") {
+      document.getElementsByClassName("ace_text-input")[0].focus();
     }
   });
   return (

@@ -28,7 +28,4 @@ const FilterSettings = props => {
   );
 };
 
-export default connect(
-  null,
-  null
-)(FilterSettings);
+export default connect(null, null)(FilterSettings);
