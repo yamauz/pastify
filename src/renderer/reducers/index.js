@@ -80,7 +80,6 @@ export default handleActions(
       state,
       { payload: { scrollToRow, itemIdAddedManually } }
     ) => {
-      // return state.set("scrollToRow", scrollToRow, itemIdAddedManually);
       return state.setScrollToRow(scrollToRow, itemIdAddedManually);
     },
     SET_FOCUS_ITEM_LIST: (state, { payload: focus }) => {

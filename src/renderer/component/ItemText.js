@@ -32,7 +32,6 @@ const renderTitle = (text, format) => {
   const ext = ".png";
   // insert blank title when text has only line break code.
   const regex = /^\s+$/;
-  // const title = text === "\r\n" ? "　" : text;
   const title = regex.test(text) ? "　" : text;
   const component = format === "IMAGE" ? `${title}${ext}` : title;
   return <Text format={format}>{component}</Text>;

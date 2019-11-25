@@ -69,7 +69,7 @@ const ListHeader = props => {
           offset: [-10, -5]
         }}
       >
-        <Right id="item-list-setting" tabIndex="0">
+        <Right id="tooltip" tabIndex="0">
           <EllipsisWrapper
             onClick={() => {
               toggleItemListToolTipVisibility();
@@ -93,7 +93,6 @@ const mapStateToProps = state => ({
   itemListToolTipVisibility: state.get("itemListToolTipVisibility")
 });
 
-export default connect(
-  mapStateToProps,
-  { toggleItemListToolTipVisibility }
-)(ListHeader);
+export default connect(mapStateToProps, { toggleItemListToolTipVisibility })(
+  ListHeader
+);

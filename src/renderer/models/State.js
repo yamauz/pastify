@@ -100,7 +100,6 @@ class State extends StateRecord {
   }
 
   setScrollToRow(scrollToRow, itemIdAddedManually) {
-    console.log(itemIdAddedManually);
     return this.withMutations(state => {
       state
         .set("scrollToRow", scrollToRow)
@@ -446,9 +445,7 @@ class State extends StateRecord {
         }, 100);
       }
     }
-    // console.log(`flg     : ${flg}`);
-    // console.log(`next    : ${nextVisible}`);
-    // console.log(`current : ${currentVisible}`);
+    console.log(`nextVisible : ${nextVisible}`);
 
     if (nextVisible) {
       setTimeout(() => {

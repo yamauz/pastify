@@ -72,6 +72,7 @@ const Main = props => {
   const {
     modalVisibility,
     filterSaveModalVisibility,
+    itemListToolTipVisibility,
     addItemClipboard,
     idsTimeLine,
     toggleItemListToolTipVisibility,
@@ -95,31 +96,36 @@ const Main = props => {
       setWinMaximize(false);
     });
     document.getElementById("searchbar").focus();
-    window.addEventListener(
-      "keydown",
-      e => {
-        const { shiftKey, ctrlKey } = e;
-        const pressKey = e.keyCode;
-        const { O } = keyCode;
+    // window.addEventListener(
+    //   "keydown",
+    //   e => {
+    //     const { shiftKey, ctrlKey } = e;
+    //     const pressKey = e.keyCode;
+    //     const { O } = keyCode;
 
-        if (ctrlKey && !shiftKey) {
-          if (pressKey === O) toggleItemListToolTipVisibility();
-        } else if (!ctrlKey && shiftKey) {
-        } else if (ctrlKey && shiftKey) {
-        }
-      },
-      true
-    );
-    window.addEventListener(
-      "click",
-      e => {
-        if (document.activeElement.id !== "item-list-setting") {
-          toggleItemListToolTipVisibility("OFF");
-        }
-      },
-      true
-    );
+    //     if (ctrlKey && !shiftKey) {
+    //       if (pressKey === O) toggleItemListToolTipVisibility();
+    //     } else if (!ctrlKey && shiftKey) {
+    //     } else if (ctrlKey && shiftKey) {
+    //     }
+    //   },
+    //   true
+    // );
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("click", toggleToolTipByClick, true);
+    return () => {
+      window.removeEventListener("click", toggleToolTipByClick, true);
+    };
+  }, [itemListToolTipVisibility]);
+
+  const toggleToolTipByClick = () => {
+    const regex = /^tooltip/;
+    if (!regex.test(document.activeElement.id) && itemListToolTipVisibility) {
+      toggleItemListToolTipVisibility();
+    }
+  };
 
   return (
     <Wrapper tabIndex="0">
@@ -150,7 +156,8 @@ const mapStateToProps = state => ({
   itemsTimeLine: state.get("itemsTimeLine"),
   idsTimeLine: state.get("idsTimeLine"),
   modalVisibility: state.get("modalVisibility"),
-  filterSaveModalVisibility: state.get("filterSaveModalVisibility")
+  filterSaveModalVisibility: state.get("filterSaveModalVisibility"),
+  itemListToolTipVisibility: state.get("itemListToolTipVisibility")
 });
 export default connect(mapStateToProps, {
   loadItem,
