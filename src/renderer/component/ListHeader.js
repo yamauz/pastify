@@ -4,10 +4,14 @@ import styled from "@emotion/styled";
 
 // Components
 import { connect } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import AngleDoubleRight from "../../icon/listheader/angle-double-right.svg";
+import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
+import Bars from "../../icon/listheader/bars.svg";
+import ThList from "../../icon/listheader/th-list.svg";
+import EllipsisOff from "../../icon/listheader/ellipsis-v-alt.svg";
+import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
 import ToolTipList from "./ToolTipList";
-import { toggleItemListToolTipVisibility } from "../actions";
+import { toggleListMode, toggleItemListToolTipVisibility } from "../actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,14 +35,17 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   vertical-align: middle;
-  margin-right: 5px;
 `;
 
-const EllipsisWrapper = styled.div`
-  display: inline-block;
+const IconWrapper = styled.div`
+  overflow: hidden;
   text-align: center;
-  width: 20px;
-  padding-bottom: 2px;
+  width: 25px;
+  height: 22px;
+  transition: background-color 0.1s;
+  &:hover {
+    background-color: #222222;
+  }
 `;
 
 const ItemText = styled.p`
@@ -50,8 +57,10 @@ const ItemText = styled.p`
 const ListHeader = props => {
   const {
     ids,
+    isCompact,
+    itemListToolTipVisibility,
     toggleItemListToolTipVisibility,
-    itemListToolTipVisibility
+    toggleListMode
   } = props;
 
   return (
@@ -70,29 +79,68 @@ const ListHeader = props => {
         }}
       >
         <Right id="tooltip" tabIndex="0">
-          <EllipsisWrapper
+          <IconWrapper
+            onClick={() => {
+              // toggleItemListToolTipVisibility();
+            }}
+          >
+            <AngleDoubleRight
+              style={{ width: "14px", fill: "#dddddd" }}
+            ></AngleDoubleRight>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => {
+              toggleMainPanel();
+            }}
+          >
+            <AngleDoubleLeft
+              style={{ width: "14px", fill: "#dddddd" }}
+            ></AngleDoubleLeft>
+          </IconWrapper>
+          <IconWrapper
+            onClick={() => {
+              toggleListMode();
+            }}
+          >
+            {_toggleListMode(isCompact)}
+          </IconWrapper>
+          <IconWrapper
             onClick={() => {
               toggleItemListToolTipVisibility();
             }}
           >
-            <FontAwesomeIcon
-              fixedWidth
-              icon={faEllipsisV}
-              size="sm"
-              color={"#b5b5b5"}
-            />
-          </EllipsisWrapper>
+            <Ellipsis
+              style={{ width: "2.6px", fill: "#dddddd", marginTop: "1px" }}
+            ></Ellipsis>
+          </IconWrapper>
         </Right>
       </Tooltip>
     </Wrapper>
   );
 };
 
+const _toggleListMode = isCompact => {
+  const style = {};
+  if (isCompact) {
+    style.width = "14px";
+    style.marginTop = "3px";
+    style.fill = "white";
+    return <Bars style={style}></Bars>;
+  } else {
+    style.width = "14px";
+    style.marginTop = "4px";
+    style.fill = "#dddddd";
+    return <ThList style={style}></ThList>;
+  }
+};
+
 const mapStateToProps = state => ({
+  isCompact: state.get("isCompact"),
   itemsTimeLine: state.get("itemsTimeLine"),
   itemListToolTipVisibility: state.get("itemListToolTipVisibility")
 });
 
-export default connect(mapStateToProps, { toggleItemListToolTipVisibility })(
-  ListHeader
-);
+export default connect(mapStateToProps, {
+  toggleItemListToolTipVisibility,
+  toggleListMode
+})(ListHeader);
