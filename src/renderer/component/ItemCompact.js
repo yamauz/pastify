@@ -7,6 +7,17 @@ const Wrapper = styled.div`
   transition: background-color 0.1s;
   height: 100%;
   border-bottom: solid 1px #1d1d1d;
+  &:before {
+    content: "";
+    top: 0;
+    left: 0;
+    border-bottom: 0.6em solid transparent;
+    border-left: ${props => {
+      return props.isFaved ? "0.6em solid #bab586" : "0.5em solid inherit";
+    }};
+    position: absolute;
+    z-index: 100;
+  }
   &:hover {
     background-color: rgba(110, 148, 255, 0.05);
   }
@@ -46,7 +57,13 @@ const ItemCompact = props => {
   } = item;
 
   return (
-    <Wrapper index={index} id={id} style={style} className="list-item">
+    <Wrapper
+      index={index}
+      id={id}
+      style={style}
+      isFaved={isFaved}
+      className="list-item"
+    >
       {renderTitle(textData, mainFormat)}
     </Wrapper>
   );
