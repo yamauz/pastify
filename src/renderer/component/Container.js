@@ -58,22 +58,6 @@ const Container = props => {
       <Main>
         <ItemDetail ids={ids} />
       </Main>
-      {/* <Tabs
-        defaultTab="default"
-        vertical
-        onChange={tabId => {
-          setIdSelected(tabId);
-        }}
-      >
-        <TabList>
-          <ListHeader ids={ids} />
-          <ItemList ids={ids} />
-        </TabList>
-        <TabPanel tabId={"filter-sort-settings"}>
-          <FilterSetting />
-        </TabPanel>
-        <ItemDetail ids={ids} />
-      </Tabs> */}
     </Wrapper>
   );
 };

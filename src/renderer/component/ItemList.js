@@ -6,6 +6,7 @@ import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
 import { Tab } from "../../util/react-web-tabs-item/lib";
 // Components
 import Item from "./Item";
+import ItemCompact from "./ItemCompact";
 import { connect } from "react-redux";
 import {
   setItemTagHeight,
@@ -41,6 +42,7 @@ const usePrevious = value => {
 const ItemList = props => {
   const {
     addMode,
+    isCompact,
     ids,
     itemsTimeLine,
     scrollToRow,
@@ -161,9 +163,13 @@ const ItemList = props => {
                 id={"item-list"}
                 rowCount={ids.size}
                 rowHeight={({ index }) => {
-                  const id = ids.get(index);
-                  const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
-                  return itemHeight + itemTagHeight;
+                  if (isCompact) {
+                    return 25;
+                  } else {
+                    const id = ids.get(index);
+                    const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
+                    return itemHeight + itemTagHeight;
+                  }
                 }}
                 onRowsRendered={({ overscanStartIndex, overscanStopIndex }) => {
                   setDisplayRange(setItemDisplayRange, {
@@ -177,6 +183,7 @@ const ItemList = props => {
                   itemRenderer({
                     focusItemList,
                     ids,
+                    isCompact,
                     itemsTimeLine,
                     scrollToRow,
                     setScrollToRow,
@@ -197,6 +204,7 @@ const ItemList = props => {
 const itemRenderer = ({
   focusItemList,
   ids,
+  isCompact,
   itemsTimeLine,
   index,
   key,
@@ -231,7 +239,11 @@ const itemRenderer = ({
         setFocusItemList(true);
       }}
     >
-      <Item item={item} />
+      {isCompact ? (
+        <ItemCompact item={item} index={index}></ItemCompact>
+      ) : (
+        <Item item={item}></Item>
+      )}
     </ListItem>
   );
 };
@@ -260,6 +272,7 @@ const getVisibleItemCount = () => {
 const mapStateToProps = state => ({
   itemsTimeLine: state.get("itemsTimeLine"),
   addMode: state.get("addMode"),
+  isCompact: state.get("isCompact"),
   idSelected: state.get("idSelected"),
   scrollToRow: state.get("scrollToRow"),
   focusItemList: state.get("focusItemList")
