@@ -25,6 +25,9 @@ export default handleActions(
     GET_MOMENT: (state, { payload: currentTime }) => {
       return state.set("moment", currentTime);
     },
+    TOGGLE_MAIN_PANEL: state => {
+      return state.set("isFold", !state.get("isFold"));
+    },
     TOGGLE_LIST_MODE: state => {
       return state.set("isCompact", !state.get("isCompact"));
     },

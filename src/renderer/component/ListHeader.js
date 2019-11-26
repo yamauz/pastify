@@ -11,7 +11,11 @@ import ThList from "../../icon/listheader/th-list.svg";
 import EllipsisOff from "../../icon/listheader/ellipsis-v-alt.svg";
 import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
 import ToolTipList from "./ToolTipList";
-import { toggleListMode, toggleItemListToolTipVisibility } from "../actions";
+import {
+  toggleMainPanel,
+  toggleListMode,
+  toggleItemListToolTipVisibility
+} from "../actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,9 +62,11 @@ const ListHeader = props => {
   const {
     ids,
     isCompact,
+    isFold,
     itemListToolTipVisibility,
     toggleItemListToolTipVisibility,
-    toggleListMode
+    toggleListMode,
+    toggleMainPanel
   } = props;
 
   return (
@@ -79,23 +85,20 @@ const ListHeader = props => {
         }}
       >
         <Right id="tooltip" tabIndex="0">
-          <IconWrapper
-            onClick={() => {
-              // toggleItemListToolTipVisibility();
-            }}
-          >
+          {/* <IconWrapper onClick={() => {}}>
             <AngleDoubleRight
               style={{ width: "14px", fill: "#dddddd" }}
             ></AngleDoubleRight>
-          </IconWrapper>
+          </IconWrapper> */}
           <IconWrapper
             onClick={() => {
               toggleMainPanel();
             }}
           >
-            <AngleDoubleLeft
+            {_toggleMainPanel(isFold)}
+            {/* <AngleDoubleLeft
               style={{ width: "14px", fill: "#dddddd" }}
-            ></AngleDoubleLeft>
+            ></AngleDoubleLeft> */}
           </IconWrapper>
           <IconWrapper
             onClick={() => {
@@ -118,6 +121,17 @@ const ListHeader = props => {
     </Wrapper>
   );
 };
+const _toggleMainPanel = isFold => {
+  const style = {
+    width: "14px",
+    fill: "#dddddd"
+  };
+  if (isFold) {
+    return <AngleDoubleLeft style={style}></AngleDoubleLeft>;
+  } else {
+    return <AngleDoubleRight style={style}></AngleDoubleRight>;
+  }
+};
 
 const _toggleListMode = isCompact => {
   const style = {};
@@ -136,11 +150,13 @@ const _toggleListMode = isCompact => {
 
 const mapStateToProps = state => ({
   isCompact: state.get("isCompact"),
+  isFold: state.get("isFold"),
   itemsTimeLine: state.get("itemsTimeLine"),
   itemListToolTipVisibility: state.get("itemListToolTipVisibility")
 });
 
 export default connect(mapStateToProps, {
   toggleItemListToolTipVisibility,
-  toggleListMode
+  toggleListMode,
+  toggleMainPanel
 })(ListHeader);
