@@ -104,6 +104,12 @@ const InfoBottom = styled.div`
   overflow: hidden;
 `;
 
+const DetectPosBlock = styled.div`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+`;
+
 const createSVGIcon = format => {
   switch (format) {
     case "TEXT":
@@ -154,6 +160,7 @@ const Container = props => {
     <Wrapper id={id} style={style} className="list-item">
       <ItemContainer>
         <ContainerLeft>
+          <DetectPosBlock id="detect-pos-block" />
           <IconContainer>
             <IconWrapper>{createSVGIcon(mainFormat)}</IconWrapper>
           </IconContainer>

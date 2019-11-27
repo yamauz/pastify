@@ -8,7 +8,7 @@ const StateRecord = Record({
   alwaysOnTop: false,
   winFocus: true,
   winMaximize: false,
-  isCompact: true,
+  isCompact: false,
   isFold: true,
   detailType: "DEFAULT",
   moment: new Date().getTime(),

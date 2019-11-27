@@ -31,6 +31,8 @@ const ListItem = styled.div``;
 
 let list; // ref to List Component
 
+let topIdOnDisp, bottomIdOnDisp;
+
 const usePrevious = value => {
   const ref = useRef(null);
   useEffect(() => {
@@ -99,6 +101,8 @@ const ItemList = props => {
         const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
         let visibleElmCount, distRow;
 
+        const idSelected = ids.get(scrollToRow);
+
         e.preventDefault();
         switch (e.keyCode) {
           case DELETE:
@@ -112,13 +116,7 @@ const ItemList = props => {
             setScrollToRow(ids.size - 1);
             break;
           case PAGEUP:
-            visibleElmCount = getVisibleItemCount();
-            distRow = scrollToRow - visibleElmCount + 1;
-            if (distRow > 0) {
-              setScrollToRow(distRow);
-            } else {
-              setScrollToRow(0);
-            }
+            moveToTopEdge(setScrollToRow, scrollToRow, idSelected);
             break;
           case PAGEDOWN:
             visibleElmCount = getVisibleItemCount();
@@ -256,17 +254,99 @@ const setDisplayRange = _.debounce((setFn, index) => {
   setFn(index);
 }, 150);
 
-const getVisibleItemCount = () => {
+const moveToTopEdge = (setScrollToRow, scrollToRow, idSelected) => {
+  const ElmForDetect = document.elementFromPoint(0, 91);
+  const topElm =
+    ElmForDetect.id === "detect-pos-block"
+      ? (topIdOnDisp = document.elementFromPoint(0, 91).parentElement
+          .parentElement.parentElement.parentElement.firstElementChild)
+      : (topIdOnDisp = document.elementFromPoint(0, 91).parentElement
+          .parentElement.parentElement.parentElement.nextElementSibling
+          .firstElementChild);
+
+  let topElmRow = 0;
+  let countableTopElmRow = true;
+
+  let selectedRow = 0;
+  let countableSelectedRow = true;
+
+  const listHeight = document.getElementById("item-list").clientHeight;
+  const itemElms = document.getElementsByClassName("list-item");
+  let heightSum = 0;
+  let countableHeightSum = true;
+  let visibleElm = 0;
+
+  for (const elm of itemElms) {
+    if (countableTopElmRow) {
+      if (elm.id !== topElm.id) {
+        topElmRow++;
+      } else {
+        countableTopElmRow = false;
+      }
+    }
+
+    if (countableSelectedRow) {
+      if (elm.id !== idSelected) {
+        selectedRow++;
+      } else {
+        countableSelectedRow = false;
+      }
+    }
+
+    if (countableHeightSum) {
+      heightSum = heightSum + elm.clientHeight;
+      if (heightSum < listHeight) {
+        visibleElm++;
+      } else {
+        countableHeightSum = false;
+      }
+    }
+  }
+
+  let distRow;
+  const rowDiff = selectedRow - topElmRow;
+  if (rowDiff === 0) {
+    distRow = scrollToRow - visibleElm;
+  } else {
+    distRow = scrollToRow - rowDiff;
+  }
+  console.log(`visibleElm : ${visibleElm}`);
+  console.log(`scrollToRow : ${scrollToRow}`);
+  console.log(`rowDiff : ${rowDiff}`);
+  console.log(`distRow : ${distRow}`);
+
+  if (distRow < 0) {
+    distRow = 0;
+  }
+
+  setScrollToRow(distRow);
+};
+
+const getCurrentRowAndItemSumOnVisibleRange = idSelected => {
   let elmHeightSum = 0;
-  let visibleElmCount = 0;
+  let currentCount = 0;
+  let currentRow = 0;
+  let countable = true;
   const listHeight = document.getElementById("item-list").clientHeight;
   const itemElms = document.getElementsByClassName("list-item");
   for (const elm of itemElms) {
+    //Detect current selected row
+    if (countable) {
+      if (elm.id !== idSelected) {
+        currentRow++;
+      } else {
+        countable = false;
+      }
+    }
+
+    //Detect current item count
     elmHeightSum = elmHeightSum + elm.clientHeight;
-    if (elmHeightSum < listHeight) visibleElmCount++;
+    if (elmHeightSum < listHeight) currentCount++;
     else break;
   }
-  return visibleElmCount;
+
+  currentRow--;
+  return { currentRow, currentCount };
 };
 
 const mapStateToProps = state => ({

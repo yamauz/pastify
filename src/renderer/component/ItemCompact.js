@@ -41,6 +41,13 @@ const Text = styled.p`
   font-size: 12px;
 `;
 
+const DetectPosBlock = styled.div`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background-color: red;
+`;
+
 const ItemCompact = props => {
   const { style, item, index } = props;
 
@@ -64,6 +71,7 @@ const ItemCompact = props => {
       isFaved={isFaved}
       className="list-item"
     >
+      <DetectPosBlock id="detect-pos-block" />
       {renderTitle(textData, mainFormat)}
     </Wrapper>
   );
