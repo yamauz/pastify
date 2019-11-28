@@ -74,6 +74,7 @@ const Format = styled.span`
   color: #efefef;
   font-family: sans-serif;
   font-weight: bold;
+  opacity: ${props => (props.isTrashed ? 0.7 : 1)};
 `;
 const Id = styled.span`
   margin-left: 10px;
@@ -178,7 +179,7 @@ const Container = props => {
           <InfoContainer>
             <InfoTop>
               <FormatIdBlock>
-                <Format>{toLowerCase(mainFormat)}</Format>
+                <Format isTrashed={isTrashed}>{toLowerCase(mainFormat)}</Format>
                 <Id>{id}</Id>
               </FormatIdBlock>
               <DateBlock>
@@ -186,7 +187,11 @@ const Container = props => {
               </DateBlock>
             </InfoTop>
             <InfoMid>
-              <ItemText text={textData} format={mainFormat} />
+              <ItemText
+                text={textData}
+                format={mainFormat}
+                isTrashed={isTrashed}
+              />
               <ItemImage id={id} format={mainFormat} />
             </InfoMid>
             <InfoBottom id={`${id}-taginfo`}>

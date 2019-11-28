@@ -148,8 +148,8 @@ const ItemList = props => {
           // }
           // break;
           case ENTER:
-            // const mode = e.shiftKey ? "RETURN" : "NORMAL";
-            // pasteItem(ids.get(scrollToRow), mode);
+            const mode = e.shiftKey ? "RETURN" : "NORMAL";
+            pasteItem(ids.get(scrollToRow), mode);
             break;
 
           default:

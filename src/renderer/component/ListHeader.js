@@ -138,12 +138,12 @@ const _toggleListMode = isCompact => {
   if (isCompact) {
     style.width = "14px";
     style.marginTop = "4px";
-    style.fill = "white";
+    style.fill = "#dddddd";
     return <ThList style={style}></ThList>;
   } else {
     style.width = "14px";
     style.marginTop = "3px";
-    style.fill = "#dddddd";
+    style.fill = "#ffffff";
     return <Bars style={style}></Bars>;
   }
 };

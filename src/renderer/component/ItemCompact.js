@@ -48,6 +48,7 @@ const Text = styled.p`
         return "#dddebf";
     }
   }};
+  opacity: ${props => (props.isTrashed ? 0.8 : 1)};
   font-family: sans-serif;
   font-size: 12px;
 `;
@@ -69,17 +70,7 @@ const DetectPosBlockBottom = styled.div`
 const ItemCompact = props => {
   const { style, item, index } = props;
 
-  const {
-    id,
-    date,
-    mainFormat,
-    textData,
-    key,
-    lang,
-    tag,
-    isFaved,
-    isTrashed
-  } = item;
+  const { id, mainFormat, textData, isFaved, isTrashed } = item;
 
   return (
     <Wrapper
@@ -91,18 +82,22 @@ const ItemCompact = props => {
     >
       <DetectPosBlockTop id="detect-pos-block" />
       <DetectPosBlockBottom id="detect-pos-block" />
-      {renderTitle(textData, mainFormat)}
+      {renderTitle(textData, mainFormat, isTrashed)}
     </Wrapper>
   );
 };
 
-const renderTitle = (text, format) => {
+const renderTitle = (text, format, isTrashed) => {
   const ext = ".png";
   // insert blank title when text has only line break code.
   const regex = /^\s+$/;
   const title = regex.test(text) ? "　" : text;
   const component = format === "IMAGE" ? `${title}${ext}` : title;
-  return <Text format={format}>{component}</Text>;
+  return (
+    <Text format={format} isTrashed={isTrashed}>
+      {component}
+    </Text>
+  );
 };
 
 export default ItemCompact;

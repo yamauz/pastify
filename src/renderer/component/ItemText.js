@@ -32,6 +32,7 @@ const Text = styled.p`
         return "#dddebf";
     }
   }};
+  opacity: ${props => (props.isTrashed ? 0.8 : 1)};
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-family: sans-serif;
@@ -39,18 +40,22 @@ const Text = styled.p`
   font-size: 12px;
 `;
 
-const renderTitle = (text, format) => {
+const renderTitle = (text, format, isTrashed) => {
   const ext = ".png";
   // insert blank title when text has only line break code.
   const regex = /^\s+$/;
   const title = regex.test(text) ? "　" : text;
   const component = format === "IMAGE" ? `${title}${ext}` : title;
-  return <Text format={format}>{component}</Text>;
+  return (
+    <Text format={format} isTrashed={isTrashed}>
+      {component}
+    </Text>
+  );
 };
 
 const ItemText = props => {
-  const { text, format } = props;
-  return <Wrapper>{renderTitle(text, format)}</Wrapper>;
+  const { text, format, isTrashed } = props;
+  return <Wrapper>{renderTitle(text, format, isTrashed)}</Wrapper>;
 };
 
 export default ItemText;
