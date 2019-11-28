@@ -36,7 +36,18 @@ const Text = styled.p`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: #bfd7de;
+  color: ${props => {
+    switch (props.format) {
+      case "TEXT":
+        return "#bfd7de";
+      case "IMAGE":
+        return "#c3bfde";
+      case "SHEET":
+        return "#bfdebf";
+      case "FILE":
+        return "#dddebf";
+    }
+  }};
   font-family: sans-serif;
   font-size: 12px;
 `;

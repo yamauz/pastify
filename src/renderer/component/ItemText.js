@@ -20,9 +20,20 @@ const Text = styled.p`
         return 2;
     }
   }};
+  color: ${props => {
+    switch (props.format) {
+      case "TEXT":
+        return "#bfd7de";
+      case "IMAGE":
+        return "#c3bfde";
+      case "SHEET":
+        return "#bfdebf";
+      case "FILE":
+        return "#dddebf";
+    }
+  }};
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: #bfd7de;
   font-family: sans-serif;
   line-height: 1.2;
   font-size: 12px;
@@ -38,7 +49,8 @@ const renderTitle = (text, format) => {
 };
 
 const ItemText = props => {
-  return <Wrapper>{renderTitle(props.text, props.format)}</Wrapper>;
+  const { text, format } = props;
+  return <Wrapper>{renderTitle(text, format)}</Wrapper>;
 };
 
 export default ItemText;
