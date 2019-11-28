@@ -69,7 +69,7 @@ const Container = props => {
   const { itemClipboard, setKeyboardHandler, keyboardHandler } = props;
 
   return (
-    <Wrapper>
+    <Wrapper id="footer">
       <Left>
         <IconWrapper>
           <FontAwesomeIcon
@@ -114,7 +114,4 @@ const mapStateToProps = state => ({
   keyboardHandler: state.get("keyboardHandler")
 });
 
-export default connect(
-  mapStateToProps,
-  { setKeyboardHandler }
-)(Container);
+export default connect(mapStateToProps, { setKeyboardHandler })(Container);

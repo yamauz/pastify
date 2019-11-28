@@ -21,6 +21,7 @@ import {
 import _ from "lodash";
 
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
+import { faSleigh } from "@fortawesome/free-solid-svg-icons";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -77,9 +78,12 @@ const ItemList = props => {
       const taginfo = document.getElementById(`${id}-taginfo`);
       setItemTagHeight(taginfo.clientHeight);
     }
-    // list.scrollToPosition(st);
     list.recomputeRowHeights();
   });
+
+  useEffect(() => {
+    document.getElementById("item-list").focus();
+  }, [isCompact]);
 
   return (
     <Wrapper
@@ -116,20 +120,36 @@ const ItemList = props => {
             setScrollToRow(ids.size - 1);
             break;
           case PAGEUP:
-            moveToTopEdge(setScrollToRow, scrollToRow, idSelected);
+            moveToEdge(
+              "UP",
+              setScrollToRow,
+              scrollToRow,
+              idSelected,
+              ids.size,
+              isCompact
+            );
             break;
           case PAGEDOWN:
-            visibleElmCount = getVisibleItemCount();
-            distRow = scrollToRow + visibleElmCount - 1;
-            if (distRow < ids.size - 1) {
-              setScrollToRow(distRow);
-            } else {
-              setScrollToRow(ids.size - 1);
-            }
+            moveToEdge(
+              "DOWN",
+              setScrollToRow,
+              scrollToRow,
+              idSelected,
+              ids.size,
+              isCompact
+            );
             break;
+          // visibleElmCount = getVisibleItemCount();
+          // distRow = scrollToRow + visibleElmCount - 1;
+          // if (distRow < ids.size - 1) {
+          //   setScrollToRow(distRow);
+          // } else {
+          //   setScrollToRow(ids.size - 1);
+          // }
+          // break;
           case ENTER:
-            const mode = e.shiftKey ? "RETURN" : "NORMAL";
-            pasteItem(ids.get(scrollToRow), mode);
+            // const mode = e.shiftKey ? "RETURN" : "NORMAL";
+            // pasteItem(ids.get(scrollToRow), mode);
             break;
 
           default:
@@ -213,13 +233,20 @@ const itemRenderer = ({
 }) => {
   const isFocused = document.activeElement.id === "item-list";
   const isActive = index === scrollToRow;
+
+  let background;
+  if (isActive && focusItemList) {
+    background = isCompact ? "#354154" : "#2F353D";
+  } else {
+    background = "inherit";
+  }
+
   const styles = {
     ...style,
     listStyle: "none",
     // background: isActive && isFocused ? "#666" : "inherit"
-    transition: "background 0.1s",
-    background:
-      isActive && focusItemList ? "rgba(110, 148, 255, 0.12)" : "inherit"
+    transition: "background 0.05s",
+    background
   };
   const id = ids.get(index);
   const item = itemsTimeLine.get(id);
@@ -254,18 +281,64 @@ const setDisplayRange = _.debounce((setFn, index) => {
   setFn(index);
 }, 150);
 
-const moveToTopEdge = (setScrollToRow, scrollToRow, idSelected) => {
-  const ElmForDetect = document.elementFromPoint(0, 91);
-  const topElm =
-    ElmForDetect.id === "detect-pos-block"
-      ? (topIdOnDisp = document.elementFromPoint(0, 91).parentElement
-          .parentElement.parentElement.parentElement.firstElementChild)
-      : (topIdOnDisp = document.elementFromPoint(0, 91).parentElement
-          .parentElement.parentElement.parentElement.nextElementSibling
-          .firstElementChild);
+const moveToEdge = (
+  direction,
+  setScrollToRow,
+  scrollToRow,
+  idSelected,
+  listLen,
+  isCompact
+) => {
+  const isUp = direction === "UP";
+  const x = 0;
+  const y = isUp ? 91 : getBottomPos();
+  const ElmForDetect = document.elementFromPoint(x, y);
+  const isPosBlock = ElmForDetect.id === "detect-pos-block";
 
-  let topElmRow = 0;
-  let countableTopElmRow = true;
+  let edgeElm;
+  if (isCompact) {
+    console.log(`isPosBlock : ${isPosBlock}`);
+    if (isUp) {
+      if (isPosBlock) {
+        edgeElm = ElmForDetect.parentElement.parentElement.firstElementChild;
+      } else {
+        edgeElm =
+          ElmForDetect.parentElement.nextElementSibling.firstElementChild;
+      }
+    } else {
+      if (isPosBlock) {
+        edgeElm = ElmForDetect.parentElement.parentElement.firstElementChild;
+      } else {
+        edgeElm =
+          ElmForDetect.parentElement.previousElementSibling.firstElementChild;
+      }
+    }
+  } else {
+    if (isUp) {
+      if (isPosBlock) {
+        edgeElm =
+          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+            .firstElementChild;
+      } else {
+        edgeElm =
+          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+            .nextElementSibling.firstElementChild;
+      }
+    } else {
+      if (isPosBlock) {
+        edgeElm =
+          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+            .firstElementChild;
+      } else {
+        edgeElm =
+          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+            .previousElementSibling.firstElementChild;
+      }
+    }
+  }
+
+  let edgeRow = 0;
+  let countableEdgeRow = true;
 
   let selectedRow = 0;
   let countableSelectedRow = true;
@@ -277,11 +350,11 @@ const moveToTopEdge = (setScrollToRow, scrollToRow, idSelected) => {
   let visibleElm = 0;
 
   for (const elm of itemElms) {
-    if (countableTopElmRow) {
-      if (elm.id !== topElm.id) {
-        topElmRow++;
+    if (countableEdgeRow) {
+      if (elm.id !== edgeElm.id) {
+        edgeRow++;
       } else {
-        countableTopElmRow = false;
+        countableEdgeRow = false;
       }
     }
 
@@ -303,50 +376,64 @@ const moveToTopEdge = (setScrollToRow, scrollToRow, idSelected) => {
     }
   }
 
-  let distRow;
-  const rowDiff = selectedRow - topElmRow;
-  if (rowDiff === 0) {
-    distRow = scrollToRow - visibleElm;
-  } else {
-    distRow = scrollToRow - rowDiff;
+  // コンパクトモード時のスクロール位置の微調整
+  if (isCompact) {
+    visibleElm = visibleElm - 3;
   }
-  console.log(`visibleElm : ${visibleElm}`);
-  console.log(`scrollToRow : ${scrollToRow}`);
-  console.log(`rowDiff : ${rowDiff}`);
-  console.log(`distRow : ${distRow}`);
 
-  if (distRow < 0) {
-    distRow = 0;
-  }
+  const distRow = computeDistRow(
+    direction,
+    edgeRow,
+    selectedRow,
+    visibleElm,
+    scrollToRow,
+    listLen
+  );
 
   setScrollToRow(distRow);
 };
 
-const getCurrentRowAndItemSumOnVisibleRange = idSelected => {
-  let elmHeightSum = 0;
-  let currentCount = 0;
-  let currentRow = 0;
-  let countable = true;
-  const listHeight = document.getElementById("item-list").clientHeight;
-  const itemElms = document.getElementsByClassName("list-item");
-  for (const elm of itemElms) {
-    //Detect current selected row
-    if (countable) {
-      if (elm.id !== idSelected) {
-        currentRow++;
-      } else {
-        countable = false;
-      }
-    }
+const getBottomPos = () => {
+  const bodyHeight = document.documentElement.clientHeight;
+  const footerHeight = document.getElementById("footer").clientHeight;
+  return bodyHeight - footerHeight - 1;
+};
 
-    //Detect current item count
-    elmHeightSum = elmHeightSum + elm.clientHeight;
-    if (elmHeightSum < listHeight) currentCount++;
-    else break;
-  }
+const computeDistRow = (
+  direction,
+  edgeRow,
+  selectedRow,
+  visibleElm,
+  scrollToRow,
+  listLen
+) => {
+  const isUp = direction === "UP";
+  const rowDiff = isUp ? selectedRow - edgeRow : edgeRow - selectedRow;
+  const hasDiff = rowDiff !== 0;
+  const tempRow = isUp
+    ? hasDiff
+      ? scrollToRow - rowDiff
+      : scrollToRow - visibleElm
+    : hasDiff
+    ? scrollToRow + rowDiff
+    : scrollToRow + visibleElm;
+  const distRow = isUp
+    ? tempRow < 0
+      ? 0
+      : tempRow
+    : tempRow > listLen
+    ? listLen - 1
+    : tempRow;
+  // console.log("------------------------");
+  // console.log(`edgeRow : ${edgeRow}`);
+  // console.log(`isUp : ${isUp}`);
+  // console.log(`rowDiff : ${rowDiff}`);
+  // console.log(`hasDiff : ${hasDiff}`);
+  // console.log(`tempRow : ${tempRow}`);
+  // console.log(`scrollToRow : ${scrollToRow}`);
+  // console.log(`distRow : ${distRow}`);
 
-  currentRow--;
-  return { currentRow, currentCount };
+  return distRow;
 };
 
 const mapStateToProps = state => ({
