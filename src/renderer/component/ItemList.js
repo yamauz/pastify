@@ -98,6 +98,7 @@ const ItemList = props => {
         // setFocusItemList(true);
       }}
       onDoubleClick={e => {
+        if (e.target.id === "item-list") return;
         const mode = e.shiftKey ? "RETURN" : "NORMAL";
         pasteItem(ids.get(scrollToRow), mode);
       }}
