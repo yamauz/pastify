@@ -139,19 +139,10 @@ const ItemList = props => {
               isCompact
             );
             break;
-          // visibleElmCount = getVisibleItemCount();
-          // distRow = scrollToRow + visibleElmCount - 1;
-          // if (distRow < ids.size - 1) {
-          //   setScrollToRow(distRow);
-          // } else {
-          //   setScrollToRow(ids.size - 1);
-          // }
-          // break;
           case ENTER:
             const mode = e.shiftKey ? "RETURN" : "NORMAL";
             pasteItem(ids.get(scrollToRow), mode);
             break;
-
           default:
             break;
         }
@@ -292,46 +283,49 @@ const moveToEdge = (
   const isUp = direction === "UP";
   const x = 0;
   const y = isUp ? 91 : getBottomPos();
-  const ElmForDetect = document.elementFromPoint(x, y);
-  const isPosBlock = ElmForDetect.id === "detect-pos-block";
+  const elmForDetect = document.elementFromPoint(x, y);
+  const isPosBlock = elmForDetect.id === "detect-pos-block";
 
   let edgeElm;
   if (isCompact) {
-    console.log(`isPosBlock : ${isPosBlock}`);
     if (isUp) {
       if (isPosBlock) {
-        edgeElm = ElmForDetect.parentElement.parentElement.firstElementChild;
+        edgeElm = elmForDetect.parentElement.parentElement.firstElementChild;
       } else {
         edgeElm =
-          ElmForDetect.parentElement.nextElementSibling.firstElementChild;
+          elmForDetect.parentElement.nextElementSibling.firstElementChild;
       }
     } else {
+      if (elmForDetect.id === "item-list") {
+        setScrollToRow(listLen - 1);
+        return;
+      }
       if (isPosBlock) {
-        edgeElm = ElmForDetect.parentElement.parentElement.firstElementChild;
+        edgeElm = elmForDetect.parentElement.parentElement.firstElementChild;
       } else {
         edgeElm =
-          ElmForDetect.parentElement.previousElementSibling.firstElementChild;
+          elmForDetect.parentElement.previousElementSibling.firstElementChild;
       }
     }
   } else {
     if (isUp) {
       if (isPosBlock) {
         edgeElm =
-          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+          elmForDetect.parentElement.parentElement.parentElement.parentElement
             .firstElementChild;
       } else {
         edgeElm =
-          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+          elmForDetect.parentElement.parentElement.parentElement.parentElement
             .nextElementSibling.firstElementChild;
       }
     } else {
       if (isPosBlock) {
         edgeElm =
-          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+          elmForDetect.parentElement.parentElement.parentElement.parentElement
             .firstElementChild;
       } else {
         edgeElm =
-          ElmForDetect.parentElement.parentElement.parentElement.parentElement
+          elmForDetect.parentElement.parentElement.parentElement.parentElement
             .previousElementSibling.firstElementChild;
       }
     }

@@ -29,6 +29,7 @@ const Wrapper = styled.div`
   &:hover {
     background-color: rgba(110, 148, 255, 0.05);
   }
+  z-index: 2;
 `;
 const ItemContainer = styled.div`
   border-bottom: solid 2px #1d1d1d;
