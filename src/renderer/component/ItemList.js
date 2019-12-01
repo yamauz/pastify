@@ -22,7 +22,7 @@ import {
 import _ from "lodash";
 
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
-import { faSleigh } from "@fortawesome/free-solid-svg-icons";
+const dialog = window.require("electron").remote.dialog;
 
 const Wrapper = styled.div`
   height: 100%;
@@ -50,7 +50,6 @@ const ItemList = props => {
     ids,
     itemsTimeLine,
     scrollToRow,
-    statusFilterOpt,
     setItemTagHeight,
     setItemDisplayRange,
     setItemListRef,
@@ -58,8 +57,6 @@ const ItemList = props => {
     setFocusItemList,
     setDetailType,
     focusItemList,
-    deleteIds,
-    trashItem,
     pasteItem
   } = props;
   const prevItemSize = usePrevious(ids.size);
@@ -110,28 +107,24 @@ const ItemList = props => {
         if (ids.size === 0) return;
 
         const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
-        let visibleElmCount, distRow;
 
         const idSelected = ids.get(scrollToRow);
 
         e.preventDefault();
         switch (e.keyCode) {
           case DELETE:
-            const isTrashed = itemsTimeLine
-              .get(ids.get(scrollToRow))
-              .get("isTrashed");
-
-            if (!isTrashed && statusFilterOpt.length) {
-              const [st] = statusFilterOpt;
-              if (st.value.hasOwnProperty("isTrashed")) {
-                const filterisTrashed = st.value.isTrashed;
-                if (filterisTrashed) {
-                  trashItem(ids.get(scrollToRow));
-                }
-              }
+            const itemValue = itemsTimeLine.get(ids.get(scrollToRow));
+            const isFaved = itemValue.get("isFaved");
+            if (!isFaved) {
+              removeItem(props, itemValue);
+              break;
             } else {
-              deleteIds(ids.get(scrollToRow));
-              if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
+              const options = createWarningSet();
+              dialog.showMessageBox(null, options, (resNum, checked) => {
+                if (resNum === 0) {
+                  removeItem(props, itemValue);
+                }
+              });
             }
             break;
           case HOME:
@@ -292,6 +285,44 @@ const selectItem = ({ id, scrollToRow, setScrollToRow }) => {
 const setDisplayRange = _.debounce((setFn, index) => {
   setFn(index);
 }, 150);
+
+const removeItem = (props, itemValue) => {
+  const {
+    ids,
+    scrollToRow,
+    statusFilterOpt,
+    setScrollToRow,
+    deleteIds,
+    trashItem
+  } = props;
+  // Don't remove new item when filtered list by trashed item
+  const isTrashed = itemValue.get("isTrashed");
+  if (!isTrashed && statusFilterOpt.length) {
+    const [st] = statusFilterOpt;
+    if (st.value.hasOwnProperty("isTrashed")) {
+      const filterisTrashed = st.value.isTrashed;
+      if (filterisTrashed) {
+        trashItem(ids.get(scrollToRow));
+      }
+    }
+  } else {
+    deleteIds(ids.get(scrollToRow));
+    if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
+  }
+};
+
+const createWarningSet = () => {
+  const options = {
+    type: "info",
+    buttons: ["OK", "Cancel"],
+    title: "タイトル",
+    message: "Remove Item",
+    detail: "You will remove faved item. you sure you want to do this?",
+    checkboxLabel: "Do not display this dialog again."
+  };
+
+  return options;
+};
 
 const moveToEdge = (
   direction,
