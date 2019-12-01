@@ -102,6 +102,9 @@ const ItemList = props => {
         pasteItem(ids.get(scrollToRow), mode);
       }}
       onKeyDown={e => {
+        // no action when no item on list
+        if (ids.size === 0) return;
+
         const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
         let visibleElmCount, distRow;
 
@@ -296,6 +299,7 @@ const moveToEdge = (
           elmForDetect.parentElement.nextElementSibling.firstElementChild;
       }
     } else {
+      // move to list end item when no item on edge"
       if (elmForDetect.id === "item-list") {
         setScrollToRow(listLen - 1);
         return;
@@ -319,6 +323,11 @@ const moveToEdge = (
             .nextElementSibling.firstElementChild;
       }
     } else {
+      // move to list end item when no item on edge"
+      if (elmForDetect.id === "item-list") {
+        setScrollToRow(listLen - 1);
+        return;
+      }
       if (isPosBlock) {
         edgeElm =
           elmForDetect.parentElement.parentElement.parentElement.parentElement
