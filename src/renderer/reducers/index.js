@@ -16,6 +16,9 @@ export default handleActions(
     DELETE_IDS: (state, { payload: ids }) => {
       return state.deleteIds(ids);
     },
+    TRASH_ITEM: (state, { payload: id }) => {
+      return state.trashItem(id);
+    },
     DELETE_ITEM: (state, { payload: ids }) => {
       return state.deleteItem(ids);
     },

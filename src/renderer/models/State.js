@@ -143,6 +143,10 @@ class State extends StateRecord {
       );
     });
   }
+  trashItem(id) {
+    this._updateItems(id, { isTrashed: true });
+    return this.setIn(["itemsTimeLine", id, "isTrashed"], true);
+  }
   setAlwaysOnTop(alwaysOnTop) {
     this._updateWinSettings({ alwaysOnTop: !alwaysOnTop });
     return this.set("alwaysOnTop", !alwaysOnTop);

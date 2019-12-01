@@ -16,6 +16,7 @@ import {
   setFocusItemList,
   setDetailType,
   deleteIds,
+  trashItem,
   pasteItem
 } from "../actions";
 import _ from "lodash";
@@ -49,6 +50,7 @@ const ItemList = props => {
     ids,
     itemsTimeLine,
     scrollToRow,
+    statusFilterOpt,
     setItemTagHeight,
     setItemDisplayRange,
     setItemListRef,
@@ -57,6 +59,7 @@ const ItemList = props => {
     setDetailType,
     focusItemList,
     deleteIds,
+    trashItem,
     pasteItem
   } = props;
   const prevItemSize = usePrevious(ids.size);
@@ -114,8 +117,22 @@ const ItemList = props => {
         e.preventDefault();
         switch (e.keyCode) {
           case DELETE:
-            deleteIds(ids.get(scrollToRow));
-            if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
+            const isTrashed = itemsTimeLine
+              .get(ids.get(scrollToRow))
+              .get("isTrashed");
+
+            if (!isTrashed && statusFilterOpt.length) {
+              const [st] = statusFilterOpt;
+              if (st.value.hasOwnProperty("isTrashed")) {
+                const filterisTrashed = st.value.isTrashed;
+                if (filterisTrashed) {
+                  trashItem(ids.get(scrollToRow));
+                }
+              }
+            } else {
+              deleteIds(ids.get(scrollToRow));
+              if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
+            }
             break;
           case HOME:
             setScrollToRow(0);
@@ -446,7 +463,8 @@ const mapStateToProps = state => ({
   isCompact: state.get("isCompact"),
   idSelected: state.get("idSelected"),
   scrollToRow: state.get("scrollToRow"),
-  focusItemList: state.get("focusItemList")
+  focusItemList: state.get("focusItemList"),
+  statusFilterOpt: state.get("statusFilterOpt")
 });
 
 export default connect(mapStateToProps, {
@@ -457,5 +475,6 @@ export default connect(mapStateToProps, {
   setFocusItemList,
   setDetailType,
   deleteIds,
+  trashItem,
   pasteItem
 })(ItemList);
