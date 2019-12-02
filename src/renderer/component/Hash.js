@@ -10,10 +10,14 @@ const Wrapper = styled.div`
 `;
 const HashTag = styled.div`
   color: #ffffff;
-  padding: 0px 8px 1px 6px;
   font-size: 10px;
+  padding-left: 6px;
+  padding-right: 6px;
   border-radius: 10px;
-  background-color: #6b8c37;
+  /* background-color: #6b8c37; */
+  box-sizing: border-box;
+  border: solid 0.5px #cccccc;
+  opacity: 0.9;
   display: inline-block;
   margin: 0;
   margin-right: 3px;

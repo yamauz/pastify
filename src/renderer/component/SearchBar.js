@@ -13,6 +13,7 @@ const SearchBar = props => {
   const { id, data } = props;
   return (
     <Wrapper>
+      {/* <div id="searchbar"></div> */}
       <Search
         id="searchbar"
         category

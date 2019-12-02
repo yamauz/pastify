@@ -39,15 +39,57 @@ const LanguageInput = props => {
 };
 
 const customStyles = {
+  indicatorSeparator: (styles, { data }) => ({
+    ...styles,
+    display: "none"
+  }),
+  clearIndicator: (styles, { data }) => ({
+    ...styles,
+    color: "#bbbbbb",
+    "&:hover": { color: "#ffffff" }
+  }),
+  dropdownIndicator: (styles, { data }) => ({
+    ...styles,
+    color: "#bbbbbb",
+    "&:hover": { color: "#ffffff" }
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    color: "#dddddd",
+    backgroundColor: state.isFocused ? "#354154" : "none",
+    "&:hover": { backgroundColor: "#2F353D" },
+    padding: "5px"
+  }),
+  menuList: (provided, state) => ({
+    ...provided,
+    borderRadius: "0px",
+    backgroundColor: "#333335"
+  }),
+  control: (styles, state) => ({
+    ...styles,
+    backgroundColor: "#333335",
+    "&:hover": { border: state.isFocused ? "solid 1px #5c5d37" : "none" },
+    border: state.isFocused ? "solid 1px #5c5d37" : "none",
+    boxShadow: "none", // no box-shadow
+    borderRadius: "0px",
+    height: "25px",
+    minHeight: "25px"
+  }),
   multiValue: (styles, { data }) => ({
     ...styles,
-    backgroundColor: "green"
+    backgroundColor: "#0f2446",
+    height: 18,
+    fontSize: 13,
+    lineHeight: 1,
+    color: "#dddddd"
+  }),
+  input: (styles, { data }) => ({
+    ...styles,
+    color: "#dddddd"
   }),
   multiValueLabel: (styles, { data }) => ({
     ...styles,
-    backgroundColor: "red"
-    // color: data.color,
-    // color: "red"
+    color: "#dddddd"
   })
   // multiValueRemove: (styles, { data }) => ({
   //   ...styles,
@@ -81,7 +123,7 @@ const mapStateToProps = state => ({
   languageFilterOpt: state.get("languageFilterOpt")
 });
 
-export default connect(
-  mapStateToProps,
-  { setLanguageFilterOptions, setIdsFromDatastore }
-)(LanguageInput);
+export default connect(mapStateToProps, {
+  setLanguageFilterOptions,
+  setIdsFromDatastore
+})(LanguageInput);

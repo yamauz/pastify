@@ -11,19 +11,21 @@ import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
 import IdInput from "./IdInput";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  padding: 30px;
+`;
 
 const FilterSettings = props => {
   return (
     <Wrapper>
-      <IdInput />
+      {/* <IdInput /> */}
       <LanguageInput />
-      <HashTagInput />
-      <HotKeyInput />
-      <StatusInput />
-      <DataTypesInput />
-      <SortInput />
-      <KeywordsInput />
+      {/* <HashTagInput /> */}
+      {/* <HotKeyInput /> */}
+      {/* <StatusInput /> */}
+      {/* <DataTypesInput /> */}
+      {/* <SortInput /> */}
+      {/* <KeywordsInput /> */}
     </Wrapper>
   );
 };
