@@ -33,6 +33,7 @@ const LanguageInput = props => {
           setLanguageFilterOptions(options);
           setIdsFromDatastore();
         }}
+        noOptionsMessage={() => null}
       />
     </Wrapper>
   );
