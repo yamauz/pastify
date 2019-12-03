@@ -12,20 +12,44 @@ import LanguageInput from "./LanguageInput";
 import IdInput from "./IdInput";
 
 const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 53px 1fr;
+  grid-template-rows: 100%;
+  grid-template-areas: "left right";
+  width: 100%;
+  height: 100%;
+`;
+
+const ContainerLeft = styled.div`
+  grid-area: left;
+  background-color: #2f3129;
+  width: 100%;
+`;
+const ContainerRight = styled.div`
+  grid-area: right;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50px 1fr;
+  grid-template-areas:
+    "name"
+    "image";
   padding: 30px;
 `;
 
 const FilterSettings = props => {
   return (
     <Wrapper>
-      {/* <IdInput /> */}
-      <LanguageInput />
-      {/* <HashTagInput /> */}
-      {/* <HotKeyInput /> */}
-      {/* <StatusInput /> */}
-      {/* <DataTypesInput /> */}
-      {/* <SortInput /> */}
-      {/* <KeywordsInput /> */}
+      <ContainerLeft></ContainerLeft>
+      <ContainerRight>
+        {/* <IdInput /> */}
+        <LanguageInput />
+        {/* <HashTagInput /> */}
+        {/* <HotKeyInput /> */}
+        {/* <StatusInput /> */}
+        {/* <DataTypesInput /> */}
+        {/* <SortInput /> */}
+        {/* <KeywordsInput /> */}
+      </ContainerRight>
     </Wrapper>
   );
 };
