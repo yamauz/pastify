@@ -12,6 +12,7 @@ import LanguageInput from "./LanguageInput";
 import IdInput from "./IdInput";
 
 const Wrapper = styled.div`
+  font-family: sans-serif;
   display: grid;
   grid-template-columns: 53px 1fr;
   grid-template-rows: 100%;
@@ -27,13 +28,14 @@ const ContainerLeft = styled.div`
 `;
 const ContainerRight = styled.div`
   grid-area: right;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 50px 1fr;
-  grid-template-areas:
-    "name"
-    "image";
-  padding: 30px;
+  padding: 15px 30px;
+  width: 100%;
+`;
+
+const Title = styled.div`
+  color: #dddddd;
+  font-size: 20px;
+  margin-bottom: 20px;
 `;
 
 const FilterSettings = props => {
@@ -41,6 +43,7 @@ const FilterSettings = props => {
     <Wrapper>
       <ContainerLeft></ContainerLeft>
       <ContainerRight>
+        <Title>Sort and Filter Settings</Title>
         {/* <IdInput /> */}
         <LanguageInput />
         {/* <HashTagInput /> */}

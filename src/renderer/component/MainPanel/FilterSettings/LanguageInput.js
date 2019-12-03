@@ -16,6 +16,21 @@ const svgCode =
 
 const Wrapper = styled.div``;
 
+const FilterHeader = styled.div`
+  color: #bbbbbb;
+`;
+
+const FilterBy = styled.span`
+  font-size: 12px;
+  color: #dddddd;
+`;
+
+const FilterDescription = styled.div`
+  font-size: 10px;
+  color: #bbbbbb;
+  margin-bottom: 5px;
+`;
+
 const LanguageInput = props => {
   const {
     languageFilterOpt,
@@ -24,6 +39,12 @@ const LanguageInput = props => {
   } = props;
   return (
     <Wrapper>
+      <FilterHeader>
+        Filter : <FilterBy>Label > Language</FilterBy>
+      </FilterHeader>
+      <FilterDescription>
+        Select Language. Allows multi-registration.
+      </FilterDescription>
       <Select
         placeholder={null}
         isMulti
@@ -81,6 +102,10 @@ const customStyles = {
     fontSize: "11px",
     fontStyle: state.data.fontStyle,
     padding: "5px"
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    maxWidth: "400px"
   }),
   menuList: (provided, state) => ({
     ...provided,
