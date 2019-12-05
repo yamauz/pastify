@@ -1,98 +1,100 @@
-module.exports = [
+export const ascOptions = [
   {
-    oppositeIndex: 6,
-    label: "Asc by time",
-    value: "ascByTime",
-    order: "asc",
+    label: "Time",
+    value: "asctime",
     key: "date",
-    isDisabled: false
+    isDisabled: false,
+    order: "asc"
   },
   {
-    oppositeIndex: 7,
-    label: "Asc by status",
-    value: "ascByStatus",
-    order: "asc",
+    label: "Status",
+    value: "ascstatus",
     key: "isFaved",
-    isDisabled: false
+    isDisabled: false,
+    order: "asc"
   },
   {
-    oppositeIndex: 8,
-    label: "Asc by type",
-    value: "ascByType",
-    order: "asc",
+    label: "Datatype",
+    value: "ascdatatype",
     key: "mainFormat",
-    isDisabled: false
+    isDisabled: false,
+    order: "asc"
   },
   {
-    oppositeIndex: 9,
-    label: "Asc by key",
-    value: "ascByKey",
-    order: "asc",
+    label: "Hotkey",
+    value: "aschotkey",
     key: "key",
-    isDisabled: false
+    isDisabled: false,
+    order: "asc"
   },
   {
-    oppositeIndex: 10,
-    label: "Asc by text",
-    value: "ascByText",
-    order: "asc",
+    label: "Text",
+    value: "asctext",
     key: "textData",
-    isDisabled: false
+    isDisabled: false,
+    order: "asc"
   },
   {
-    oppositeIndex: 11,
-    label: "Asc by lang",
-    value: "ascByLang",
-    order: "asc",
+    label: "Language",
+    value: "asclanguage",
     key: "lang",
-    isDisabled: false
-  },
+    isDisabled: false,
+    order: "asc"
+  }
+];
+
+export const descOptions = [
   {
-    oppositeIndex: 0,
-    label: "Desc by time",
-    value: "descByTime",
-    order: "desc",
+    label: "Time",
+    value: "desctime",
     key: "date",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
   },
   {
-    oppositeIndex: 1,
-    label: "Desc by status",
-    value: "descByStatus",
-    order: "desc",
+    label: "Status",
+    value: "descstatus",
     key: "isFaved",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
   },
   {
-    oppositeIndex: 2,
-    label: "Desc by type",
-    value: "descByType",
-    order: "desc",
+    label: "Datatype",
+    value: "descdatatype",
     key: "mainFormat",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
   },
   {
-    oppositeIndex: 3,
-    label: "Desc by key",
-    value: "descByKey",
-    order: "desc",
+    label: "Hotkey",
+    value: "deschotkey",
     key: "key",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
   },
   {
-    oppositeIndex: 4,
-    label: "Desc by text",
-    value: "descByText",
-    order: "desc",
+    label: "Text",
+    value: "desctext",
     key: "textData",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
   },
   {
-    oppositeIndex: 5,
-    label: "Desc by lang",
-    value: "descByLang",
-    order: "desc",
+    label: "Language",
+    value: "desclanguage",
     key: "lang",
-    isDisabled: false
+    isDisabled: false,
+    order: "desc"
+  }
+];
+
+export const groupedOptions = [
+  {
+    label: "Ascending",
+    options: ascOptions
+  },
+  {
+    label: "Descending",
+    options: descOptions
   }
 ];

@@ -44,13 +44,13 @@ const FilterSettings = props => {
       <ContainerLeft></ContainerLeft>
       <ContainerRight>
         <Title>Sort and Filter Settings</Title>
-        {/* <IdInput /> */}
+        <SortInput />
+        <IdInput />
         <LanguageInput />
-        {/* <HashTagInput /> */}
+        <HashTagInput />
         {/* <HotKeyInput /> */}
         {/* <StatusInput /> */}
         {/* <DataTypesInput /> */}
-        {/* <SortInput /> */}
         {/* <KeywordsInput /> */}
       </ContainerRight>
     </Wrapper>

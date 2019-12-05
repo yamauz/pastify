@@ -14,7 +14,9 @@ import styled from "@emotion/styled";
 const svgCode =
   "data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20576%20512%22%3E%3Cpath%20d%3D%22M234.8%20511.7L196%20500.4c-4.2-1.2-6.7-5.7-5.5-9.9L331.3%205.8c1.2-4.2%205.7-6.7%209.9-5.5L380%2011.6c4.2%201.2%206.7%205.7%205.5%209.9L244.7%20506.2c-1.2%204.3-5.6%206.7-9.9%205.5zm-83.2-121.1l27.2-29c3.1-3.3%202.8-8.5-.5-11.5L72.2%20256l106.1-94.1c3.4-3%203.6-8.2.5-11.5l-27.2-29c-3-3.2-8.1-3.4-11.3-.4L2.5%20250.2c-3.4%203.2-3.4%208.5%200%2011.7L140.3%20391c3.2%203%208.2%202.8%2011.3-.4zm284.1.4l137.7-129.1c3.4-3.2%203.4-8.5%200-11.7L435.7%20121c-3.2-3-8.3-2.9-11.3.4l-27.2%2029c-3.1%203.3-2.8%208.5.5%2011.5L503.8%20256l-106.1%2094.1c-3.4%203-3.6%208.2-.5%2011.5l27.2%2029c3.1%203.2%208.1%203.4%2011.3.4z%22%2F%3E%3C%2Fsvg%3E";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  margin-bottom: 20px;
+`;
 
 const FilterHeader = styled.div`
   color: #bbbbbb;
@@ -43,7 +45,7 @@ const LanguageInput = props => {
         Filter : <FilterBy>Label > Language</FilterBy>
       </FilterHeader>
       <FilterDescription>
-        Select Language. Allows multi-registration.
+        Select Language. Allows multi-selection.
       </FilterDescription>
       <Select
         placeholder={null}
@@ -58,6 +60,7 @@ const LanguageInput = props => {
           setIdsFromDatastore();
         }}
         noOptionsMessage={() => null}
+        menuPosition={"fixed"}
       />
     </Wrapper>
   );
