@@ -112,7 +112,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "400px"
+    maxWidth: "230px"
   }),
   valueContainer: base => ({
     ...base,

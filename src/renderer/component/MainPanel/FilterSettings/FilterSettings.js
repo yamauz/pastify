@@ -48,7 +48,7 @@ const FilterSettings = props => {
         <IdInput />
         <LanguageInput />
         <HashTagInput />
-        {/* <HotKeyInput /> */}
+        <HotKeyInput />
         {/* <StatusInput /> */}
         {/* <DataTypesInput /> */}
         {/* <KeywordsInput /> */}

@@ -160,7 +160,7 @@ const customStyles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    maxWidth: "400px"
+    maxWidth: "350px"
   }),
   menuList: (provided, state) => ({
     ...provided,
@@ -177,7 +177,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "400px"
+    maxWidth: "350px"
   }),
   valueContainer: base => ({
     ...base,
@@ -219,7 +219,7 @@ const customStyles = {
   multiValueRemove: (styles, state) => ({
     ...styles,
     backgroundColor: state.isSelected
-      ? state.data.order
+      ? state.data.order === "asc"
         ? ascColor
         : descColor
       : "none",

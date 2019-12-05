@@ -51,7 +51,6 @@ const LanguageInput = props => {
         placeholder={null}
         isMulti
         options={setLanguageOptions(languageFilterOpt)}
-        // defaultValue={languageFilterOpt}
         value={languageFilterOpt}
         styles={customStyles}
         onChange={opt => {
