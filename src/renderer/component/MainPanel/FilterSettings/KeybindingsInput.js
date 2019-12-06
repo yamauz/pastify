@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {
-  addIdFilterOptions,
-  removeIdFilterOptions,
-  changeIdFilterInputValue,
-  setIdsFromDatastore
-} from "../../../actions";
-import CreatableSelect from "react-select/creatable";
+// import Select from "react-select";
+import { setStatusFilterOptions, setIdsFromDatastore } from "../../../actions";
+import Select from "react-select";
+import keybindingsOptions from "../../../../common/keybindingsOptions";
 
 import styled from "@emotion/styled";
 
-const tagColor = "#053446";
 const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
@@ -19,68 +15,37 @@ const FilterHeader = styled.div`
   color: #bbbbbb;
 `;
 
-const FilterBy = styled.span`
-  font-size: 12px;
-  color: #dddddd;
-`;
-
 const FilterDescription = styled.div`
   font-size: 10px;
   color: #bbbbbb;
   margin-bottom: 5px;
 `;
 
-const HighLight = styled.span`
-  color: #f5f5f5;
-`;
-
-const IdInput = props => {
+const Component = props => {
   const {
-    idFilterOpt,
-    idFilterInputValue,
-    addIdFilterOptions,
-    removeIdFilterOptions,
-    changeIdFilterInputValue,
+    statusFilterOpt,
+    setStatusFilterOptions,
     setIdsFromDatastore
   } = props;
-
   return (
     <Wrapper>
-      <FilterHeader>
-        Filter : <FilterBy>ID</FilterBy>
-      </FilterHeader>
+      <FilterHeader>Keybindings</FilterHeader>
       <FilterDescription>
-        Type item ID <HighLight>starts from '@'</HighLight>. Allows
-        multi-selection.
+        Select a number for calling this settings with Alt key
       </FilterDescription>
-      <CreatableSelect
-        styles={customStyles}
-        components={components}
-        inputValue={idFilterInputValue}
-        isClearable
-        isMulti
-        menuIsOpen={false}
+      <Select
+        noOptionsMessage={() => null}
+        menuPosition={"fixed"}
         placeholder={null}
-        value={idFilterOpt}
-        onChange={value => {
-          removeIdFilterOptions(value);
-          setIdsFromDatastore();
-        }}
-        onInputChange={value => {
-          if (value !== "" && !value.startsWith("@")) return;
-          changeIdFilterInputValue(value);
-        }}
-        onKeyDown={e => {
-          if (!e.target.value) return;
-          switch (e.key) {
-            case "Enter":
-            case "Tab":
-              const label = e.target.value;
-              addIdFilterOptions({ label, value: label });
-              setIdsFromDatastore();
-              e.preventDefault();
-          }
-        }}
+        options={keybindingsOptions}
+        // options={setkeybindingsOptions(statusFilterOpt)}
+        // value={statusFilterOpt}
+        styles={customStyles}
+        // onChange={opt => {
+        //   const options = opt === null ? [] : opt;
+        //   setStatusFilterOptions(options);
+        //   setIdsFromDatastore();
+        // }}
       />
     </Wrapper>
   );
@@ -103,6 +68,24 @@ const customStyles = {
     padding: 2,
     "&:hover": { color: "#ffffff" }
   }),
+  option: (provided, state) => ({
+    ...provided,
+    color: "#dddddd",
+    backgroundColor: state.isFocused ? "#354154" : "none",
+    "&:hover": { backgroundColor: "#2F353D" },
+    fontSize: "11px",
+    fontStyle: state.data.fontStyle,
+    padding: "5px 5px 5px 10px"
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    maxWidth: "100px"
+  }),
+  menuList: (provided, state) => ({
+    ...provided,
+    borderRadius: "0px",
+    backgroundColor: "#333335"
+  }),
   control: (styles, state) => ({
     ...styles,
     backgroundColor: "#333335",
@@ -111,7 +94,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "200px"
+    maxWidth: "100px"
   }),
   valueContainer: base => ({
     ...base,
@@ -119,11 +102,12 @@ const customStyles = {
   }),
   multiValue: (styles, state) => ({
     ...styles,
-    backgroundColor: tagColor,
+    backgroundColor: state.data.color,
     height: 18,
     fontSize: 13,
     lineHeight: 1,
-    color: "#dddddd"
+    color: "#dddddd",
+    paddingLeft: -5
   }),
   input: (styles, { data }) => ({
     ...styles,
@@ -138,28 +122,26 @@ const customStyles = {
   }),
   multiValueRemove: (styles, state) => ({
     ...styles,
-    backgroundColor: state.isFocused ? tagColor : "none",
+    backgroundColor: state.data.color,
     opacity: state.isFocused ? "1" : "0.5",
     "&:hover": {
-      backgroundColor: tagColor,
+      backgroundColor: state.data.color,
       color: "#fff",
       opacity: "1"
     }
   })
 };
 
-const components = {
-  DropdownIndicator: null
+const setkeybindingsOptions = options => {
+  const nextOptions = options.length < 1 ? keybindingsOptions : [];
+  return nextOptions;
 };
 
 const mapStateToProps = state => ({
-  idFilterOpt: state.get("idFilterOpt"),
-  idFilterInputValue: state.get("idFilterInputValue")
+  statusFilterOpt: state.get("statusFilterOpt")
 });
 
 export default connect(mapStateToProps, {
-  addIdFilterOptions,
-  removeIdFilterOptions,
-  changeIdFilterInputValue,
+  setStatusFilterOptions,
   setIdsFromDatastore
-})(IdInput);
+})(Component);

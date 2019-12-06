@@ -160,7 +160,7 @@ const customStyles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    maxWidth: "350px"
+    maxWidth: "400px"
   }),
   menuList: (provided, state) => ({
     ...provided,
@@ -177,7 +177,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "350px"
+    maxWidth: "400px"
   }),
   valueContainer: base => ({
     ...base,

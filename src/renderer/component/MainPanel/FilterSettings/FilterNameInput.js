@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
-  addIdFilterOptions,
-  removeIdFilterOptions,
-  changeIdFilterInputValue,
+  addKeywordFilterOptions,
+  removeKeywordFilterOptions,
+  changeKeywordFilterInputValue,
   setIdsFromDatastore
 } from "../../../actions";
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 
 import styled from "@emotion/styled";
 
-const tagColor = "#053446";
+const includeColor = "#0B0B4F";
+const excludeColor = "#460505";
+
 const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
@@ -30,56 +32,39 @@ const FilterDescription = styled.div`
   margin-bottom: 5px;
 `;
 
-const HighLight = styled.span`
-  color: #f5f5f5;
-`;
-
-const IdInput = props => {
+const Component = props => {
   const {
-    idFilterOpt,
-    idFilterInputValue,
-    addIdFilterOptions,
-    removeIdFilterOptions,
-    changeIdFilterInputValue,
+    keywordFilterOpt,
+    keywordFilterInputValue,
+    addKeywordFilterOptions,
+    removeKeywordFilterOptions,
+    changeKeywordFilterInputValue,
     setIdsFromDatastore
   } = props;
 
   return (
     <Wrapper>
-      <FilterHeader>
-        Filter : <FilterBy>ID</FilterBy>
-      </FilterHeader>
+      <FilterHeader>Name</FilterHeader>
       <FilterDescription>
-        Type item ID <HighLight>starts from '@'</HighLight>. Allows
-        multi-selection.
+        Type the name of this settings. the name will show on item list header.
       </FilterDescription>
-      <CreatableSelect
-        styles={customStyles}
-        components={components}
-        inputValue={idFilterInputValue}
-        isClearable
-        isMulti
-        menuIsOpen={false}
+      <Select
+        autoFocus={true}
+        noOptionsMessage={() => null}
+        menuPosition={"fixed"}
         placeholder={null}
-        value={idFilterOpt}
+        components={components}
+        // inputValue={keywordFilterInputValue}
+        isClearable
+        menuIsOpen={false}
+        // value={keywordFilterOpt}
+        styles={customStyles}
         onChange={value => {
-          removeIdFilterOptions(value);
-          setIdsFromDatastore();
+          // removeKeywordFilterOptions(value);
+          // setIdsFromDatastore();
         }}
         onInputChange={value => {
-          if (value !== "" && !value.startsWith("@")) return;
-          changeIdFilterInputValue(value);
-        }}
-        onKeyDown={e => {
-          if (!e.target.value) return;
-          switch (e.key) {
-            case "Enter":
-            case "Tab":
-              const label = e.target.value;
-              addIdFilterOptions({ label, value: label });
-              setIdsFromDatastore();
-              e.preventDefault();
-          }
+          // changeKeywordFilterInputValue(value);
         }}
       />
     </Wrapper>
@@ -97,12 +82,6 @@ const customStyles = {
     padding: 2,
     "&:hover": { color: "#ffffff" }
   }),
-  dropdownIndicator: (styles, { data }) => ({
-    ...styles,
-    color: "#bbbbbb",
-    padding: 2,
-    "&:hover": { color: "#ffffff" }
-  }),
   control: (styles, state) => ({
     ...styles,
     backgroundColor: "#333335",
@@ -111,7 +90,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "200px"
+    maxWidth: "400px"
   }),
   valueContainer: base => ({
     ...base,
@@ -119,11 +98,12 @@ const customStyles = {
   }),
   multiValue: (styles, state) => ({
     ...styles,
-    backgroundColor: tagColor,
+    backgroundColor: state.data.label[0] !== "-" ? includeColor : excludeColor,
     height: 18,
     fontSize: 13,
     lineHeight: 1,
-    color: "#dddddd"
+    color: "#dddddd",
+    paddingLeft: -5
   }),
   input: (styles, { data }) => ({
     ...styles,
@@ -138,10 +118,11 @@ const customStyles = {
   }),
   multiValueRemove: (styles, state) => ({
     ...styles,
-    backgroundColor: state.isFocused ? tagColor : "none",
+    backgroundColor: state.data.label[0] !== "-" ? includeColor : excludeColor,
     opacity: state.isFocused ? "1" : "0.5",
     "&:hover": {
-      backgroundColor: tagColor,
+      backgroundColor:
+        state.data.label[0] !== "-" ? includeColor : excludeColor,
       color: "#fff",
       opacity: "1"
     }
@@ -153,13 +134,13 @@ const components = {
 };
 
 const mapStateToProps = state => ({
-  idFilterOpt: state.get("idFilterOpt"),
-  idFilterInputValue: state.get("idFilterInputValue")
+  keywordFilterOpt: state.get("keywordFilterOpt"),
+  keywordFilterInputValue: state.get("keywordFilterInputValue")
 });
 
 export default connect(mapStateToProps, {
-  addIdFilterOptions,
-  removeIdFilterOptions,
-  changeIdFilterInputValue,
+  addKeywordFilterOptions,
+  removeKeywordFilterOptions,
+  changeKeywordFilterInputValue,
   setIdsFromDatastore
-})(IdInput);
+})(Component);

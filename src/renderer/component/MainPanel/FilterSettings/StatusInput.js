@@ -15,8 +15,6 @@ const svgNormal =
 const svgTrash =
   "data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20d%3D%22M268%20416h24a12%2012%200%200%200%2012-12V188a12%2012%200%200%200-12-12h-24a12%2012%200%200%200-12%2012v216a12%2012%200%200%200%2012%2012zM432%2080h-82.41l-34-56.7A48%2048%200%200%200%20274.41%200H173.59a48%2048%200%200%200-41.16%2023.3L98.41%2080H16A16%2016%200%200%200%200%2096v16a16%2016%200%200%200%2016%2016h16v336a48%2048%200%200%200%2048%2048h288a48%2048%200%200%200%2048-48V128h16a16%2016%200%200%200%2016-16V96a16%2016%200%200%200-16-16zM171.84%2050.91A6%206%200%200%201%20177%2048h94a6%206%200%200%201%205.15%202.91L293.61%2080H154.39zM368%20464H80V128h288zm-212-48h24a12%2012%200%200%200%2012-12V188a12%2012%200%200%200-12-12h-24a12%2012%200%200%200-12%2012v216a12%2012%200%200%200%2012%2012z%22%2F%3E%3C%2Fsvg%3E";
 
-const hotkeyColor = "#5a120f";
-
 const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
@@ -112,7 +110,7 @@ const customStyles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    maxWidth: "400px"
+    maxWidth: "200px"
   }),
   menuList: (provided, state) => ({
     ...provided,
@@ -127,7 +125,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "400px"
+    maxWidth: "200px"
   }),
   valueContainer: base => ({
     ...base,
