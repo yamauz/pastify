@@ -142,25 +142,6 @@ const toggleTrashIcon = isTrashed => {
   }
 };
 
-const setActionAttribute = (tabId, actionIdSelected) => {
-  const actionIds = [
-    "action-paste",
-    "action-star",
-    "action-tag",
-    "action-delete"
-  ];
-
-  actionIds.forEach(actionId => {
-    const tabElm = document.getElementById(`${tabId}-${actionId}`);
-    console.log(tabElm);
-    if (actionId === actionIdSelected) {
-      tabElm.setAttribute("data-action", actionId);
-    } else {
-      tabElm.setAttribute("data-action", null);
-    }
-  });
-};
-
 const mapStateToProps = state => ({
   modalVisibility: state.get("modalVisibility")
 });

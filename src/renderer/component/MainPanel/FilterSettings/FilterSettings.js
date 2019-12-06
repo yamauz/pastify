@@ -49,7 +49,7 @@ const FilterSettings = props => {
         <LanguageInput />
         <HashTagInput />
         <HotKeyInput />
-        {/* <StatusInput /> */}
+        <StatusInput />
         {/* <DataTypesInput /> */}
         {/* <KeywordsInput /> */}
       </ContainerRight>
