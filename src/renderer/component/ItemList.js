@@ -115,6 +115,7 @@ const ItemList = props => {
           case DELETE:
             const itemValue = itemsTimeLine.get(ids.get(scrollToRow));
             const isFaved = itemValue.get("isFaved");
+            console.log(isFaved);
             if (!isFaved) {
               removeItem(props, itemValue);
               break;
@@ -297,12 +298,16 @@ const removeItem = (props, itemValue) => {
   } = props;
   // Don't remove new item when filtered list by trashed item
   const isTrashed = itemValue.get("isTrashed");
+  console.log(statusFilterOpt.length);
   if (!isTrashed && statusFilterOpt.length) {
     const [st] = statusFilterOpt;
     if (st.value.hasOwnProperty("isTrashed")) {
       const filterisTrashed = st.value.isTrashed;
       if (filterisTrashed) {
         trashItem(ids.get(scrollToRow));
+      } else {
+        deleteIds(ids.get(scrollToRow));
+        if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
       }
     }
   } else {
