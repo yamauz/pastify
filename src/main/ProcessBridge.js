@@ -3,7 +3,6 @@ const objectToMap = require("../util/objectToMap");
 
 module.exports = class ProcessBridge {
   sendItemToRenderer(pastifyData, sendFunc) {
-    // const itemRenderer = new Map();
     const itemRenderer = [];
     for (const item of pastifyData) {
       const {
@@ -35,5 +34,19 @@ module.exports = class ProcessBridge {
       itemRenderer.push(data);
     }
     sendFunc(itemRenderer);
+  }
+  sendFiltersToRenderer(filters, sendFunc) {
+    const filtersToRenderer = [];
+    for (const flt of filters) {
+      const { id, name, sortSettings, filterSettings } = flt;
+      const data = {
+        id,
+        name,
+        sortSettings,
+        filterSettings
+      };
+      filtersToRenderer.push(data);
+    }
+    sendFunc(filtersToRenderer);
   }
 };

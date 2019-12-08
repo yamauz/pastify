@@ -47,6 +47,11 @@ module.exports = class Settings {
     };
   }
 
+  initialLoad(type) {
+    const data = this.SETTINGS.get(type).value();
+    return data;
+  }
+
   getWinSettings() {
     return this.SETTINGS.get("WIN").value();
   }

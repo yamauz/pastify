@@ -34,12 +34,14 @@ const Key = styled.span`
 
 const Component = props => {
   const {
+    filtersList,
     itemListToolTipVisibility,
     callActionOnItemList,
     setIdsFromDatastore,
     toggleItemListToolTipVisibility,
     setDetailType
   } = props;
+
   useEffect(() => {
     document.getElementById("item-menu-list").focus();
   }, [itemListToolTipVisibility]);
@@ -86,6 +88,14 @@ const Component = props => {
             </MenuItem>
           );
         })}
+        <Divider />
+        {filtersList.map((filter, index) => {
+          return (
+            <MenuItem key={index}>
+              <Command>{filter.get("name")}</Command>
+            </MenuItem>
+          );
+        })}
       </Menu>
     </Wrapper>
   );
@@ -122,7 +132,8 @@ const actionList = [
 ];
 
 const mapStateToProps = state => ({
-  itemListToolTipVisibility: state.get("itemListToolTipVisibility")
+  itemListToolTipVisibility: state.get("itemListToolTipVisibility"),
+  filtersList: state.get("filtersList")
 });
 
 export default connect(mapStateToProps, {

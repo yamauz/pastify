@@ -29,9 +29,15 @@ app.on("ready", () => {
   key.register("alt", "F11");
   // key.register("ctrl", "a");
 
-  ipcMain.on("ON_LOAD_FIRST", (event, arg) => {
+  ipcMain.on("ON_LOAD_ITEM_FIRST", (event, arg) => {
     const dataTimeLine = dataStore.initialLoad("TIME_LINE");
     processBridge.sendItemToRenderer(dataTimeLine, itemToRenderer => {
+      event.returnValue = itemToRenderer;
+    });
+  });
+  ipcMain.on("ON_LOAD_FILTER_FIRST", event => {
+    const filters = settings.initialLoad("TIME_LINE");
+    processBridge.sendFiltersToRenderer(filters, itemToRenderer => {
       event.returnValue = itemToRenderer;
     });
   });

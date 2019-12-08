@@ -1,5 +1,6 @@
 import { OrderedMap, Set, Record, List } from "immutable";
 import ItemValue from "./ItemValue";
+import FilterValue from "./FilterValue";
 import sortOptions from "../../common/sortOptions";
 import _ from "lodash";
 
@@ -16,6 +17,7 @@ const StateRecord = Record({
   moment: new Date().getTime(),
   addMode: "",
   itemsTimeLine: OrderedMap(),
+  filtersList: OrderedMap(),
   itemStore: null,
   itemDisplayRange: { start: 0, stop: 20 },
   itemListToolTipVisibility: false,
@@ -67,9 +69,16 @@ const StateRecord = Record({
 
 class State extends StateRecord {
   constructor() {
-    const items = ipcRenderer.sendSync("ON_LOAD_FIRST");
+    // initial load of items
+    const items = ipcRenderer.sendSync("ON_LOAD_ITEM_FIRST");
     const mapVal = items.map(item => [item.id, new ItemValue(item)]);
     const itemsTimeLine = OrderedMap(mapVal);
+
+    // initial load of filter
+    const filters = ipcRenderer.sendSync("ON_LOAD_FILTER_FIRST");
+    const mapFilter = filters.map(item => [item.id, new FilterValue(item)]);
+    const filtersList = OrderedMap(mapFilter);
+
     const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
     const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
     const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
@@ -87,9 +96,11 @@ class State extends StateRecord {
     super({
       // windows settings
       alwaysOnTop,
-      // itmeline
+      // timeline
       itemsTimeLine,
       idsTimeLine,
+      // Saved filter settings
+      filtersList,
       // sort filter options
       sortOpt,
       dataTypeFilterOpt,
