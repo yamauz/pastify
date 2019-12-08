@@ -57,6 +57,10 @@ export const {
   setHashTagFilterOptions,
   addHashTagFilterOptions,
   changeHashTagFilterInputValue,
+  // Filter Name  ----------------------------------------------
+  setFilterName,
+  // Save Current Filter Settings ------------------------------
+  saveFilterSettings,
   // Set item status by hash tag ----------------------------------
   setHashTagInputValue,
   addHashTagValue,
@@ -125,6 +129,10 @@ export const {
   SET_HASH_TAG_INPUT_VALUE: value => value,
   ADD_HASH_TAG_VALUE: value => value,
   CHANGE_HASH_TAG_VALUE: value => value,
+  //Filter Name
+  SET_FILTER_NAME: name => name,
+  //Save Current Filter Settings
+  SAVE_FILTER_SETTINGS: () => {},
   // Filter by data type -----------------------------------------
   SET_DATA_TYPE_FILTER_OPTIONS: options => options,
   // Filter by status --------------------------------------------

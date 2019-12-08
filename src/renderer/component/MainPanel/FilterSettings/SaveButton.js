@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 // import Select from "react-select";
-import { setStatusFilterOptions, setIdsFromDatastore } from "../../../actions";
+import { saveFilterSettings } from "../../../actions";
 
 import styled from "@emotion/styled";
 
@@ -23,23 +23,22 @@ const Button = styled.button`
 `;
 
 const Component = props => {
-  const {
-    statusFilterOpt,
-    setStatusFilterOptions,
-    setIdsFromDatastore
-  } = props;
+  const { saveFilterSettings } = props;
   return (
     <Wrapper>
-      <Button>Save</Button>
+      <Button
+        onClick={e => {
+          saveFilterSettings();
+        }}
+      >
+        Save
+      </Button>
     </Wrapper>
   );
 };
 
-const mapStateToProps = state => ({
-  statusFilterOpt: state.get("statusFilterOpt")
-});
+const mapStateToProps = state => ({});
 
 export default connect(mapStateToProps, {
-  setStatusFilterOptions,
-  setIdsFromDatastore
+  saveFilterSettings
 })(Component);

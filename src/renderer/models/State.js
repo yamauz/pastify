@@ -1,6 +1,7 @@
 import { OrderedMap, Set, Record, List } from "immutable";
 import ItemValue from "./ItemValue";
 import sortOptions from "../../common/sortOptions";
+import _ from "lodash";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -36,6 +37,8 @@ const StateRecord = Record({
   prevFocusedElm: null,
   actionSelected: "",
   sortOpt: null,
+  // Filter Name -------------------------------------------------
+  filterName: "",
   // Filter by id ------------------------------------------------
   idFilterOpt: [],
   idFilterInputValue: "",
@@ -343,6 +346,12 @@ class State extends StateRecord {
     const nextIds = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
     return this.set("idsTimeLine", List(nextIds));
   }
+  saveFilterSettings() {
+    const filterName = this.get("filterName");
+    this._saveFilterSettings(filterName);
+    return this;
+  }
+
   addKeywordFilterOptions(keywords) {
     const prevKeywords = this.get("keywordFilterOpt");
     const wordList = prevKeywords.map(keyword => keyword.value);
@@ -489,6 +498,9 @@ class State extends StateRecord {
   }
   _updateWinSettings(value) {
     ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
+  }
+  _saveFilterSettings(filterName) {
+    ipcRenderer.sendSync("SAVE_FILTER_SETTINGS", filterName);
   }
 }
 

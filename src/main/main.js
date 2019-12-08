@@ -84,6 +84,17 @@ app.on("ready", () => {
     const ids = dataStore.getIds3("TIME_LINE", sortSettings, filterSettings);
     event.returnValue = ids;
   });
+  ipcMain.on("SAVE_FILTER_SETTINGS", (event, filterName) => {
+    const sortSettings = settings.getSortSettings("CURRENT");
+    const filterSettings = settings.getFilterSettings("CURRENT");
+    settings.saveFilterSettings(
+      "TIME_LINE",
+      filterName,
+      sortSettings,
+      filterSettings
+    );
+    event.returnValue = null;
+  });
   ipcMain.on("UPDATE_ITEMS", (event, id, value) => {
     if (Array.isArray(id)) {
       id.forEach(i => {

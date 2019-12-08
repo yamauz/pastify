@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {
-  addKeywordFilterOptions,
-  removeKeywordFilterOptions,
-  changeKeywordFilterInputValue,
-  setIdsFromDatastore
-} from "../../../actions";
+import { setFilterName } from "../../../actions";
 import Select from "react-select";
 
 import styled from "@emotion/styled";
@@ -32,15 +27,22 @@ const FilterDescription = styled.div`
   margin-bottom: 5px;
 `;
 
+const NameInput = styled.input`
+  background-color: #333335;
+  border: none;
+  height: 25px;
+  padding-left: 8px;
+  caret-color: #eeeeee;
+  color: #dddddd;
+  width: 100%;
+  max-width: 400px;
+  &:focus {
+    border: solid 1px #5c5d37;
+  }
+`;
+
 const Component = props => {
-  const {
-    keywordFilterOpt,
-    keywordFilterInputValue,
-    addKeywordFilterOptions,
-    removeKeywordFilterOptions,
-    changeKeywordFilterInputValue,
-    setIdsFromDatastore
-  } = props;
+  const { setFilterName, filterName } = props;
 
   return (
     <Wrapper>
@@ -48,25 +50,32 @@ const Component = props => {
       <FilterDescription>
         Type the name of this settings. the name will show on item list header.
       </FilterDescription>
-      <Select
+      {/* <Select
         autoFocus={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
         placeholder={null}
         components={components}
-        // inputValue={keywordFilterInputValue}
+        inputValue={filterName}
         isClearable
         menuIsOpen={false}
-        // value={keywordFilterOpt}
+        // value={filterName}
         styles={customStyles}
         onChange={value => {
-          // removeKeywordFilterOptions(value);
-          // setIdsFromDatastore();
+          console.log("test");
         }}
+        onBlur={() => null}
         onInputChange={value => {
-          // changeKeywordFilterInputValue(value);
+          console.log("onInputChange");
+          setFilterName(value);
         }}
-      />
+      /> */}
+      <NameInput
+        value={filterName}
+        onChange={e => {
+          setFilterName(e.target.value);
+        }}
+      ></NameInput>
     </Wrapper>
   );
 };
@@ -135,12 +144,10 @@ const components = {
 
 const mapStateToProps = state => ({
   keywordFilterOpt: state.get("keywordFilterOpt"),
-  keywordFilterInputValue: state.get("keywordFilterInputValue")
+  keywordFilterInputValue: state.get("keywordFilterInputValue"),
+  filterName: state.get("filterName")
 });
 
 export default connect(mapStateToProps, {
-  addKeywordFilterOptions,
-  removeKeywordFilterOptions,
-  changeKeywordFilterInputValue,
-  setIdsFromDatastore
+  setFilterName
 })(Component);

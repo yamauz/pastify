@@ -159,6 +159,14 @@ export default handleActions(
     CHANGE_HASH_TAG_FILTER_INPUT_VALUE: (state, { payload: value }) => {
       return state.set("hashTagFilterInputValue", value);
     },
+    // Filter Name -------------------------------------------------
+    SET_FILTER_NAME: (state, { payload: name }) => {
+      return state.set("filterName", name);
+    },
+    SAVE_FILTER_SETTINGS: state => {
+      return state.saveFilterSettings();
+    },
+
     // Set item status by hash tag ----------------------------------
     SET_HASH_TAG_INPUT_VALUE: (state, { payload: value }) => {
       return state.set("hashTagInputValue", value);

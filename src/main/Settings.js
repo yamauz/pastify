@@ -1,6 +1,7 @@
 const path = require("path");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
+const shortid = require("shortid");
 
 module.exports = class Settings {
   constructor() {
@@ -53,6 +54,21 @@ module.exports = class Settings {
   // Options for select-box---------------------------------------------
   getFilterSortOptions(type) {
     return this.SETTINGS.get(type).value();
+  }
+
+  saveFilterSettings(type, filterName, sortSettings, filterSettings) {
+    const id = shortid.generate();
+    const name = filterName;
+    const saveData = {
+      id,
+      name,
+      sortSettings,
+      filterSettings
+    };
+
+    this.SETTINGS.get(type)
+      .push(saveData)
+      .write();
   }
 
   // Settings for filtering data ----------------------------------------
