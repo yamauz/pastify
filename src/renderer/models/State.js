@@ -461,12 +461,8 @@ class State extends StateRecord {
         }, 100);
       }
     }
-    console.log(`nextVisible : ${nextVisible}`);
 
     if (nextVisible) {
-      setTimeout(() => {
-        document.getElementById("tooltip-row-0").focus();
-      }, 100);
       return this.withMutations(item => {
         item
           .set("prevFocusedElm", document.activeElement)

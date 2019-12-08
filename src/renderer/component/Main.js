@@ -25,6 +25,8 @@ import "electron-react-titlebar/assets/style.css";
 import styled from "@emotion/styled";
 // Common
 import keyCode from "../../common/keycode";
+import MenuList from "./MenuList";
+import "../styles/rc-menu.css";
 
 const Wrapper = styled.div`
   display: grid;
@@ -70,6 +72,7 @@ const { ipcRenderer } = window.require("electron");
 
 const Main = props => {
   const {
+    prevFocusedElm,
     modalVisibility,
     filterSaveModalVisibility,
     itemListToolTipVisibility,
@@ -115,15 +118,34 @@ const Main = props => {
 
   useEffect(() => {
     window.addEventListener("click", toggleToolTipByClick, true);
+    window.addEventListener("keydown", toggleToolTipByKeyDown, true);
     return () => {
       window.removeEventListener("click", toggleToolTipByClick, true);
+      window.removeEventListener("keydown", toggleToolTipByKeyDown, true);
     };
   }, [itemListToolTipVisibility]);
 
   const toggleToolTipByClick = () => {
-    const regex = /^tooltip/;
-    if (!regex.test(document.activeElement.id) && itemListToolTipVisibility) {
-      toggleItemListToolTipVisibility();
+    const regex1 = /^tooltip/;
+    const regex2 = /^rc-/;
+    if (!regex1.test(document.activeElement.id) && itemListToolTipVisibility) {
+      if (!regex2.test(document.activeElement.className)) {
+        toggleItemListToolTipVisibility();
+      }
+    }
+  };
+  const toggleToolTipByKeyDown = e => {
+    const { shiftKey, ctrlKey } = e;
+    const pressKey = e.keyCode;
+    const { O } = keyCode;
+
+    if (ctrlKey && !shiftKey) {
+      if (pressKey === O) {
+        toggleItemListToolTipVisibility();
+        if (itemListToolTipVisibility) prevFocusedElm.focus();
+      }
+    } else if (!ctrlKey && shiftKey) {
+    } else if (ctrlKey && shiftKey) {
     }
   };
 
@@ -143,6 +165,8 @@ const Main = props => {
       <GridFooter>
         <Footer />
       </GridFooter>
+      {itemListToolTipVisibility && <MenuList />}
+
       {viewTagModal(modalVisibility)}
       {viewFilterSaveModal(filterSaveModalVisibility)}
     </Wrapper>
@@ -153,6 +177,7 @@ const viewTagModal = visible => (visible ? <Modal /> : null);
 const viewFilterSaveModal = visible => (visible ? <FilterSaveModal /> : null);
 
 const mapStateToProps = state => ({
+  prevFocusedElm: state.get("prevFocusedElm"),
   itemsTimeLine: state.get("itemsTimeLine"),
   idsTimeLine: state.get("idsTimeLine"),
   modalVisibility: state.get("modalVisibility"),

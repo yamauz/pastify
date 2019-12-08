@@ -11,6 +11,7 @@ import ThList from "../../icon/listheader/th-list.svg";
 import EllipsisOff from "../../icon/listheader/ellipsis-v-alt.svg";
 import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
 import ToolTipList from "./ToolTipList";
+
 import {
   toggleMainPanel,
   toggleListMode,
@@ -74,7 +75,7 @@ const ListHeader = props => {
       <Left>
         <ItemText>{ids.size} items</ItemText>
       </Left>
-      <Tooltip
+      {/* <Tooltip
         visible={itemListToolTipVisibility}
         placement="bottomRight"
         trigger={["click"]}
@@ -83,41 +84,33 @@ const ListHeader = props => {
         align={{
           offset: [-10, -5]
         }}
-      >
-        <Right id="tooltip" tabIndex="0">
-          {/* <IconWrapper onClick={() => {}}>
-            <AngleDoubleRight
-              style={{ width: "14px", fill: "#dddddd" }}
-            ></AngleDoubleRight>
-          </IconWrapper> */}
-          <IconWrapper
-            onClick={() => {
-              toggleMainPanel();
-            }}
-          >
-            {_toggleMainPanel(isFold)}
-            {/* <AngleDoubleLeft
-              style={{ width: "14px", fill: "#dddddd" }}
-            ></AngleDoubleLeft> */}
-          </IconWrapper>
-          <IconWrapper
-            onClick={() => {
-              toggleListMode();
-            }}
-          >
-            {_toggleListMode(isCompact)}
-          </IconWrapper>
-          <IconWrapper
-            onClick={() => {
-              toggleItemListToolTipVisibility();
-            }}
-          >
-            <Ellipsis
-              style={{ width: "2.6px", fill: "#dddddd", marginTop: "1px" }}
-            ></Ellipsis>
-          </IconWrapper>
-        </Right>
-      </Tooltip>
+      > */}
+      <Right id="tooltip" tabIndex="0">
+        <IconWrapper
+          onClick={() => {
+            toggleMainPanel();
+          }}
+        >
+          {_toggleMainPanel(isFold)}
+        </IconWrapper>
+        <IconWrapper
+          onClick={() => {
+            toggleListMode();
+          }}
+        >
+          {_toggleListMode(isCompact)}
+        </IconWrapper>
+        <IconWrapper
+          onClick={() => {
+            toggleItemListToolTipVisibility();
+          }}
+        >
+          <Ellipsis
+            style={{ width: "2.6px", fill: "#dddddd", marginTop: "1px" }}
+          ></Ellipsis>
+        </IconWrapper>
+      </Right>
+      {/* </Tooltip> */}
     </Wrapper>
   );
 };
