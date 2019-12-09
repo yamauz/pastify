@@ -3,9 +3,16 @@ import shortid from "shortid";
 
 const FilterValueRecord = Record({
   id: shortid.generate(),
-  name: "",
-  sortSettings: [],
-  filterSettings: []
+  filterName: "",
+  filterShortcutKeyOpt: null,
+  sortOpt: [],
+  dataTypeFilterOpt: [],
+  keywordFilterOpt: [],
+  idFilterOpt: [],
+  statusFilterOpt: [],
+  hotKeyFilterOpt: [],
+  hashTagFilterOpt: [],
+  languageFilterOpt: []
 });
 
 class FilterValue extends FilterValueRecord {

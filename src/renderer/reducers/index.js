@@ -137,6 +137,7 @@ export default handleActions(
     },
     // Filter by language ---------------------------------------------
     SET_LANGUAGE_FILTER_OPTIONS: (state, { payload: options }) => {
+      console.log(options);
       return state.set("languageFilterOpt", options);
     },
     // Filter by hot key --------------------------------------------
@@ -163,6 +164,10 @@ export default handleActions(
     SET_FILTER_NAME: (state, { payload: name }) => {
       return state.set("filterName", name);
     },
+    // Filter Shortcut Key -------------------------------------------------
+    SET_SHORTCUT_KEY_OPT: (state, { payload: opt }) => {
+      return state.set("filterShortcutKeyOpt", opt);
+    },
     SAVE_FILTER_SETTINGS: state => {
       return state.saveFilterSettings();
     },
@@ -187,8 +192,8 @@ export default handleActions(
     CHANGE_KEY_VALUE: (state, { payload: value }) => {
       return state.changeKeyValue(value);
     },
-    CALL_ACTION_ON_ITEM_LIST: (state, { payload: command }) => {
-      return state.callActionOnItemList(command);
+    CALL_ACTION_ON_ITEM_LIST: (state, { payload: { command, filterId } }) => {
+      return state.callActionOnItemList(command, filterId);
     },
     STORE_ITEM_ON_MODAL_OPEN: state => {
       return state.storeItemOnModalOpen();

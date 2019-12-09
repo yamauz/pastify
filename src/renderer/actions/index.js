@@ -59,6 +59,8 @@ export const {
   changeHashTagFilterInputValue,
   // Filter Name  ----------------------------------------------
   setFilterName,
+  // Filter Shortcut Key  ----------------------------------------------
+  setShortcutKeyOpt,
   // Save Current Filter Settings ------------------------------
   saveFilterSettings,
   // Set item status by hash tag ----------------------------------
@@ -131,6 +133,8 @@ export const {
   CHANGE_HASH_TAG_VALUE: value => value,
   //Filter Name
   SET_FILTER_NAME: name => name,
+  //Shortcut Key
+  SET_SHORTCUT_KEY_OPT: opt => opt,
   //Save Current Filter Settings
   SAVE_FILTER_SETTINGS: () => {},
   // Filter by data type -----------------------------------------
@@ -151,7 +155,7 @@ export const {
   SET_KEY_INPUT_VALUE: value => value,
   ADD_KEY_VALUE: value => value,
   CHANGE_KEY_VALUE: value => value,
-  CALL_ACTION_ON_ITEM_LIST: command => command,
+  CALL_ACTION_ON_ITEM_LIST: (command, filterId) => ({ command, filterId }),
   UPDATE_TEXT_LANG: lang => lang,
   UPDATE_KEY: key => key,
   UPDATE_TAG: tag => tag,

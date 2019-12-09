@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #404040;
+  background-color: #2f3140;
   color: #b5b5b5;
   height: 100%;
   width: 301px;
@@ -34,7 +34,7 @@ const Left = styled.div`
   flex-grow: 2;
   display: flex;
   align-items: center;
-  margin-left: 5px;
+  margin-left: 10px;
 `;
 const Right = styled.div`
   display: flex;
@@ -54,7 +54,7 @@ const IconWrapper = styled.div`
 `;
 
 const ItemText = styled.p`
-  color: #b5b5b5;
+  color: #dddddd;
   font-family: sans-serif;
   font-size: 12px;
 `;
@@ -67,13 +67,14 @@ const ListHeader = props => {
     itemListToolTipVisibility,
     toggleItemListToolTipVisibility,
     toggleListMode,
-    toggleMainPanel
+    toggleMainPanel,
+    filterName
   } = props;
 
   return (
     <Wrapper>
       <Left>
-        <ItemText>{ids.size} items</ItemText>
+        <ItemText>{_setFiltersName(ids.size, filterName)}</ItemText>
       </Left>
       {/* <Tooltip
         visible={itemListToolTipVisibility}
@@ -114,6 +115,12 @@ const ListHeader = props => {
     </Wrapper>
   );
 };
+
+const _setFiltersName = (size, name) => {
+  const dispName = name === "" ? `All Items(${size})` : `${name}(${size})`;
+  return dispName;
+};
+
 const _toggleMainPanel = isFold => {
   const style = {
     width: "14px",
@@ -142,6 +149,7 @@ const _toggleListMode = isCompact => {
 };
 
 const mapStateToProps = state => ({
+  filterName: state.get("filterName"),
   isCompact: state.get("isCompact"),
   isFold: state.get("isFold"),
   itemsTimeLine: state.get("itemsTimeLine"),

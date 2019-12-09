@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { setFilterName } from "../../../actions";
+import { setFilterName, setIdsFromDatastore } from "../../../actions";
 import Select from "react-select";
 
 import styled from "@emotion/styled";
@@ -42,7 +42,7 @@ const NameInput = styled.input`
 `;
 
 const Component = props => {
-  const { setFilterName, filterName } = props;
+  const { setFilterName, setIdsFromDatastore, filterName } = props;
 
   return (
     <Wrapper>
@@ -50,96 +50,15 @@ const Component = props => {
       <FilterDescription>
         Type the name of this settings. the name will show on item list header.
       </FilterDescription>
-      {/* <Select
-        autoFocus={true}
-        noOptionsMessage={() => null}
-        menuPosition={"fixed"}
-        placeholder={null}
-        components={components}
-        inputValue={filterName}
-        isClearable
-        menuIsOpen={false}
-        // value={filterName}
-        styles={customStyles}
-        onChange={value => {
-          console.log("test");
-        }}
-        onBlur={() => null}
-        onInputChange={value => {
-          console.log("onInputChange");
-          setFilterName(value);
-        }}
-      /> */}
       <NameInput
         value={filterName}
         onChange={e => {
           setFilterName(e.target.value);
+          setIdsFromDatastore();
         }}
       ></NameInput>
     </Wrapper>
   );
-};
-
-const customStyles = {
-  indicatorSeparator: (styles, { data }) => ({
-    ...styles,
-    display: "none"
-  }),
-  clearIndicator: (styles, { data }) => ({
-    ...styles,
-    color: "#bbbbbb",
-    padding: 2,
-    "&:hover": { color: "#ffffff" }
-  }),
-  control: (styles, state) => ({
-    ...styles,
-    backgroundColor: "#333335",
-    "&:hover": { border: state.isFocused ? "solid 1px #5c5d37" : "none" },
-    border: state.isFocused ? "solid 1px #5c5d37" : "none",
-    boxShadow: "none", // no box-shadow
-    borderRadius: "0px",
-    minHeight: "25px",
-    maxWidth: "400px"
-  }),
-  valueContainer: base => ({
-    ...base,
-    padding: "0px 6px"
-  }),
-  multiValue: (styles, state) => ({
-    ...styles,
-    backgroundColor: state.data.label[0] !== "-" ? includeColor : excludeColor,
-    height: 18,
-    fontSize: 13,
-    lineHeight: 1,
-    color: "#dddddd",
-    paddingLeft: -5
-  }),
-  input: (styles, { data }) => ({
-    ...styles,
-    color: "#dddddd",
-    margin: 0,
-    padding: 0
-  }),
-  multiValueLabel: (styles, { data }) => ({
-    ...styles,
-    color: "#dddddd",
-    "&:hover": { color: "#ffffff" }
-  }),
-  multiValueRemove: (styles, state) => ({
-    ...styles,
-    backgroundColor: state.data.label[0] !== "-" ? includeColor : excludeColor,
-    opacity: state.isFocused ? "1" : "0.5",
-    "&:hover": {
-      backgroundColor:
-        state.data.label[0] !== "-" ? includeColor : excludeColor,
-      color: "#fff",
-      opacity: "1"
-    }
-  })
-};
-
-const components = {
-  DropdownIndicator: null
 };
 
 const mapStateToProps = state => ({
@@ -149,5 +68,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  setFilterName
+  setFilterName,
+  setIdsFromDatastore
 })(Component);

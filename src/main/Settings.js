@@ -16,6 +16,8 @@ module.exports = class Settings {
         isMaximized: false
       },
       CURRENT: {
+        filterName: "",
+        filterShortcutKeyOpt: null,
         sortOpt: [],
         dataTypeFilterOpt: [],
         keywordFilterOpt: [],
@@ -61,14 +63,30 @@ module.exports = class Settings {
     return this.SETTINGS.get(type).value();
   }
 
-  saveFilterSettings(type, filterName, sortSettings, filterSettings) {
+  saveFilterSettings(type, filterName, filterShortcutKeyOpt) {
     const id = shortid.generate();
-    const name = filterName;
+    const {
+      sortOpt,
+      dataTypeFilterOpt,
+      keywordFilterOpt,
+      idFilterOpt,
+      statusFilterOpt,
+      hotKeyFilterOpt,
+      hashTagFilterOpt,
+      languageFilterOpt
+    } = this.SETTINGS.get("CURRENT").value();
     const saveData = {
       id,
-      name,
-      sortSettings,
-      filterSettings
+      filterName,
+      filterShortcutKeyOpt,
+      sortOpt,
+      dataTypeFilterOpt,
+      keywordFilterOpt,
+      idFilterOpt,
+      statusFilterOpt,
+      hotKeyFilterOpt,
+      hashTagFilterOpt,
+      languageFilterOpt
     };
 
     this.SETTINGS.get(type)

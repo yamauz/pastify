@@ -38,12 +38,31 @@ module.exports = class ProcessBridge {
   sendFiltersToRenderer(filters, sendFunc) {
     const filtersToRenderer = [];
     for (const flt of filters) {
-      const { id, name, sortSettings, filterSettings } = flt;
+      const {
+        id,
+        filterName,
+        filterShortcutKeyOpt,
+        sortOpt,
+        dataTypeFilterOpt,
+        keywordFilterOpt,
+        idFilterOpt,
+        statusFilterOpt,
+        hotKeyFilterOpt,
+        hashTagFilterOpt,
+        languageFilterOpt
+      } = flt;
       const data = {
         id,
-        name,
-        sortSettings,
-        filterSettings
+        filterName,
+        filterShortcutKeyOpt,
+        sortOpt,
+        dataTypeFilterOpt,
+        keywordFilterOpt,
+        idFilterOpt,
+        statusFilterOpt,
+        hotKeyFilterOpt,
+        hashTagFilterOpt,
+        languageFilterOpt
       };
       filtersToRenderer.push(data);
     }

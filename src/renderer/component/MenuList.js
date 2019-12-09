@@ -46,9 +46,20 @@ const Component = props => {
     document.getElementById("item-menu-list").focus();
   }, [itemListToolTipVisibility]);
 
-  const callAction = command => {
+  const filtersToRender = [];
+  filtersList.forEach(val => {
+    const id = val.get("id");
+    const filterName = val.get("filterName");
+    const filterShortcutKeyOpt = val.get("filterShortcutKeyOpt");
+    const shortcutKey =
+      filterShortcutKeyOpt === null ? "" : filterShortcutKeyOpt.label;
+
+    filtersToRender.push({ id, filterName, shortcutKey });
+  });
+
+  const callAction = (command, filterId) => {
     toggleItemListToolTipVisibility();
-    callActionOnItemList(command);
+    callActionOnItemList(command, filterId);
 
     switch (command) {
       case "trashAllItems":
@@ -56,13 +67,12 @@ const Component = props => {
         setIdsFromDatastore();
         break;
       case "trashAllItemsWithoutFaved":
-        setIdsFromDatastore();
-        break;
       case "clearFilterSortSettings":
+      case "reloadFilterSortSettings":
+      case "setUserFilter":
         setIdsFromDatastore();
         break;
-      case "reloadFilterSortSettings":
-        setIdsFromDatastore();
+        // setIdsFromDatastore();
         break;
       default:
         break;
@@ -70,17 +80,17 @@ const Component = props => {
   };
 
   const handleAction = info => {
-    console.log(info);
     const command = info.item.props.command;
-    callAction(command);
+    const filterid = info.item.props.filterid;
+    callAction(command, filterid);
   };
 
   return (
     <Wrapper>
       <Menu onSelect={handleAction} defaultActiveFirst id={"item-menu-list"}>
-        {actionList.map((action, index) => {
+        {actionList.map(action => {
           return (
-            <MenuItem key={index} command={action.command}>
+            <MenuItem key={action.command} command={action.command}>
               <ItemWrapper>
                 <Command> {action.label}</Command>
                 <Key>{action.key}</Key>
@@ -89,10 +99,17 @@ const Component = props => {
           );
         })}
         <Divider />
-        {filtersList.map((filter, index) => {
+        {filtersToRender.map(filter => {
           return (
-            <MenuItem key={index}>
-              <Command>{filter.get("name")}</Command>
+            <MenuItem
+              key={filter.filterName}
+              command={"setUserFilter"}
+              filterid={filter.id}
+            >
+              <ItemWrapper>
+                <Command> {filter.filterName}</Command>
+                <Key>{filter.shortcutKey}</Key>
+              </ItemWrapper>
             </MenuItem>
           );
         })}

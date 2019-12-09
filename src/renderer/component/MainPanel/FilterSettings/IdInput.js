@@ -50,7 +50,7 @@ const IdInput = props => {
         Filter : <FilterBy>ID</FilterBy>
       </FilterHeader>
       <FilterDescription>
-        Type item ID <HighLight>starts from '@'</HighLight>. Allows
+        Type item ID starts from <HighLight>@</HighLight>. Allows
         multi-selection.
       </FilterDescription>
       <CreatableSelect

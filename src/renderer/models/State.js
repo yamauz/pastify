@@ -39,6 +39,8 @@ const StateRecord = Record({
   prevFocusedElm: null,
   actionSelected: "",
   sortOpt: null,
+  // Filter Shortcut Key -------------------------------------------------
+  filterShortcutKeyOpt: null,
   // Filter Name -------------------------------------------------
   filterName: "",
   // Filter by id ------------------------------------------------
@@ -83,6 +85,8 @@ class State extends StateRecord {
     const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
     const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
     const {
+      filterName,
+      filterShortcutKeyOpt,
       sortOpt,
       dataTypeFilterOpt,
       keywordFilterOpt,
@@ -102,6 +106,8 @@ class State extends StateRecord {
       // Saved filter settings
       filtersList,
       // sort filter options
+      filterName,
+      filterShortcutKeyOpt,
       sortOpt,
       dataTypeFilterOpt,
       keywordFilterOpt,
@@ -248,8 +254,8 @@ class State extends StateRecord {
     return this.setIn(setIn, true);
   }
   // Action On Item List --------------------------------------------------
-  callActionOnItemList(command) {
-    return this[command]();
+  callActionOnItemList(command, filterId) {
+    return this[command](filterId);
   }
   addNewItem() {
     // this.get("itemListRef").scrollToRow(0);
@@ -318,12 +324,39 @@ class State extends StateRecord {
         .set("statusFilterOpt", [])
         .set("hotKeyFilterOpt", [])
         .set("hashTagFilterOpt", [])
-        .set("languageFilterOpt", []);
+        .set("languageFilterOpt", [])
+        .set("filterShortcutKeyOpt", [])
+        .set("filterName", "");
     });
   }
   reloadFilterSortSettings() {
     console.log("reload filter sort settings");
     return this;
+  }
+  setUserFilter(filterId) {
+    const userFilter = this.get("filtersList").get(filterId);
+    // console.log(userFilter.get("keywordFilterOpt"));
+    // console.log(userFilter.get("idFilterOpt"));
+    // console.log(userFilter.get("dataTypeFilterOpt"));
+    // console.log(userFilter.get("statusFilterOpt"));
+    // console.log(userFilter.get("hotKeyFilterOpt"));
+    // console.log(userFilter.get("hashTagfilterOpt"));
+    console.log(userFilter.get("languageFilterOpt"));
+
+    return this.withMutations(state => {
+      state
+        .set("filterName", userFilter.get("filterName"))
+        .set("filterShortcutKeyOpt", userFilter.get("filterShortcutKeyOpt"))
+        .set("sortOpt", userFilter.get("sortOpt"))
+        .set("keywordFilterOpt", userFilter.get("keywordFilterOpt"))
+        .set("idFilterOpt", userFilter.get("idFilterOpt"))
+        .set("dataTypeFilterOpt", userFilter.get("dataTypeFilterOpt"))
+        .set("statusFilterOpt", userFilter.get("statusFilterOpt"))
+        .set("hotKeyFilterOpt", userFilter.get("hotKeyFilterOpt"))
+        .set("hashTagFilterOpt", userFilter.get("hashTagFilterOpt"))
+        .set("languageFilterOpt", userFilter.get("languageFilterOpt"));
+    });
+    // return this;
   }
   storeItemOnModalOpen() {
     const listName = "itemsTimeLine";
@@ -346,6 +379,8 @@ class State extends StateRecord {
   setIdsFromDatastore() {
     const sortOpt = this.get("sortOpt");
     const filterOpt = {
+      filterName: this.get("filterName"),
+      filterShortcutKeyOpt: this.get("filterShortcutKeyOpt"),
       keywordFilterOpt: this.get("keywordFilterOpt"),
       idFilterOpt: this.get("idFilterOpt"),
       dataTypeFilterOpt: this.get("dataTypeFilterOpt"),
@@ -354,12 +389,14 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
+    console.log("a");
     const nextIds = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
     return this.set("idsTimeLine", List(nextIds));
   }
   saveFilterSettings() {
     const filterName = this.get("filterName");
-    this._saveFilterSettings(filterName);
+    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
+    this._saveFilterSettings(filterName, filterShortcutKeyOpt);
     return this;
   }
 
@@ -506,8 +543,12 @@ class State extends StateRecord {
   _updateWinSettings(value) {
     ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
   }
-  _saveFilterSettings(filterName) {
-    ipcRenderer.sendSync("SAVE_FILTER_SETTINGS", filterName);
+  _saveFilterSettings(filterName, filterShortcutKeyOpt) {
+    ipcRenderer.sendSync(
+      "SAVE_FILTER_SETTINGS",
+      filterName,
+      filterShortcutKeyOpt
+    );
   }
 }
 

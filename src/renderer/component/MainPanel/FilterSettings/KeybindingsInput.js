@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import keycode from "keycode";
 import { connect } from "react-redux";
 // import Select from "react-select";
-import { setStatusFilterOptions, setIdsFromDatastore } from "../../../actions";
-import Select from "react-select";
+import { setShortcutKeyOpt, setIdsFromDatastore } from "../../../actions";
+import CreatableSelect from "react-select/creatable";
 import keybindingsOptions from "../../../../common/keybindingsOptions";
 
 import styled from "@emotion/styled";
+const tagColor = "#34502d";
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -21,31 +23,70 @@ const FilterDescription = styled.div`
   margin-bottom: 5px;
 `;
 
+const HighLight = styled.span`
+  color: #f5f5f5;
+`;
+
 const Component = props => {
   const {
-    statusFilterOpt,
-    setStatusFilterOptions,
-    setIdsFromDatastore
+    setShortcutKeyOpt,
+    setIdsFromDatastore,
+    filterShortcutKeyOpt
   } = props;
   return (
     <Wrapper>
       <FilterHeader>Keybindings</FilterHeader>
       <FilterDescription>
-        Select a number for calling this settings with Alt key
+        Type a key from<HighLight> A-Z,0-9</HighLight> with modifier key from
+        <HighLight> Shift,Ctrl,Alt</HighLight>
+        <br />
+        CAUTION : This setting will overrides if same keybinding already exists.
       </FilterDescription>
-      <Select
-        noOptionsMessage={() => null}
-        menuPosition={"fixed"}
-        placeholder={null}
-        options={keybindingsOptions}
-        // options={setkeybindingsOptions(statusFilterOpt)}
-        // value={statusFilterOpt}
+      <CreatableSelect
         styles={customStyles}
-        // onChange={opt => {
-        //   const options = opt === null ? [] : opt;
-        //   setStatusFilterOptions(options);
-        //   setIdsFromDatastore();
-        // }}
+        components={components}
+        value={filterShortcutKeyOpt}
+        isClearable
+        isMulti
+        menuIsOpen={false}
+        placeholder={null}
+        onChange={value => {
+          setShortcutKeyOpt(value);
+        }}
+        onInputChange={value => {
+          return "";
+        }}
+        onKeyDown={e => {
+          const { shiftKey, ctrlKey, altKey } = e;
+          const SHIFT = shiftKey ? "Shift+" : "";
+          const CTRL = ctrlKey ? "Ctrl+" : "";
+          const ALT = altKey ? "Alt+" : "";
+          if (shiftKey || ctrlKey || altKey) {
+            const keyPressed = keycode(e).toUpperCase();
+            const regx = /^[0-9A-Z]$/;
+            if (
+              regx.test(keyPressed) &&
+              keyPressed !== "SHIFT" &&
+              keyPressed !== "CTRL" &&
+              keyPressed !== "ALT"
+            ) {
+              const label = `${SHIFT}${CTRL}${ALT}${keyPressed}`;
+              const value = `${SHIFT}${CTRL}${ALT}${keyPressed}`.toLowerCase();
+              if (!!filterShortcutKeyOpt) {
+                if (value === filterShortcutKeyOpt.value) {
+                  console.log("same key");
+                  return;
+                } else {
+                }
+              }
+              setShortcutKeyOpt({ label, value });
+              setIdsFromDatastore();
+            }
+          }
+        }}
+        onKeyUp={e => {
+          console.log("onkeyUp");
+        }}
       />
     </Wrapper>
   );
@@ -68,24 +109,6 @@ const customStyles = {
     padding: 2,
     "&:hover": { color: "#ffffff" }
   }),
-  option: (provided, state) => ({
-    ...provided,
-    color: "#dddddd",
-    backgroundColor: state.isFocused ? "#354154" : "none",
-    "&:hover": { backgroundColor: "#2F353D" },
-    fontSize: "11px",
-    fontStyle: state.data.fontStyle,
-    padding: "5px 5px 5px 10px"
-  }),
-  menu: (provided, state) => ({
-    ...provided,
-    maxWidth: "100px"
-  }),
-  menuList: (provided, state) => ({
-    ...provided,
-    borderRadius: "0px",
-    backgroundColor: "#333335"
-  }),
   control: (styles, state) => ({
     ...styles,
     backgroundColor: "#333335",
@@ -94,7 +117,7 @@ const customStyles = {
     boxShadow: "none", // no box-shadow
     borderRadius: "0px",
     minHeight: "25px",
-    maxWidth: "100px"
+    maxWidth: "200px"
   }),
   valueContainer: base => ({
     ...base,
@@ -102,12 +125,11 @@ const customStyles = {
   }),
   multiValue: (styles, state) => ({
     ...styles,
-    backgroundColor: state.data.color,
+    backgroundColor: tagColor,
     height: 18,
     fontSize: 13,
     lineHeight: 1,
-    color: "#dddddd",
-    paddingLeft: -5
+    color: "#dddddd"
   }),
   input: (styles, { data }) => ({
     ...styles,
@@ -122,10 +144,10 @@ const customStyles = {
   }),
   multiValueRemove: (styles, state) => ({
     ...styles,
-    backgroundColor: state.data.color,
+    backgroundColor: state.isFocused ? tagColor : "none",
     opacity: state.isFocused ? "1" : "0.5",
     "&:hover": {
-      backgroundColor: state.data.color,
+      backgroundColor: tagColor,
       color: "#fff",
       opacity: "1"
     }
@@ -137,11 +159,15 @@ const setkeybindingsOptions = options => {
   return nextOptions;
 };
 
+const components = {
+  DropdownIndicator: null
+};
+
 const mapStateToProps = state => ({
-  statusFilterOpt: state.get("statusFilterOpt")
+  filterShortcutKeyOpt: state.get("filterShortcutKeyOpt")
 });
 
 export default connect(mapStateToProps, {
-  setStatusFilterOptions,
+  setShortcutKeyOpt,
   setIdsFromDatastore
 })(Component);
