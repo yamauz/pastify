@@ -92,6 +92,8 @@ module.exports = class Settings {
     this.SETTINGS.get(type)
       .push(saveData)
       .write();
+
+    return id;
   }
 
   // Settings for filtering data ----------------------------------------

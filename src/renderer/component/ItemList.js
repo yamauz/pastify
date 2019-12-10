@@ -273,7 +273,7 @@ const itemRenderer = ({
       {isCompact ? (
         <ItemCompact item={item} index={index}></ItemCompact>
       ) : (
-        <Item item={item}></Item>
+        <Item item={item} index={index}></Item>
       )}
     </ListItem>
   );

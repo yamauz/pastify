@@ -167,7 +167,14 @@ const Container = props => {
   } = item;
 
   return (
-    <Wrapper id={id} style={style} className="list-item">
+    <Wrapper
+      id={id}
+      style={style}
+      className="list-item"
+      onFocus={() => {
+        console.log("asdlkfjad;fsk");
+      }}
+    >
       <ItemContainer>
         <ContainerLeft>
           <DetectPosBlockTop id="detect-pos-block" />

@@ -23,11 +23,26 @@ const Button = styled.button`
 `;
 
 const Component = props => {
-  const { saveFilterSettings } = props;
+  const { filtersList, filterName, saveFilterSettings } = props;
+
+  const filterNameList = [];
+  const filterShortcutKeysList = [];
+  filtersList.forEach(val => {
+    const filterName = val.get("filterName");
+    const filterShortcutKeyOpt = val.get("filterShortcutKeyOpt");
+    filterNameList.push(filterName);
+    if (filterShortcutKeyOpt !== null) {
+      filterShortcutKeysList.push(filterShortcutKeyOpt.label);
+    }
+  });
+
   return (
     <Wrapper>
       <Button
         onClick={e => {
+          if (filterNameList.includes(filterName)) {
+            return;
+          }
           saveFilterSettings();
         }}
       >
@@ -37,7 +52,10 @@ const Component = props => {
   );
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  filtersList: state.get("filtersList"),
+  filterName: state.get("filterName")
+});
 
 export default connect(mapStateToProps, {
   saveFilterSettings

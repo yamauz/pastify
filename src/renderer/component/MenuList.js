@@ -102,7 +102,7 @@ const Component = props => {
         {filtersToRender.map(filter => {
           return (
             <MenuItem
-              key={filter.filterName}
+              key={filter.id}
               command={"setUserFilter"}
               filterid={filter.id}
             >

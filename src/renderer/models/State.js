@@ -38,33 +38,24 @@ const StateRecord = Record({
   filterSaveModalVisibility: false,
   prevFocusedElm: null,
   actionSelected: "",
-  sortOpt: null,
   // Filter Shortcut Key -------------------------------------------------
-  filterShortcutKeyOpt: null,
-  // Filter Name -------------------------------------------------
+  // CurrentFilter Settings -------------------------------------------------
   filterName: "",
-  // Filter by id ------------------------------------------------
+  filterShortcutKeyOpt: null,
+  sortOpt: null,
   idFilterOpt: [],
   idFilterInputValue: "",
-  // Filter by keyword -------------------------------------------
   keywordFilterOpt: [],
   keywordFilterInputValue: "",
-  // Filter by data type -----------------------------------------
   dataTypeFilterOpt: [],
-  // Filter by status --------------------------------------------
   statusFilterOpt: [],
-  // Filter by language ------------------------------------------
   languageFilterOpt: [],
-  // Filter by hot key -------------------------------------------
   hotKeyFilterOpt: [],
   hotKeyFilterInputValue: "",
-  // Filter by hash tag ------------------------------------------
   hashTagFilterOpt: [],
   hashTagFilterInputValue: "",
-  // hashtag input
   hashTagOptions: [],
   hashTagInputValue: "",
-  // hot key
   keyOptions: [],
   keyInputValue: ""
 });
@@ -105,7 +96,7 @@ class State extends StateRecord {
       idsTimeLine,
       // Saved filter settings
       filtersList,
-      // sort filter options
+      // current filter options
       filterName,
       filterShortcutKeyOpt,
       sortOpt,
@@ -389,15 +380,29 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
-    console.log("a");
     const nextIds = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
     return this.set("idsTimeLine", List(nextIds));
   }
   saveFilterSettings() {
-    const filterName = this.get("filterName");
-    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
-    this._saveFilterSettings(filterName, filterShortcutKeyOpt);
-    return this;
+    const id = this._saveFilterSettings();
+
+    const filter = {
+      id,
+      sortOpt: this.get("sortOpt"),
+      filterName: this.get("filterName"),
+      filterShortcutKeyOpt: this.get("filterShortcutKeyOpt"),
+      keywordFilterOpt: this.get("keywordFilterOpt"),
+      idFilterOpt: this.get("idFilterOpt"),
+      dataTypeFilterOpt: this.get("dataTypeFilterOpt"),
+      statusFilterOpt: this.get("statusFilterOpt"),
+      hotKeyFilterOpt: this.get("hotKeyFilterOpt"),
+      hashTagFilterOpt: this.get("hashTagFilterOpt"),
+      languageFilterOpt: this.get("languageFilterOpt")
+    };
+
+    const filterValue = new FilterValue(filter);
+    console.log(id);
+    return this.set("filtersList", this.filtersList.set(id, filterValue));
   }
 
   addKeywordFilterOptions(keywords) {
@@ -543,12 +548,16 @@ class State extends StateRecord {
   _updateWinSettings(value) {
     ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
   }
-  _saveFilterSettings(filterName, filterShortcutKeyOpt) {
-    ipcRenderer.sendSync(
+  _saveFilterSettings() {
+    const filterName = this.get("filterName");
+    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
+    const filterId = ipcRenderer.sendSync(
       "SAVE_FILTER_SETTINGS",
       filterName,
       filterShortcutKeyOpt
     );
+
+    return filterId;
   }
 }
 

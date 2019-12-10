@@ -93,12 +93,12 @@ app.on("ready", () => {
   ipcMain.on(
     "SAVE_FILTER_SETTINGS",
     (event, filterName, filterShortcutKeyOpt) => {
-      settings.saveFilterSettings(
+      const id = settings.saveFilterSettings(
         "TIME_LINE",
         filterName,
         filterShortcutKeyOpt
       );
-      event.returnValue = null;
+      event.returnValue = id;
     }
   );
   ipcMain.on("UPDATE_ITEMS", (event, id, value) => {
