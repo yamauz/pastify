@@ -5,10 +5,14 @@ const Key = require("./Key");
 const ClipboardListener = require("./ClipboardListener");
 const ClipboardFormatFinder = require("./ClipboardFormatFinder");
 const ClipboardExtractor = require("./ClipboardExtractor");
+const RendererListener = require("./RendererListener");
 const CF = require("./CF");
 const ProcessBridge = require("./ProcessBridge");
 const Pastify = require("./Pastify");
+
+//DB
 const DataStore = require("./DataStore");
+const Filters = require("./Filters");
 const Settings = require("./Settings");
 
 let isCopiedSelf = false;
@@ -17,8 +21,14 @@ app.on("ready", () => {
   const clipboardListener = new ClipboardListener();
   const clipboardFormatFinder = new ClipboardFormatFinder();
   const dataStore = new DataStore();
+  const filters = new Filters();
   const settings = new Settings();
   const processBridge = new ProcessBridge();
+  const rendererListener = new RendererListener();
+
+  const instances = { dataStore, filters, settings };
+
+  rendererListener.subscribe(instances);
 
   const win = new Window(settings);
   win.setEventListener(settings);
@@ -30,21 +40,22 @@ app.on("ready", () => {
   // key.register("ctrl", "a");
 
   ipcMain.on("ON_LOAD_ITEM_FIRST", (event, arg) => {
-    const dataTimeLine = dataStore.initialLoad("TIME_LINE");
+    const dataTimeLine = dataStore.initialLoad();
     processBridge.sendItemToRenderer(dataTimeLine, itemToRenderer => {
       event.returnValue = itemToRenderer;
     });
   });
   ipcMain.on("ON_LOAD_FILTER_FIRST", event => {
-    const filters = settings.initialLoad("TIME_LINE");
-    processBridge.sendFiltersToRenderer(filters, itemToRenderer => {
+    const filter = filters.initialLoad();
+    processBridge.sendFiltersToRenderer(filter, itemToRenderer => {
       event.returnValue = itemToRenderer;
     });
   });
   ipcMain.on("GET_IDS", (event, arg) => {
-    const sortSettings = settings.getSortSettings("CURRENT");
-    const filterSettings = settings.getFilterSettings("CURRENT");
-    const ids = dataStore.getIds3("TIME_LINE", sortSettings, filterSettings);
+    // const sortSettings = settings.getSortSettings();
+    // const filterSettings = settings.getFilterSettings();
+    const filterParam = settings.createFilterParam();
+    const ids = dataStore.getIds3(filterParam);
     event.returnValue = ids;
   });
   ipcMain.on("GET_WIN_SETTINGS", event => {
@@ -65,49 +76,39 @@ app.on("ready", () => {
     event.returnValue = null;
   });
   ipcMain.on("GET_FILTER_SORT_OPTIONS_SELECTED", event => {
-    const options = settings.getFilterSortOptions("CURRENT");
+    const options = settings.getFilterSortOptions();
     event.returnValue = options;
   });
   ipcMain.on("GET_HASH_TAG_OPTIONS", event => {
-    const hashTagOptions = dataStore.getHashTagOptions("TIME_LINE");
+    const hashTagOptions = dataStore.getHashTagOptions();
     event.returnValue = hashTagOptions;
   });
   ipcMain.on("GET_KEY_OPTIONS", event => {
-    const keyOptions = dataStore.getKeyOptions("TIME_LINE");
+    const keyOptions = dataStore.getKeyOptions();
     event.returnValue = keyOptions;
   });
-  // ipcMain.on("GET_IDS2", (event, sortOpt) => {
-  //   const ids = dataStore.getIds2("TIME_LINE", sortOpt);
-  //   event.returnValue = ids;
-  // });
-  ipcMain.on("GET_IDS3", (event, sortOpt, filterOpt) => {
-    settings.setSortOptions("CURRENT", sortOpt);
-    const sortSettings = settings.getSortSettings("CURRENT");
+  ipcMain.on("GET_IDS3", (event, filterOpt) => {
+    settings.setFilterOptions(filterOpt);
+    const filterParam = settings.createFilterParam();
+    const ids = dataStore.getIds3(filterParam);
 
-    settings.setFilterOptions("CURRENT", filterOpt);
-    const filterSettings = settings.getFilterSettings("CURRENT");
-
-    const ids = dataStore.getIds3("TIME_LINE", sortSettings, filterSettings);
+    // const ids = dataStore.getIds3(sortSettings, filterSettings);
     event.returnValue = ids;
   });
   ipcMain.on(
     "SAVE_FILTER_SETTINGS",
     (event, filterName, filterShortcutKeyOpt) => {
-      const id = settings.saveFilterSettings(
-        "TIME_LINE",
-        filterName,
-        filterShortcutKeyOpt
-      );
+      const id = filters.saveFilterSettings(filterName, filterShortcutKeyOpt);
       event.returnValue = id;
     }
   );
   ipcMain.on("UPDATE_ITEMS", (event, id, value) => {
     if (Array.isArray(id)) {
       id.forEach(i => {
-        dataStore.update("TIME_LINE", i, value);
+        dataStore.update(i, value);
       });
     } else {
-      dataStore.update("TIME_LINE", id, value);
+      dataStore.update(id, value);
     }
     event.returnValue = null;
   });
@@ -118,7 +119,7 @@ app.on("ready", () => {
   ipcMain.on("ADD_NEW_ITEM", (event, addMode) => {
     const pastify = new Pastify("TEXT", new Map([["TEXT", ""]]));
     const dataTimeLine = pastify.createPastifyData();
-    dataStore.write("TIME_LINE", dataTimeLine);
+    dataStore.write(dataTimeLine);
     processBridge.sendItemToRenderer([dataTimeLine], itemToRenderer => {
       win.sendToRenderer("ON_COPY", itemToRenderer, addMode);
     });
@@ -159,7 +160,7 @@ app.on("ready", () => {
     );
     const dataTimeLine = pastify.createPastifyData();
     const addMode = "AUTO";
-    dataStore.write("TIME_LINE", dataTimeLine);
+    dataStore.write(dataTimeLine);
     processBridge.sendItemToRenderer([dataTimeLine], itemToRenderer => {
       win.sendToRenderer("ON_COPY", itemToRenderer, addMode);
     });

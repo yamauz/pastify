@@ -62,7 +62,8 @@ export const {
   // Filter Shortcut Key  ----------------------------------------------
   setShortcutKeyOpt,
   // Save Current Filter Settings ------------------------------
-  saveFilterSettings,
+  saveFilter,
+  updateFilter,
   // Set item status by hash tag ----------------------------------
   setHashTagInputValue,
   addHashTagValue,
@@ -136,7 +137,8 @@ export const {
   //Shortcut Key
   SET_SHORTCUT_KEY_OPT: opt => opt,
   //Save Current Filter Settings
-  SAVE_FILTER_SETTINGS: () => {},
+  SAVE_FILTER: () => {},
+  UPDATE_FILTER: () => {},
   // Filter by data type -----------------------------------------
   SET_DATA_TYPE_FILTER_OPTIONS: options => options,
   // Filter by status --------------------------------------------

@@ -4,50 +4,29 @@ const low = require("lowdb");
 const _ = require("lodash");
 const FileSync = require("lowdb/adapters/FileSync");
 
+const TRASH_LIMIT_DAY = 24;
+const DELETE_LIMIT_DAY = 24;
+
 module.exports = class DataStore {
   constructor() {
     this.resourcePath = this._createResoucePath();
-    this.storeName = "DATASRORE";
+    this.storeName = "CLIPS";
     this.store = `${this.resourcePath}//${this.storeName}`;
     this.storeCategory = {
-      TIME_LINE: []
+      CLIPS: []
     };
     this.adapter = new FileSync(this.store);
-    this.DATA_STORE = low(this.adapter);
-    this.DATA_STORE.defaults(this.storeCategory).write();
+    this.DB = low(this.adapter);
+    this.DB.defaults(this.storeCategory).write();
 
-    this.initialize();
+    this._initialize();
   }
 
-  initialize() {
-    const computeDiff = (from, diffType) => {
-      const to = new Date().getTime();
-      const diff = to - from;
-      let devide;
-      switch (diffType) {
-        case "DAY":
-          devide = 1000 * 60 * 60 * 24;
-          break;
-        case "HOUR":
-          devide = 1000 * 60 * 60;
-          break;
-        case "MINUTE":
-          devide = 1000 * 60;
-          break;
-        case "SECOND":
-          devide = 1000;
-          break;
-      }
-      return Math.floor(diff / devide);
-    };
-
-    const TRASH_LIMIT_DAY = 24;
-    const DELETE_LIMIT_DAY = 24;
-
+  _initialize() {
     // Trash item by limit day
-    this.DATA_STORE.get("TIME_LINE")
+    this.DB.get(this.storeName)
       .each(item => {
-        const timeDiff = computeDiff(item.date, "HOUR");
+        const timeDiff = this._computeDiff(item.date, "HOUR");
         // if (timeDiff > TRASH_LIMIT) {
         if (!item.isFaved && timeDiff > TRASH_LIMIT_DAY) {
           return (item.isTrashed = true);
@@ -58,42 +37,23 @@ module.exports = class DataStore {
       .write();
 
     // Delete item by limit day
-    this.DATA_STORE.get("TIME_LINE")
+    this.DB.get(this.storeName)
       .remove(item => {
-        const timeDiff = computeDiff(item.date, "HOUR");
+        const timeDiff = this._computeDiff(item.date, "HOUR");
         return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
       })
       .write();
   }
 
-  initialLoad(type) {
-    const data = this.DATA_STORE.get(type).value();
+  initialLoad() {
+    const data = this.DB.get(this.storeName).value();
     return data;
   }
-  getIds(type, sortOptions) {
-    const { sortBy, orderBy } = sortOptions;
-    return this.DATA_STORE.get(type)
-      .orderBy(sortBy, orderBy)
-      .map("id")
-      .value();
-  }
-  // getIds2(type, sortOpt) {
-  //   let sortBy, orderBy;
-  //   if (sortOpt) {
-  //     sortBy = sortOpt.map(option => option.key);
-  //     orderBy = sortOpt.map(option => option.order);
-  //   } else {
-  //     sortBy = "date";
-  //     orderBy = "desc";
-  //   }
-  //   return this.DATA_STORE.get(type)
-  //     .orderBy(sortBy, orderBy)
-  //     .map("id")
-  //     .value();
-  // }
-  getIds3(type, sortSettings, filterSettings) {
-    const { sortBy, orderBy } = sortSettings;
+
+  getIdsByFilter(args, { settings }) {
     const {
+      sortBy,
+      orderBy,
       keywords,
       dataType,
       status,
@@ -101,10 +61,10 @@ module.exports = class DataStore {
       hashTag,
       language,
       id
-    } = filterSettings;
+    } = settings.createFilterParam();
 
     return (
-      this.DATA_STORE.get(type)
+      this.DB.get(this.storeName)
         // filter by keywords
         .filter(item => {
           return keywords.every(keyword => {
@@ -187,50 +147,45 @@ module.exports = class DataStore {
         .value()
     );
   }
-  // getItem(type, id) {
-  //   return this.DATA_STORE.get(type)
-  //     .filter(item => item.id === id)
-  //     .value();
-  // }
 
-  write(type, data) {
-    this.DATA_STORE.get(type)
+  write(data) {
+    this.DB.get(this.storeName)
       .push(data)
       .write();
   }
 
-  update(type, id, value) {
+  update(id, value) {
     if (value.hasOwnProperty("isTrashed")) {
       const { isTrashed } = value;
 
       if (isTrashed) {
-        const isTrashedMaster = this.DATA_STORE.get(type)
+        const isTrashedMaster = this.DB.get(this.storeName)
           .find({ id })
           .value().isTrashed;
 
         if (isTrashedMaster) {
-          this.DATA_STORE.get(type)
+          this.DB.get(this.storeName)
             .remove({ id })
             .write();
           return;
         }
       }
     }
-    this.DATA_STORE.get(type)
+    this.DB.get(this.storeName)
       .find({ id: id })
       .assign(value)
       .write();
   }
-  delete(type, idList) {
-    this.DATA_STORE.get(type)
-      .remove(item => {
-        return idList.includes(item.id);
-      })
-      .write();
-  }
+  // delete(idList) {
+  //   this.DB.get(this.storeName)
+  //     .remove(item => {
+  //       return idList.includes(item.id);
+  //     })
+  //     .write();
+  // }
 
-  getHashTagOptions(type) {
-    const tags = this.DATA_STORE.get(type)
+  getHashTagOptions() {
+    const tags = this.DB.get(this.storeName)
       .map("tag")
       .value();
     const tagsFlat = tags.flatMap(v => v);
@@ -243,8 +198,8 @@ module.exports = class DataStore {
     // });
     return tagsOptions;
   }
-  getKeyOptions(type) {
-    const keys = this.DATA_STORE.get(type)
+  getKeyOptions() {
+    const keys = this.DB.get(this.storeName)
       .map("key")
       .value();
     const keysFlat = keys.flatMap(v => v);
@@ -259,7 +214,7 @@ module.exports = class DataStore {
   }
 
   getTextById(id) {
-    return this.DATA_STORE.get("TIME_LINE")
+    return this.DB.get(this.storeName)
       .find({ id })
       .value().textData;
   }
@@ -273,5 +228,26 @@ module.exports = class DataStore {
       fs.mkdirSync(tempPath);
     }
     return resourcePath;
+  }
+
+  _computeDiff(from, diffType) {
+    const to = new Date().getTime();
+    const diff = to - from;
+    let devide;
+    switch (diffType) {
+      case "DAY":
+        devide = 1000 * 60 * 60 * 24;
+        break;
+      case "HOUR":
+        devide = 1000 * 60 * 60;
+        break;
+      case "MINUTE":
+        devide = 1000 * 60;
+        break;
+      case "SECOND":
+        devide = 1000;
+        break;
+    }
+    return Math.floor(diff / devide);
   }
 };

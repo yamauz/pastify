@@ -5,6 +5,7 @@ import sortOptions from "../../common/sortOptions";
 import _ from "lodash";
 
 const { ipcRenderer } = window.require("electron");
+const USE_IPC = "useIpc";
 
 const StateRecord = Record({
   alwaysOnTop: false,
@@ -74,7 +75,12 @@ class State extends StateRecord {
 
     const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
     const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
-    const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
+    // const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
+    const ids = ipcRenderer.sendSync(USE_IPC, {
+      DB: "dataStore",
+      command: "getIdsByFilter"
+    });
+    const idsTimeLine = List(ids);
     const {
       filterName,
       filterShortcutKeyOpt,
@@ -368,8 +374,8 @@ class State extends StateRecord {
     return this.setIn(keyPath, langOpt);
   }
   setIdsFromDatastore() {
-    const sortOpt = this.get("sortOpt");
-    const filterOpt = {
+    const options = {
+      sortOpt: this.get("sortOpt"),
       filterName: this.get("filterName"),
       filterShortcutKeyOpt: this.get("filterShortcutKeyOpt"),
       keywordFilterOpt: this.get("keywordFilterOpt"),
@@ -380,11 +386,25 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
-    const nextIds = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
-    return this.set("idsTimeLine", List(nextIds));
+    // const nextIds = ipcRenderer.sendSync("GET_IDS3", options);
+    ipcRenderer.sendSync(USE_IPC, {
+      DB: "settings",
+      command: "updateFilter",
+      args: options
+    });
+    // const idsFiltered = this._dispatchMessageToMain({
+    //   dist: "dataStore",
+    //   command: "getIdsByFilter"
+    // });
+
+    const idsFiltered = ipcRenderer.sendSync(USE_IPC, {
+      DB: "dataStore",
+      command: "getIdsByFilter"
+    });
+    return this.set("idsTimeLine", List(idsFiltered));
   }
-  saveFilterSettings() {
-    const id = this._saveFilterSettings();
+  saveFilter() {
+    const id = this._saveFilter();
 
     const filter = {
       id,
@@ -403,6 +423,12 @@ class State extends StateRecord {
     const filterValue = new FilterValue(filter);
     console.log(id);
     return this.set("filtersList", this.filtersList.set(id, filterValue));
+  }
+
+  updateFilter() {
+    const message = this._createMassage("settings", "updateFilter");
+    this._dispatchMessageToMain(message);
+    return this;
   }
 
   addKeywordFilterOptions(keywords) {
@@ -538,17 +564,17 @@ class State extends StateRecord {
     ipcRenderer.sendSync("ITEM_ID_TO_BE_DELETED", ids);
   }
 
-  _getIds(sortOpt, filterOpt) {
-    const ids = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
-    return ids;
-  }
+  // _getIds(sortOpt, filterOpt) {
+  //   const ids = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
+  //   return ids;
+  // }
   _updateItems(id, value) {
     ipcRenderer.sendSync("UPDATE_ITEMS", id, value);
   }
   _updateWinSettings(value) {
     ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
   }
-  _saveFilterSettings() {
+  _saveFilter() {
     const filterName = this.get("filterName");
     const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
     const filterId = ipcRenderer.sendSync(
@@ -558,6 +584,18 @@ class State extends StateRecord {
     );
 
     return filterId;
+  }
+
+  _updateFilter() {
+    ipcRenderer.sendSync("useIpc", "settings", "updateFilter");
+  }
+
+  _createMassage(DB, command, args) {
+    return { DB, command, args };
+  }
+
+  _dispatchMessageToMain(message) {
+    ipcRenderer.sendSync("useIpc", message);
   }
 }
 

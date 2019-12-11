@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 // import Select from "react-select";
-import { saveFilterSettings } from "../../../actions";
+import { saveFilter, updateFilter } from "../../../actions";
 
 import styled from "@emotion/styled";
 
@@ -10,20 +10,21 @@ const Wrapper = styled.div`
 `;
 
 const Button = styled.button`
-  width: 60px;
+  /* width: 60px; */
+    /* opacity: ${props => (props.isTrashed ? 0.7 : 1)}; */
   height: 25px;
   font-size: 11px;
-  background-color: #715050;
+  background-color: #565656;
   border: none;
   color: #dddddd;
   transition: background-color 0.1s;
   &:hover {
-    background-color: #ab7070;
+    background-color: #8a8a8a;
   }
 `;
 
 const Component = props => {
-  const { filtersList, filterName, saveFilterSettings } = props;
+  const { filtersList, filterName, saveFilter, updateFilter } = props;
 
   const filterNameList = [];
   const filterShortcutKeysList = [];
@@ -36,17 +37,16 @@ const Component = props => {
     }
   });
 
+  const isFilterNameAlreadyExists = filterNameList.includes(filterName);
+
   return (
     <Wrapper>
       <Button
         onClick={e => {
-          if (filterNameList.includes(filterName)) {
-            return;
-          }
-          saveFilterSettings();
+          isFilterNameAlreadyExists ? updateFilter() : saveFilter();
         }}
       >
-        Save
+        {isFilterNameAlreadyExists ? "Update Current Settings" : "Save as New"}
       </Button>
     </Wrapper>
   );
@@ -58,5 +58,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  saveFilterSettings
+  saveFilter,
+  updateFilter
 })(Component);

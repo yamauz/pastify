@@ -137,7 +137,6 @@ export default handleActions(
     },
     // Filter by language ---------------------------------------------
     SET_LANGUAGE_FILTER_OPTIONS: (state, { payload: options }) => {
-      console.log(options);
       return state.set("languageFilterOpt", options);
     },
     // Filter by hot key --------------------------------------------
@@ -168,8 +167,11 @@ export default handleActions(
     SET_SHORTCUT_KEY_OPT: (state, { payload: opt }) => {
       return state.set("filterShortcutKeyOpt", opt);
     },
-    SAVE_FILTER_SETTINGS: state => {
-      return state.saveFilterSettings();
+    SAVE_FILTER: state => {
+      return state.saveFilter();
+    },
+    UPDATE_FILTER: state => {
+      return state.updateFilter();
     },
 
     // Set item status by hash tag ----------------------------------

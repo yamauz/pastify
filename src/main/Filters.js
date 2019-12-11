@@ -3,31 +3,25 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const shortid = require("shortid");
 
-module.exports = class Settings {
+module.exports = class Filters {
   constructor() {
     this.resourcePath = this._createResoucePath();
-    this.storeName = "SETTINGS";
+    this.storeName = "FILTERS";
     this.store = `${this.resourcePath}//${this.storeName}`;
     this.storeCategory = {
-      WIN: {
-        alwaysOnTop: false,
-        width: 1200,
-        height: 600,
-        isMaximized: false
-      },
-      FILTER: {
-        filterName: "",
-        filterShortcutKeyOpt: null,
-        sortOpt: [],
-        dataTypeFilterOpt: [],
-        keywordFilterOpt: [],
-        idFilterOpt: [],
-        statusFilterOpt: [],
-        hotKeyFilterOpt: [],
-        hashTagFilterOpt: [],
-        languageFilterOpt: []
-      },
-      TIME_LINE: []
+      // FILTERS: {
+      //   filterName: "",
+      //   filterShortcutKeyOpt: null,
+      //   sortOpt: [],
+      //   dataTypeFilterOpt: [],
+      //   keywordFilterOpt: [],
+      //   idFilterOpt: [],
+      //   statusFilterOpt: [],
+      //   hotKeyFilterOpt: [],
+      //   hashTagFilterOpt: [],
+      //   languageFilterOpt: []
+      // }
+      FILTERS: []
     };
     this.adapter = new FileSync(this.store);
     this.DB = low(this.adapter);
@@ -50,7 +44,7 @@ module.exports = class Settings {
   }
 
   initialLoad() {
-    const data = this.DB.get("FILTER").value();
+    const data = this.DB.get(this.storeName).value();
     return data;
   }
 
@@ -60,10 +54,10 @@ module.exports = class Settings {
 
   // Options for select-box---------------------------------------------
   getFilterSortOptions() {
-    return this.DB.get("FILTER").value();
+    return this.DB.get(this.storeName).value();
   }
 
-  saveFilterSettings(type, filterName, filterShortcutKeyOpt) {
+  saveFilterSettings(filterName, filterShortcutKeyOpt) {
     const id = shortid.generate();
     const {
       sortOpt,
@@ -89,16 +83,20 @@ module.exports = class Settings {
       languageFilterOpt
     };
 
-    this.DB.get(type)
+    this.DB.get(this.storeName)
       .push(saveData)
       .write();
 
     return id;
   }
 
+  updateFilter() {
+    console.log("test");
+  }
+
   // Settings for filtering data ----------------------------------------
   getSortSettings() {
-    const { sortOpt } = this.DB.get("FILTER").value();
+    const { sortOpt } = this.DB.get(this.storeName).value();
     const sortBy =
       sortOpt.length === 0
         ? this.defaultValue.sort.sortBy
@@ -110,9 +108,8 @@ module.exports = class Settings {
     return { sortBy, orderBy };
   }
 
-  createFilterParam() {
+  getFilterSettings() {
     const {
-      sortOpt,
       keywordFilterOpt,
       idFilterOpt,
       dataTypeFilterOpt,
@@ -120,16 +117,7 @@ module.exports = class Settings {
       hotKeyFilterOpt,
       hashTagFilterOpt,
       languageFilterOpt
-    } = this.DB.get("FILTER").value();
-
-    const sortBy =
-      sortOpt.length === 0
-        ? this.defaultValue.sort.sortBy
-        : sortOpt.map(option => option.key);
-    const orderBy =
-      sortOpt.length === 0
-        ? this.defaultValue.sort.orderBy
-        : sortOpt.map(option => option.order);
+    } = this.DB.get(this.storeName).value();
 
     const keywords = keywordFilterOpt.map(keyword => keyword.value);
     const dataType =
@@ -156,28 +144,19 @@ module.exports = class Settings {
       idFilterOpt.length === 0
         ? this.defaultValue.filter.id
         : idFilterOpt.map(id => id.value);
-
-    const filterParam = {
-      sortBy,
-      orderBy,
-      keywords,
-      dataType,
-      status,
-      hotKey,
-      hashTag,
-      language,
-      id
-    };
-
-    return filterParam;
+    return { keywords, dataType, status, hotKey, hashTag, language, id };
   }
 
-  updateFilter(filterOpt) {
-    this.DB.get("FILTER")
+  setSortOptions(sortOpt) {
+    this.DB.get(this.storeName)
+      .assign({ sortOpt })
+      .write();
+  }
+  setFilterOptions(filterOpt) {
+    this.DB.get(this.storeName)
       .assign({ ...filterOpt })
       .write();
   }
-
   setWinSettings(settings) {
     this.DB.get("WIN")
       .assign({ ...settings })

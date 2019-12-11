@@ -36,6 +36,7 @@ module.exports = class ProcessBridge {
     sendFunc(itemRenderer);
   }
   sendFiltersToRenderer(filters, sendFunc) {
+    console.log(filters);
     const filtersToRenderer = [];
     for (const flt of filters) {
       const {
