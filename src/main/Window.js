@@ -1,7 +1,7 @@
 const ffi = require("ffi");
 const ref = require("ref");
+const { ipcMain } = require("electron");
 const loadDevtool = require("electron-load-devtool");
-const robot = require("robotjs");
 const _ = require("lodash");
 const { BrowserWindow } = require("electron");
 const user32 = new ffi.Library("user32", {
@@ -35,7 +35,7 @@ module.exports = class Window {
       x,
       y,
       isMaximized
-    } = settings.getWinSettings();
+    } = settings.readWin();
 
     this.window = new BrowserWindow({
       title: "Pastify",
@@ -75,6 +75,13 @@ module.exports = class Window {
     this._openDevTools();
   }
 
+  setIpcListener(instance) {
+    const { dataStore, settings, filters, pastify, win } = instance;
+    ipcMain.on("useIpc", (event, msg) => {
+      event.returnValue = eval(msg.DB)[msg.command](msg.args, instance);
+    });
+  }
+
   setEventListener(settings) {
     this.window.on("blur", () => {
       this.sendToRenderer("ON_BLUR");
@@ -82,13 +89,17 @@ module.exports = class Window {
     this.window.on("focus", () => {
       this.sendToRenderer("ON_FOCUS");
     });
+    this.window.on("always-on-top-changed", () => {
+      settings.updateWin({ alwaysOnTop: !this.window.isAlwaysOnTop() });
+      this.sendToRenderer("ON_ALWAYS_ON_TOP_CHANGED");
+    });
     this.window.on("maximize", () => {
-      settings.setWinSettings({ isMaximized: true });
+      settings.updateWin({ isMaximized: true });
       this.sendToRenderer("ON_MAXIMIZE");
     });
     this.window.on("unmaximize", () => {
-      settings.setWinSettings({ isMaximized: false });
-      const { width, height } = settings.getWinSettings();
+      settings.updateWin({ isMaximized: false });
+      const { width, height } = settings.readWin();
       this.window.setSize(width, height);
       this.sendToRenderer("ON_UNMAXIMIZE");
     });
@@ -98,7 +109,7 @@ module.exports = class Window {
         if (!this.window.isMaximized()) {
           const width = this.window.getSize()[0];
           const height = this.window.getSize()[1];
-          settings.setWinSettings({ width, height });
+          settings.updateWin({ width, height });
         }
       }, 200)
     );
@@ -108,7 +119,7 @@ module.exports = class Window {
         if (!this.window.isMaximized()) {
           const x = this.window.getPosition()[0];
           const y = this.window.getPosition()[1];
-          settings.setWinSettings({ x, y });
+          settings.updateWin({ x, y });
         }
       }, 200)
     );
@@ -119,28 +130,25 @@ module.exports = class Window {
     });
   }
 
-  setWinSettings(winSettings) {
-    const keys = Object.keys(winSettings);
-    keys.forEach(key => {
-      switch (key) {
-        case "alwaysOnTop":
-          this.window.setAlwaysOnTop(winSettings[key]);
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
-  minimizeWindow() {
-    this.window.minimize();
-  }
-  maximizeWindow() {
-    if (this.window.isMaximized()) {
-      this.window.unmaximize();
-    } else {
-      this.window.maximize();
+  updateWinState(state) {
+    switch (state) {
+      case "alwaysOnTop":
+        this.window.setAlwaysOnTop(!this.window.isAlwaysOnTop());
+        break;
+      case "minimize":
+        this.window.minimize();
+        break;
+      case "maximize":
+        if (this.window.isMaximized()) {
+          this.window.unmaximize();
+        } else {
+          this.window.maximize();
+        }
+        break;
+      default:
+        break;
     }
+    return null;
   }
 
   _openDevTools() {
@@ -179,7 +187,7 @@ module.exports = class Window {
   }
 
   showLastActiveWindow(settings) {
-    const { alwaysOnTop } = settings.getWinSettings();
+    const { alwaysOnTop } = settings.readWin();
     const desktopClassName = ["Progman", "WorkerW"];
 
     this.window.setSkipTaskbar(false);

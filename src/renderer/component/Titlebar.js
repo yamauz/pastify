@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 // Components
 import { connect } from "react-redux";
-import { setAlwaysOnTop } from "../actions";
+import { updateWinState } from "../actions";
 import Close from "../../icon/titlebar/close.svg";
 import Maximize from "../../icon/titlebar/maximize.svg";
 import Minimize from "../../icon/titlebar/minimize.svg";
@@ -55,19 +55,19 @@ const ControlWrapperClose = styled.div`
 `;
 
 const TitleBar = props => {
-  const { setAlwaysOnTop, alwaysOnTop, winFocus } = props;
+  const { updateWinState, winFocus } = props;
 
   return (
     <Wrapper winFocus={winFocus}>
       <LeftBlock>left</LeftBlock>
       <RightBlock>
-        <ControlWrapper onClick={() => setAlwaysOnTop(alwaysOnTop)}>
+        <ControlWrapper onClick={() => updateWinState("alwaysOnTop")}>
           {setIcon("Stick", props)}
         </ControlWrapper>
-        <ControlWrapper onClick={() => minimizeWindow()}>
+        <ControlWrapper onClick={() => updateWinState("minimize")}>
           {setIcon("Minimize", props)}
         </ControlWrapper>
-        <ControlWrapper onClick={() => maximizeWindow()}>
+        <ControlWrapper onClick={() => updateWinState("maximize")}>
           {setIcon("Maximize", props)}
         </ControlWrapper>
         <ControlWrapperClose>{setIcon("Close", props)}</ControlWrapperClose>
@@ -106,17 +106,10 @@ const setIcon = (type, props) => {
   }
 };
 
-const minimizeWindow = () => {
-  ipcRenderer.sendSync("MINIMIZE_WINDOW");
-};
-const maximizeWindow = () => {
-  ipcRenderer.sendSync("MAXIMIZE_WINDOW");
-};
-
 const mapStateToProps = state => ({
   alwaysOnTop: state.get("alwaysOnTop"),
   winFocus: state.get("winFocus"),
   winMaximize: state.get("winMaximize")
 });
 
-export default connect(mapStateToProps, { setAlwaysOnTop })(TitleBar);
+export default connect(mapStateToProps, { updateWinState })(TitleBar);

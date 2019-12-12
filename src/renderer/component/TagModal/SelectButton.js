@@ -63,11 +63,8 @@ const SelectButton = props => {
   );
 };
 
-export default connect(
-  null,
-  {
-    toggleModalVisibility,
-    restoreItemOnCancel,
-    saveTag
-  }
-)(SelectButton);
+export default connect(null, {
+  toggleModalVisibility,
+  restoreItemOnCancel,
+  saveTag
+})(SelectButton);

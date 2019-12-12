@@ -3,6 +3,7 @@ const fs = require("fs");
 const low = require("lowdb");
 const _ = require("lodash");
 const FileSync = require("lowdb/adapters/FileSync");
+const Clip = require("./Clip");
 
 const TRASH_LIMIT_DAY = 24;
 const DELETE_LIMIT_DAY = 24;
@@ -22,30 +23,23 @@ module.exports = class DataStore {
     this._initialize();
   }
 
-  _initialize() {
-    // Trash item by limit day
+  createByUser(props, { win }) {
+    const clip = new Clip("TEXT", new Map([["TEXT", ""]]));
     this.DB.get(this.storeName)
-      .each(item => {
-        const timeDiff = this._computeDiff(item.date, "HOUR");
-        // if (timeDiff > TRASH_LIMIT) {
-        if (!item.isFaved && timeDiff > TRASH_LIMIT_DAY) {
-          return (item.isTrashed = true);
-        } else {
-          return;
-        }
-      })
+      .push(clip)
       .write();
-
-    // Delete item by limit day
+    win.sendToRenderer("ON_COPY", [clip], "MANUAL");
+  }
+  createByCopy(copiedData, win) {
+    const { format, extracts } = copiedData;
+    const clip = new Clip(format, extracts);
     this.DB.get(this.storeName)
-      .remove(item => {
-        const timeDiff = this._computeDiff(item.date, "HOUR");
-        return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
-      })
+      .push(clip)
       .write();
+    win.sendToRenderer("ON_COPY", [clip], "AUTO");
   }
 
-  initialLoad() {
+  readAll() {
     const data = this.DB.get(this.storeName).value();
     return data;
   }
@@ -148,21 +142,15 @@ module.exports = class DataStore {
     );
   }
 
-  write(data) {
-    this.DB.get(this.storeName)
-      .push(data)
-      .write();
-  }
+  update(props) {
+    const { id, value } = props;
 
-  update(id, value) {
     if (value.hasOwnProperty("isTrashed")) {
-      const { isTrashed } = value;
-
-      if (isTrashed) {
+      // const { isTrashed } = value;
+      if (value.isTrashed) {
         const isTrashedMaster = this.DB.get(this.storeName)
           .find({ id })
           .value().isTrashed;
-
         if (isTrashedMaster) {
           this.DB.get(this.storeName)
             .remove({ id })
@@ -172,17 +160,35 @@ module.exports = class DataStore {
       }
     }
     this.DB.get(this.storeName)
-      .find({ id: id })
+      .find({ id })
       .assign(value)
       .write();
+
+    return null;
   }
-  // delete(idList) {
-  //   this.DB.get(this.storeName)
-  //     .remove(item => {
-  //       return idList.includes(item.id);
-  //     })
-  //     .write();
-  // }
+  updateAll(props) {
+    const { ids, value } = props;
+    ids.forEach(id => {
+      if (value.hasOwnProperty("isTrashed")) {
+        if (value.isTrashed) {
+          const isTrashedMaster = this.DB.get(this.storeName)
+            .find({ id })
+            .value().isTrashed;
+          if (isTrashedMaster) {
+            this.DB.get(this.storeName)
+              .remove({ id })
+              .write();
+            return;
+          }
+        }
+      }
+      this.DB.get(this.storeName)
+        .find({ id })
+        .assign(value)
+        .write();
+    });
+    return null;
+  }
 
   getHashTagOptions() {
     const tags = this.DB.get(this.storeName)
@@ -190,12 +196,6 @@ module.exports = class DataStore {
       .value();
     const tagsFlat = tags.flatMap(v => v);
     const tagsOptions = _.uniq(tagsFlat.filter(tag => tag !== ""));
-    // const tagsOptions = tagsUniq.map(tag => {
-    //   return {
-    //     label: tag,
-    //     value: tag
-    //   };
-    // });
     return tagsOptions;
   }
   getKeyOptions() {
@@ -249,5 +249,27 @@ module.exports = class DataStore {
         break;
     }
     return Math.floor(diff / devide);
+  }
+
+  _initialize() {
+    // Trash item by limit day
+    this.DB.get(this.storeName)
+      .each(item => {
+        const timeDiff = this._computeDiff(item.date, "HOUR");
+        if (!item.isFaved && timeDiff > TRASH_LIMIT_DAY) {
+          return (item.isTrashed = true);
+        } else {
+          return;
+        }
+      })
+      .write();
+
+    // Delete item by limit day
+    this.DB.get(this.storeName)
+      .remove(item => {
+        const timeDiff = this._computeDiff(item.date, "HOUR");
+        return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
+      })
+      .write();
   }
 };

@@ -49,8 +49,8 @@ export default handleActions(
     SAVE_TAG: state => {
       return state.saveTag();
     },
-    SET_ALWAYS_ON_TOP: (state, { payload: alwaysOnTop }) => {
-      return state.setAlwaysOnTop(alwaysOnTop);
+    SET_ALWAYS_ON_TOP: state => {
+      return state.set("alwaysOnTop", !state.get("alwaysOnTop"));
     },
     SET_WIN_FOCUS: (state, { payload: winFocus }) => {
       return state.set("winFocus", winFocus);
@@ -205,6 +205,9 @@ export default handleActions(
     },
     SET_ACTION_SELECTED: (state, { payload: actionSelected }) => {
       return state.set("actionSelected", actionSelected);
+    },
+    UPDATE_WIN_STATE: (state, { payload: props }) => {
+      return state.updateWinState(props);
     }
   },
   new State()

@@ -1,7 +1,6 @@
 const path = require("path");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
-const shortid = require("shortid");
 
 module.exports = class Settings {
   constructor() {
@@ -26,8 +25,7 @@ module.exports = class Settings {
         hotKeyFilterOpt: [],
         hashTagFilterOpt: [],
         languageFilterOpt: []
-      },
-      TIME_LINE: []
+      }
     };
     this.adapter = new FileSync(this.store);
     this.DB = low(this.adapter);
@@ -52,62 +50,6 @@ module.exports = class Settings {
   initialLoad() {
     const data = this.DB.get("FILTER").value();
     return data;
-  }
-
-  getWinSettings() {
-    return this.DB.get("WIN").value();
-  }
-
-  // Options for select-box---------------------------------------------
-  getFilterSortOptions() {
-    return this.DB.get("FILTER").value();
-  }
-
-  saveFilterSettings(type, filterName, filterShortcutKeyOpt) {
-    const id = shortid.generate();
-    const {
-      sortOpt,
-      dataTypeFilterOpt,
-      keywordFilterOpt,
-      idFilterOpt,
-      statusFilterOpt,
-      hotKeyFilterOpt,
-      hashTagFilterOpt,
-      languageFilterOpt
-    } = this.DB.get("CURRENT").value();
-    const saveData = {
-      id,
-      filterName,
-      filterShortcutKeyOpt,
-      sortOpt,
-      dataTypeFilterOpt,
-      keywordFilterOpt,
-      idFilterOpt,
-      statusFilterOpt,
-      hotKeyFilterOpt,
-      hashTagFilterOpt,
-      languageFilterOpt
-    };
-
-    this.DB.get(type)
-      .push(saveData)
-      .write();
-
-    return id;
-  }
-
-  // Settings for filtering data ----------------------------------------
-  getSortSettings() {
-    const { sortOpt } = this.DB.get("FILTER").value();
-    const sortBy =
-      sortOpt.length === 0
-        ? this.defaultValue.sort.sortBy
-        : sortOpt.map(option => option.key);
-    const orderBy =
-      sortOpt.length === 0
-        ? this.defaultValue.sort.orderBy
-        : sortOpt.map(option => option.order);
-    return { sortBy, orderBy };
   }
 
   createFilterParam() {
@@ -172,15 +114,24 @@ module.exports = class Settings {
     return filterParam;
   }
 
+  readFilter() {
+    return this.DB.get("FILTER").value();
+  }
+
   updateFilter(filterOpt) {
     this.DB.get("FILTER")
       .assign({ ...filterOpt })
       .write();
   }
 
-  setWinSettings(settings) {
+  // Windows
+  readWin() {
+    return this.DB.get("WIN").value();
+  }
+
+  updateWin(props) {
     this.DB.get("WIN")
-      .assign({ ...settings })
+      .assign({ ...props })
       .write();
   }
 

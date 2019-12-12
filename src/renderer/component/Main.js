@@ -7,7 +7,8 @@ import {
   deleteItem,
   toggleItemListToolTipVisibility,
   setWinFocus,
-  setWinMaximize
+  setWinMaximize,
+  setAlwaysOnTop
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -80,7 +81,8 @@ const Main = props => {
     idsTimeLine,
     toggleItemListToolTipVisibility,
     setWinFocus,
-    setWinMaximize
+    setWinMaximize,
+    setAlwaysOnTop
   } = props;
   useEffect(() => {
     ipcRenderer.on("ON_COPY", (event, item, addMode) => {
@@ -97,6 +99,10 @@ const Main = props => {
     });
     ipcRenderer.on("ON_UNMAXIMIZE", () => {
       setWinMaximize(false);
+    });
+    ipcRenderer.on("ON_ALWAYS_ON_TOP_CHANGED", () => {
+      console.log("test");
+      setAlwaysOnTop();
     });
     document.getElementById("searchbar").focus();
     // window.addEventListener(
@@ -190,5 +196,6 @@ export default connect(mapStateToProps, {
   deleteItem,
   toggleItemListToolTipVisibility,
   setWinFocus,
-  setWinMaximize
+  setWinMaximize,
+  setAlwaysOnTop
 })(Main);

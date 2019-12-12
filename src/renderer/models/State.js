@@ -1,7 +1,7 @@
 import { OrderedMap, Set, Record, List } from "immutable";
 import ItemValue from "./ItemValue";
 import FilterValue from "./FilterValue";
-import sortOptions from "../../common/sortOptions";
+import Message from "./Message";
 import _ from "lodash";
 
 const { ipcRenderer } = window.require("electron");
@@ -64,56 +64,38 @@ const StateRecord = Record({
 class State extends StateRecord {
   constructor() {
     // initial load of items
-    const items = ipcRenderer.sendSync("ON_LOAD_ITEM_FIRST");
-    const mapVal = items.map(item => [item.id, new ItemValue(item)]);
-    const itemsTimeLine = OrderedMap(mapVal);
+    const allClips = new Message("dataStore", "readAll").dispatch();
+    const allClipsRec = allClips.map(clip => [clip.id, new ItemValue(clip)]);
+    const itemsTimeLine = OrderedMap(allClipsRec);
 
     // initial load of filter
-    const filters = ipcRenderer.sendSync("ON_LOAD_FILTER_FIRST");
-    const mapFilter = filters.map(item => [item.id, new FilterValue(item)]);
-    const filtersList = OrderedMap(mapFilter);
+    const allFilters = new Message("filters", "readAll").dispatch();
+    const allFiltersRec = allFilters.map(filter => [
+      filter.id,
+      new FilterValue(filter)
+    ]);
+    const filtersList = OrderedMap(allFiltersRec);
 
-    const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
-    const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
-    // const idsTimeLine = List(ipcRenderer.sendSync("GET_IDS"));
-    const ids = ipcRenderer.sendSync(USE_IPC, {
-      DB: "dataStore",
-      command: "getIdsByFilter"
-    });
-    const idsTimeLine = List(ids);
-    const {
-      filterName,
-      filterShortcutKeyOpt,
-      sortOpt,
-      dataTypeFilterOpt,
-      keywordFilterOpt,
-      idFilterOpt,
-      statusFilterOpt,
-      languageFilterOpt,
-      hotKeyFilterOpt,
-      hashTagFilterOpt
-    } = ipcRenderer.sendSync("GET_FILTER_SORT_OPTIONS_SELECTED");
-    const { alwaysOnTop } = ipcRenderer.sendSync("GET_WIN_SETTINGS");
+    const hashTagOptions = new Message(
+      "dataStore",
+      "getHashTagOptions"
+    ).dispatch();
+    const keyOptions = new Message("dataStore", "getKeyOptions").dispatch();
+
+    const clipIdsFiltered = new Message(
+      "dataStore",
+      "getIdsByFilter"
+    ).dispatch();
+    const idsTimeLine = List(clipIdsFiltered);
+    const filterOptSelected = new Message("settings", "readFilter").dispatch();
+    const { alwaysOnTop } = new Message("settings", "readWin").dispatch();
     super({
       // windows settings
       alwaysOnTop,
-      // timeline
       itemsTimeLine,
       idsTimeLine,
-      // Saved filter settings
       filtersList,
-      // current filter options
-      filterName,
-      filterShortcutKeyOpt,
-      sortOpt,
-      dataTypeFilterOpt,
-      keywordFilterOpt,
-      idFilterOpt,
-      statusFilterOpt,
-      languageFilterOpt,
-      hotKeyFilterOpt,
-      hashTagFilterOpt,
-      // item tag options
+      ...filterOptSelected,
       hashTagOptions,
       keyOptions
     });
@@ -128,7 +110,8 @@ class State extends StateRecord {
   }
 
   pasteItem(id, mode) {
-    ipcRenderer.sendSync("PASTE_ITEM", { id, mode });
+    const args = { id, mode };
+    new Message("pastify", "pasteClip", args).dispatch();
     return this;
   }
 
@@ -152,7 +135,9 @@ class State extends StateRecord {
     });
   }
   deleteIds(id) {
-    this._updateItems(id, { isTrashed: true });
+    // this._updateItems(id, { isTrashed: true });
+    const value = { isTrashed: true };
+    new Message("dataStore", "update", { id, value }).dispatch();
 
     return this.withMutations(state => {
       state.setIn(["itemsTimeLine", id, "isTrashed"], true).set(
@@ -162,34 +147,25 @@ class State extends StateRecord {
     });
   }
   trashItem(id) {
-    this._updateItems(id, { isTrashed: true });
+    // this._updateItems(id, { isTrashed: true });
+    const value = { isTrashed: true };
+    new Message("dataStore", "update", { id, value }).dispatch();
     return this.setIn(["itemsTimeLine", id, "isTrashed"], true);
-  }
-  setAlwaysOnTop(alwaysOnTop) {
-    this._updateWinSettings({ alwaysOnTop: !alwaysOnTop });
-    return this.set("alwaysOnTop", !alwaysOnTop);
   }
   setIdSelected(id) {
     return this.set("idSelected", id);
   }
   deleteItem(ids) {
     this._deleteItemDataStore(ids);
-    // const items = `ids${this.get("menuTabSelected")}`;
     const items = "itemsTimeLine";
-    // const items = `items${this.get("menuTabSelected")}`;
-    // return this.set(items, this[items].deleteAll(ids));
     return this.set(items, this[items].subtract(ids));
-    // return this.set(
-    //   items,
-    //   this[items].filterNot(v => {
-    //     return v === ids[0];
-    //   })
-    // );
   }
   favItem(id) {
     const keyPath = ["itemsTimeLine", id, "isFaved"];
     const isFaved = !this.getIn(keyPath);
-    this._updateItems(id, { isFaved });
+    // this._updateItems(id, { isFaved });
+    const value = { isFaved };
+    new Message("dataStore", "update", { id, value }).dispatch();
     return this.setIn(keyPath, isFaved);
   }
   saveTag() {
@@ -200,14 +176,19 @@ class State extends StateRecord {
       prop
     ]);
 
-    const keyValue = keyPath.reduce((acc, path) => {
+    const value = keyPath.reduce((acc, path) => {
       const prop = path[2];
       acc[prop] = this.getIn(path);
       return acc;
     }, {});
-    this._updateItems(id, keyValue);
-    const keyOptions = ipcRenderer.sendSync("GET_KEY_OPTIONS");
-    const hashTagOptions = ipcRenderer.sendSync("GET_HASH_TAG_OPTIONS");
+    // this._updateItems(id, keyValue);
+    new Message("dataStore", "update", { id, value }).dispatch();
+
+    const hashTagOptions = new Message(
+      "dataStore",
+      "getHashTagOptions"
+    ).dispatch();
+    const keyOptions = new Message("dataStore", "getKeyOptions").dispatch();
     return this.withMutations(state => {
       state.set("keyOptions", keyOptions).set("hashTagOptions", hashTagOptions);
     });
@@ -231,7 +212,6 @@ class State extends StateRecord {
     return this.set("keyboardHandler", modeNext);
   }
   setItemTag(tag) {
-    // const items = `items${this.get("menuTabSelected")}`;
     const items = "itemsTimeLine";
     const itemKey = this.get("idSelected");
     const { type, value } = tag;
@@ -241,11 +221,13 @@ class State extends StateRecord {
   setItemText(item) {
     const { id, textData } = item;
     const keyPath = ["itemsTimeLine", id, "textData"];
-    this._updateItems(id, { textData });
+    // this._updateItems(id, { textData });
+    const value = { textData };
+    new Message("dataStore", "update", { id, value }).dispatch();
+
     return this.setIn(keyPath, textData);
   }
   setItemRemoved(id) {
-    // const items = `items${this.get("menuTabSelected")}`;
     const items = "itemsTimeLine";
     const setIn = [items, id, "removeFlg"];
     return this.setIn(setIn, true);
@@ -255,23 +237,19 @@ class State extends StateRecord {
     return this[command](filterId);
   }
   addNewItem() {
-    // this.get("itemListRef").scrollToRow(0);
-    const addMode = "MANUAL";
-    ipcRenderer.sendSync("ADD_NEW_ITEM", addMode);
-    // setTimeout(() => {
-    //   const targetId = document.getElementById("item-list").firstElementChild
-    //     .firstElementChild.firstElementChild.id;
-    //   document.getElementById(`${targetId}`).focus();
-    //   setTimeout(() => {
-    //     document.getElementsByClassName("ace_text-input")[0].focus();
-    //   }, 500);
-    // }, 100);
+    new Message("dataStore", "createByUser").dispatch();
     return this;
   }
   trashAllItems() {
-    console.log("trash all items");
     const idsTimeLine = this.get("idsTimeLine");
-    this._updateItems(idsTimeLine.toArray(), { isTrashed: true });
+    // this._updateItems(idsTimeLine.toArray(), { isTrashed: true });
+    const ids = idsTimeLine.toArray();
+    const value = { isTrashed: true };
+    new Message("dataStore", "updateAll", {
+      ids,
+      value
+    }).dispatch();
+
     return this.withMutations(state => {
       idsTimeLine.forEach(id => {
         state.setIn(["itemsTimeLine", id, "isTrashed"], true);
@@ -279,13 +257,17 @@ class State extends StateRecord {
     });
   }
   trashAllItemsWithoutFaved() {
-    console.log("trash all items without faved");
     const idsTimeLineNotFaved = this.get("idsTimeLine").filter(id => {
       return !this.getIn(["itemsTimeLine", id, "isFaved"]);
     });
-    console.log(idsTimeLineNotFaved);
 
-    this._updateItems(idsTimeLineNotFaved.toArray(), { isTrashed: true });
+    // this._updateItems(idsTimeLineNotFaved.toArray(), { isTrashed: true });
+    const ids = idsTimeLineNotFaved.toArray();
+    const value = { isTrashed: true };
+    new Message("dataStore", "updateAll", {
+      ids,
+      value
+    }).dispatch();
     return this.withMutations(state => {
       idsTimeLineNotFaved.forEach(id => {
         state.setIn(["itemsTimeLine", id, "isTrashed"], true);
@@ -293,10 +275,6 @@ class State extends StateRecord {
     });
   }
   showFilterSortSettings() {
-    // setTimeout(() => {
-    //   document.getElementById("filter-sort-settings-tab").focus();
-    // }, 100);
-    // return this.set("detailType", "filter-sort-settings");
     return this.withMutations(state => {
       state
         .set("detailType", "filter-sort-settings")
@@ -304,14 +282,12 @@ class State extends StateRecord {
     });
   }
   saveFilterSortSettings() {
-    console.log("save filter sort settings");
     return this.set(
       "filterSaveModalVisibility",
       !this.get("filterSaveModalVisibility")
     );
   }
   clearFilterSortSettings() {
-    console.log("clear filter sort settings");
     return this.withMutations(state => {
       state
         .set("sortOpt", [])
@@ -327,18 +303,10 @@ class State extends StateRecord {
     });
   }
   reloadFilterSortSettings() {
-    console.log("reload filter sort settings");
     return this;
   }
   setUserFilter(filterId) {
     const userFilter = this.get("filtersList").get(filterId);
-    // console.log(userFilter.get("keywordFilterOpt"));
-    // console.log(userFilter.get("idFilterOpt"));
-    // console.log(userFilter.get("dataTypeFilterOpt"));
-    // console.log(userFilter.get("statusFilterOpt"));
-    // console.log(userFilter.get("hotKeyFilterOpt"));
-    // console.log(userFilter.get("hashTagfilterOpt"));
-    console.log(userFilter.get("languageFilterOpt"));
 
     return this.withMutations(state => {
       state
@@ -353,7 +321,6 @@ class State extends StateRecord {
         .set("hashTagFilterOpt", userFilter.get("hashTagFilterOpt"))
         .set("languageFilterOpt", userFilter.get("languageFilterOpt"));
     });
-    // return this;
   }
   storeItemOnModalOpen() {
     const listName = "itemsTimeLine";
@@ -365,7 +332,6 @@ class State extends StateRecord {
     const listName = "itemsTimeLine";
     const id = this.get("idSelected");
     const keyPath = [listName, id];
-    console.log(keyPath);
     return this.setIn(keyPath, this.get("itemStore"));
   }
   setLangOptionsSelected(langOpt) {
@@ -386,16 +352,11 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
-    // const nextIds = ipcRenderer.sendSync("GET_IDS3", options);
     ipcRenderer.sendSync(USE_IPC, {
       DB: "settings",
       command: "updateFilter",
       args: options
     });
-    // const idsFiltered = this._dispatchMessageToMain({
-    //   dist: "dataStore",
-    //   command: "getIdsByFilter"
-    // });
 
     const idsFiltered = ipcRenderer.sendSync(USE_IPC, {
       DB: "dataStore",
@@ -404,13 +365,18 @@ class State extends StateRecord {
     return this.set("idsTimeLine", List(idsFiltered));
   }
   saveFilter() {
-    const id = this._saveFilter();
+    const filterName = this.get("filterName");
+    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
+    const filterId = new Message("filters", "create", {
+      filterName,
+      filterShortcutKeyOpt
+    }).dispatch();
 
     const filter = {
-      id,
+      id: filterId,
+      filterName,
+      filterShortcutKeyOpt,
       sortOpt: this.get("sortOpt"),
-      filterName: this.get("filterName"),
-      filterShortcutKeyOpt: this.get("filterShortcutKeyOpt"),
       keywordFilterOpt: this.get("keywordFilterOpt"),
       idFilterOpt: this.get("idFilterOpt"),
       dataTypeFilterOpt: this.get("dataTypeFilterOpt"),
@@ -421,8 +387,7 @@ class State extends StateRecord {
     };
 
     const filterValue = new FilterValue(filter);
-    console.log(id);
-    return this.set("filtersList", this.filtersList.set(id, filterValue));
+    return this.set("filtersList", this.filtersList.set(filterId, filterValue));
   }
 
   updateFilter() {
@@ -559,43 +524,9 @@ class State extends StateRecord {
         .set("modalVisibility", !this.get("modalVisibility"));
     });
   }
-
-  _deleteItemDataStore(ids) {
-    ipcRenderer.sendSync("ITEM_ID_TO_BE_DELETED", ids);
-  }
-
-  // _getIds(sortOpt, filterOpt) {
-  //   const ids = ipcRenderer.sendSync("GET_IDS3", sortOpt, filterOpt);
-  //   return ids;
-  // }
-  _updateItems(id, value) {
-    ipcRenderer.sendSync("UPDATE_ITEMS", id, value);
-  }
-  _updateWinSettings(value) {
-    ipcRenderer.sendSync("SET_WIN_SETTINGS", value);
-  }
-  _saveFilter() {
-    const filterName = this.get("filterName");
-    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
-    const filterId = ipcRenderer.sendSync(
-      "SAVE_FILTER_SETTINGS",
-      filterName,
-      filterShortcutKeyOpt
-    );
-
-    return filterId;
-  }
-
-  _updateFilter() {
-    ipcRenderer.sendSync("useIpc", "settings", "updateFilter");
-  }
-
-  _createMassage(DB, command, args) {
-    return { DB, command, args };
-  }
-
-  _dispatchMessageToMain(message) {
-    ipcRenderer.sendSync("useIpc", message);
+  updateWinState(props) {
+    new Message("win", "updateWinState", props).dispatch();
+    return this;
   }
 }
 

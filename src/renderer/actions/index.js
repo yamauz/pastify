@@ -80,7 +80,8 @@ export const {
   restoreItemOnCancel,
   setActionSelected,
   increment,
-  decrement
+  decrement,
+  updateWinState
 } = createActions({
   PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
@@ -165,5 +166,6 @@ export const {
   RESTORE_ITEM_ON_CANCEL: () => {},
   SET_ACTION_SELECTED: actionSelected => actionSelected,
   INCREMENT: (amount = 1) => ({ amount }),
-  DECREMENT: (amount = 1) => ({ amount: -amount })
+  DECREMENT: (amount = 1) => ({ amount: -amount }),
+  UPDATE_WIN_STATE: props => props
 });
