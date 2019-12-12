@@ -352,16 +352,13 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
-    ipcRenderer.sendSync(USE_IPC, {
-      DB: "settings",
-      command: "updateFilter",
-      args: options
-    });
+    new Message("settings", "updateFilter", options).dispatch();
 
-    const idsFiltered = ipcRenderer.sendSync(USE_IPC, {
-      DB: "dataStore",
-      command: "getIdsByFilter"
-    });
+    const idsFiltered = new Message(
+      "dataStore",
+      "getIdsByFilter",
+      options
+    ).dispatch();
     return this.set("idsTimeLine", List(idsFiltered));
   }
   saveFilter() {
@@ -391,9 +388,40 @@ class State extends StateRecord {
   }
 
   updateFilter() {
-    const message = this._createMassage("settings", "updateFilter");
-    this._dispatchMessageToMain(message);
-    return this;
+    const filterName = this.get("filterName");
+    const id = new Message("filters", "update", { filterName }).dispatch();
+    return this.withMutations(state => {
+      state.setIn(
+        ["filtersList", id, "filterShortcutKeyOpt"],
+        this.get("filterShortcutKeyOpt")
+      );
+      state.setIn(["filtersList", id, "sortOpt"], this.get("sortOpt"));
+      state.setIn(
+        ["filtersList", id, "keywordFilterOpt"],
+        this.get("keywordFilterOpt")
+      );
+      state.setIn(["filtersList", id, "idFilterOpt"], this.get("idFilterOpt"));
+      state.setIn(
+        ["filtersList", id, "dataTypeFilterOpt"],
+        this.get("dataTypeFilterOpt")
+      );
+      state.setIn(
+        ["filtersList", id, "statusFilterOpt"],
+        this.get("statusFilterOpt")
+      );
+      state.setIn(
+        ["filtersList", id, "hotKeyFilterOpt"],
+        this.get("hotKeyFilterOpt")
+      );
+      state.setIn(
+        ["filtersList", id, "hashTagFilterOpt"],
+        this.get("hashTagFilterOpt")
+      );
+      state.setIn(
+        ["filtersList", id, "languageFilterOpt"],
+        this.get("languageFilterOpt")
+      );
+    });
   }
 
   addKeywordFilterOptions(keywords) {

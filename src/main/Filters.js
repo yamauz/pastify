@@ -38,10 +38,18 @@ module.exports = class Filters {
     return data;
   }
 
-  update(filterOpt) {
+  update(props, { settings }) {
+    const { filterName } = props;
+    const currentFilterOpt = settings.readFilter();
     this.DB.get(this.storeName)
-      .assign({ ...filterOpt })
+      .find({ filterName })
+      .assign({ ...currentFilterOpt })
       .write();
+    const id = this.DB.get(this.storeName)
+      .find({ filterName })
+      .value().id;
+
+    return id;
   }
 
   _createResoucePath() {
