@@ -16,7 +16,7 @@ module.exports = class Settings {
       },
       FILTER: {
         filterName: "",
-        filterShortcutKeyOpt: null,
+        filterShortcutKeyOpt: [],
         sortOpt: [],
         dataTypeFilterOpt: [],
         keywordFilterOpt: [],

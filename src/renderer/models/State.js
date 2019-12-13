@@ -4,9 +4,6 @@ import FilterValue from "./FilterValue";
 import Message from "./Message";
 import _ from "lodash";
 
-const { ipcRenderer } = window.require("electron");
-const USE_IPC = "useIpc";
-
 const StateRecord = Record({
   alwaysOnTop: false,
   winFocus: true,
@@ -42,7 +39,7 @@ const StateRecord = Record({
   // Filter Shortcut Key -------------------------------------------------
   // CurrentFilter Settings -------------------------------------------------
   filterName: "",
-  filterShortcutKeyOpt: null,
+  filterShortcutKeyOpt: [],
   sortOpt: null,
   idFilterOpt: [],
   idFilterInputValue: "",

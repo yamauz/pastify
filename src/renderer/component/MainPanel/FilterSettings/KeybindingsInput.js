@@ -51,7 +51,7 @@ const Component = props => {
         menuIsOpen={false}
         placeholder={null}
         onChange={value => {
-          setShortcutKeyOpt(value);
+          setShortcutKeyOpt([]);
         }}
         onInputChange={value => {
           return "";

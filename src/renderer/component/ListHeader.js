@@ -61,31 +61,18 @@ const ItemText = styled.p`
 
 const ListHeader = props => {
   const {
-    ids,
     isCompact,
     isFold,
-    itemListToolTipVisibility,
     toggleItemListToolTipVisibility,
     toggleListMode,
-    toggleMainPanel,
-    filterName
+    toggleMainPanel
   } = props;
 
   return (
     <Wrapper>
       <Left>
-        <ItemText>{_setFiltersName(ids.size, filterName)}</ItemText>
+        <ItemText>{_setFiltersName(props)}</ItemText>
       </Left>
-      {/* <Tooltip
-        visible={itemListToolTipVisibility}
-        placement="bottomRight"
-        trigger={["click"]}
-        overlay={<ToolTipList />}
-        onVisibleChange={() => {}}
-        align={{
-          offset: [-10, -5]
-        }}
-      > */}
       <Right id="tooltip" tabIndex="0">
         <IconWrapper
           onClick={() => {
@@ -111,14 +98,62 @@ const ListHeader = props => {
           ></Ellipsis>
         </IconWrapper>
       </Right>
-      {/* </Tooltip> */}
     </Wrapper>
   );
 };
 
-const _setFiltersName = (size, name) => {
-  const dispName = name === "" ? `All Items(${size})` : `${name}(${size})`;
-  return dispName;
+const _setFiltersName = props => {
+  const {
+    ids,
+    filterName,
+    sortOpt,
+    filterShortcutKeyOpt,
+    keywordFilterOpt,
+    idFilterOpt,
+    dataTypeFilterOpt,
+    statusFilterOpt,
+    hotKeyFilterOpt,
+    hashTagFilterOpt,
+    languageFilterOpt
+  } = props;
+
+  let headerTitle;
+
+  if (
+    sortOpt.length !== 0 ||
+    filterShortcutKeyOpt.length !== 0 ||
+    keywordFilterOpt.length !== 0 ||
+    idFilterOpt.length !== 0 ||
+    dataTypeFilterOpt.length !== 0 ||
+    statusFilterOpt.length !== 0 ||
+    hotKeyFilterOpt.length !== 0 ||
+    hashTagFilterOpt.length !== 0 ||
+    languageFilterOpt.length !== 0
+  ) {
+    console.log(sortOpt.length);
+    console.log(filterShortcutKeyOpt);
+    console.log(keywordFilterOpt.length);
+    console.log(idFilterOpt.length);
+    console.log(dataTypeFilterOpt.length);
+    console.log(statusFilterOpt.length);
+    console.log(hotKeyFilterOpt.length);
+    console.log(hashTagFilterOpt.length);
+    console.log(languageFilterOpt.length);
+
+    if (filterName !== "") {
+      headerTitle = filterName;
+    } else {
+      headerTitle = "Untitled";
+    }
+  } else {
+    if (filterName !== "") {
+      headerTitle = filterName;
+    } else {
+      headerTitle = "All Items";
+    }
+  }
+
+  return `${headerTitle}(${ids.size})`;
 };
 
 const _toggleMainPanel = isFold => {
@@ -150,6 +185,15 @@ const _toggleListMode = isCompact => {
 
 const mapStateToProps = state => ({
   filterName: state.get("filterName"),
+  sortOpt: state.get("sortOpt"),
+  filterShortcutKeyOpt: state.get("filterShortcutKeyOpt"),
+  keywordFilterOpt: state.get("keywordFilterOpt"),
+  idFilterOpt: state.get("idFilterOpt"),
+  dataTypeFilterOpt: state.get("dataTypeFilterOpt"),
+  statusFilterOpt: state.get("statusFilterOpt"),
+  hotKeyFilterOpt: state.get("hotKeyFilterOpt"),
+  hashTagFilterOpt: state.get("hashTagFilterOpt"),
+  languageFilterOpt: state.get("languageFilterOpt"),
   isCompact: state.get("isCompact"),
   isFold: state.get("isFold"),
   itemsTimeLine: state.get("itemsTimeLine"),
