@@ -39,11 +39,11 @@ module.exports = class Filters {
   }
 
   update(props, { settings }) {
-    const { filterName } = props;
+    const { filterName, filterShortcutKeyOpt } = props;
     const currentFilterOpt = settings.readFilter();
     this.DB.get(this.storeName)
       .find({ filterName })
-      .assign({ ...currentFilterOpt })
+      .assign({ ...currentFilterOpt, filterShortcutKeyOpt })
       .write();
     const id = this.DB.get(this.storeName)
       .find({ filterName })

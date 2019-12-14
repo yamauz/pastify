@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 
 // Components
 import { connect } from "react-redux";
+import ListMenu from "./ListMenu";
 import AngleDoubleRight from "../../icon/listheader/angle-double-right.svg";
 import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
 import Bars from "../../icon/listheader/bars.svg";
@@ -22,19 +23,15 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #2f3140;
+  background-color: #0c0f1f;
   color: #b5b5b5;
-  height: 100%;
   width: 301px;
-  border-bottom: 1px solid #212121;
 `;
 
 const Left = styled.div`
-  max-width: 300px;
-  flex-grow: 2;
   display: flex;
   align-items: center;
-  margin-left: 10px;
+  padding-left: 5px;
 `;
 const Right = styled.div`
   display: flex;
@@ -49,18 +46,31 @@ const IconWrapper = styled.div`
   height: 22px;
   transition: background-color 0.1s;
   &:hover {
-    background-color: #222222;
+    background-color: #444444;
   }
 `;
 
-const ItemText = styled.p`
-  color: #dddddd;
+const ItemText = styled.span`
+  max-width: 180px;
+  color: #cccccc;
+  font-family: sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const ItemCount = styled.span`
+  margin-left: 5px;
+  color: #cccccc;
   font-family: sans-serif;
   font-size: 12px;
 `;
 
 const ListHeader = props => {
   const {
+    ids,
     isCompact,
     isFold,
     toggleItemListToolTipVisibility,
@@ -72,6 +82,7 @@ const ListHeader = props => {
     <Wrapper>
       <Left>
         <ItemText>{_setFiltersName(props)}</ItemText>
+        <ItemCount>{`(${ids.size})`}</ItemCount>
       </Left>
       <Right id="tooltip" tabIndex="0">
         <IconWrapper
@@ -88,7 +99,10 @@ const ListHeader = props => {
         >
           {_toggleListMode(isCompact)}
         </IconWrapper>
-        <IconWrapper
+        <IconWrapper>
+          <ListMenu />
+        </IconWrapper>
+        {/* <IconWrapper
           onClick={() => {
             toggleItemListToolTipVisibility();
           }}
@@ -96,7 +110,7 @@ const ListHeader = props => {
           <Ellipsis
             style={{ width: "2.6px", fill: "#dddddd", marginTop: "1px" }}
           ></Ellipsis>
-        </IconWrapper>
+        </IconWrapper> */}
       </Right>
     </Wrapper>
   );
@@ -104,7 +118,6 @@ const ListHeader = props => {
 
 const _setFiltersName = props => {
   const {
-    ids,
     filterName,
     sortOpt,
     filterShortcutKeyOpt,
@@ -130,16 +143,6 @@ const _setFiltersName = props => {
     hashTagFilterOpt.length !== 0 ||
     languageFilterOpt.length !== 0
   ) {
-    console.log(sortOpt.length);
-    console.log(filterShortcutKeyOpt);
-    console.log(keywordFilterOpt.length);
-    console.log(idFilterOpt.length);
-    console.log(dataTypeFilterOpt.length);
-    console.log(statusFilterOpt.length);
-    console.log(hotKeyFilterOpt.length);
-    console.log(hashTagFilterOpt.length);
-    console.log(languageFilterOpt.length);
-
     if (filterName !== "") {
       headerTitle = filterName;
     } else {
@@ -153,7 +156,7 @@ const _setFiltersName = props => {
     }
   }
 
-  return `${headerTitle}(${ids.size})`;
+  return headerTitle;
 };
 
 const _toggleMainPanel = isFold => {

@@ -101,7 +101,6 @@ const Main = props => {
       setWinMaximize(false);
     });
     ipcRenderer.on("ON_ALWAYS_ON_TOP_CHANGED", () => {
-      console.log("test");
       setAlwaysOnTop();
     });
     document.getElementById("searchbar").focus();

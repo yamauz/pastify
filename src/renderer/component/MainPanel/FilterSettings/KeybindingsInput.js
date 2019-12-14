@@ -70,8 +70,8 @@ const Component = props => {
               keyPressed !== "CTRL" &&
               keyPressed !== "ALT"
             ) {
-              const label = `${SHIFT}${CTRL}${ALT}${keyPressed}`;
-              const value = `${SHIFT}${CTRL}${ALT}${keyPressed}`.toLowerCase();
+              const label = `${CTRL}${SHIFT}${ALT}${keyPressed}`;
+              const value = `${CTRL}${SHIFT}${ALT}${keyPressed}`.toLowerCase();
               if (!!filterShortcutKeyOpt) {
                 if (value === filterShortcutKeyOpt.value) {
                   console.log("same key");

@@ -10,14 +10,39 @@ import {
   setDetailType
 } from "../actions";
 
-import Menu, { SubMenu, Item as MenuItem, Divider } from "rc-menu";
+import Menu, {
+  Item as MenuItem,
+  Divider,
+  ItemGroup as MenuItemGroup
+} from "rc-menu";
 
 const Wrapper = styled.div`
   font-family: sans-serif;
   position: absolute;
-  top: 82px;
-  left: 5px;
-  width: 290px;
+  top: 92px;
+  width: 300px;
+  overflow: overlay;
+  /* height: 200px; */
+  /* max-height: 600px; */
+  max-height: ${() => `${window.innerHeight - 125}px`};
+  -webkit-background-clip: text;
+  transition: background-color 0.3s;
+  &::-webkit-scrollbar {
+    padding-top: 20px;
+    width: 0.5em;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar:horizontal {
+    display: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: inherit;
+    max-height: 5px;
+    min-height: 5px;
+  }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 const ItemWrapper = styled.div`
@@ -25,11 +50,35 @@ const ItemWrapper = styled.div`
   justify-content: space-between;
   padding-left: 5px;
   padding-right: 10px;
+  align-items: center;
 `;
 
-const Command = styled.span``;
+const Command = styled.span`
+  color: #cccccc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
 const Key = styled.span`
+  color: #999999;
+`;
+
+const DeleteIcon = styled.button`
+  text-align: center;
+  position: absolute;
+  margin-top: -2px;
+  margin-left: -17px;
+  padding-bottom: 3px;
   color: #aaaaaa;
+  width: 20px;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  &:hover {
+    color: #dddddd;
+    background-color: #272f3d;
+  }
 `;
 
 const Component = props => {
@@ -41,6 +90,8 @@ const Component = props => {
     toggleItemListToolTipVisibility,
     setDetailType
   } = props;
+
+  console.log(window.innerHeight);
 
   useEffect(() => {
     document.getElementById("item-menu-list").focus();
@@ -72,8 +123,6 @@ const Component = props => {
       case "setUserFilter":
         setIdsFromDatastore();
         break;
-        // setIdsFromDatastore();
-        break;
       default:
         break;
     }
@@ -88,61 +137,108 @@ const Component = props => {
   return (
     <Wrapper>
       <Menu onSelect={handleAction} defaultActiveFirst id={"item-menu-list"}>
-        {actionList.map(action => {
-          return (
-            <MenuItem key={action.command} command={action.command}>
-              <ItemWrapper>
-                <Command> {action.label}</Command>
-                <Key>{action.key}</Key>
-              </ItemWrapper>
-            </MenuItem>
-          );
-        })}
-        <Divider />
-        {filtersToRender.map(filter => {
-          return (
-            <MenuItem
-              key={filter.id}
-              command={"setUserFilter"}
-              filterid={filter.id}
-            >
-              <ItemWrapper>
-                <Command> {filter.filterName}</Command>
-                <Key>{filter.shortcutKey}</Key>
-              </ItemWrapper>
-            </MenuItem>
-          );
-        })}
+        <MenuItemGroup title="Edit" key="edit">
+          {EDIT.map(action => {
+            return (
+              <MenuItem key={action.command} command={action.command}>
+                <ItemWrapper tabIndex={1}>
+                  <Command> {action.label}</Command>
+                  <Key>{action.key}</Key>
+                </ItemWrapper>
+              </MenuItem>
+            );
+          })}
+        </MenuItemGroup>
+        <MenuItemGroup title="Filter Settings" key="filter-settings">
+          {FILTER_SETTINGS.map(action => {
+            return (
+              <MenuItem key={action.command} command={action.command}>
+                <ItemWrapper tabIndex={1}>
+                  <Command> {action.label}</Command>
+                  <Key>{action.key}</Key>
+                </ItemWrapper>
+              </MenuItem>
+            );
+          })}
+        </MenuItemGroup>
+        <MenuItemGroup title="Apply User Filter" key="apply-user-filter">
+          {filtersToRender.map(filter => {
+            const [isOpen, setIsOpen] = useState(false);
+            const toggleDeleteButton = () => setIsOpen(!isOpen);
+            return (
+              <MenuItem
+                key={filter.id}
+                command={"setUserFilter"}
+                filterid={filter.id}
+                onMouseEnter={toggleDeleteButton}
+                onMouseLeave={toggleDeleteButton}
+                tabIndex={1}
+              >
+                {isOpen && (
+                  <DeleteIcon
+                    onFocus={e => {
+                      console.log(`Delete Item : ${filter.id}`);
+                    }}
+                  >
+                    X
+                  </DeleteIcon>
+                )}
+                <ItemWrapper>
+                  <Command> {filter.filterName}</Command>
+                  <Key>{filter.shortcutKey}</Key>
+                </ItemWrapper>
+              </MenuItem>
+            );
+          })}
+        </MenuItemGroup>
       </Menu>
     </Wrapper>
   );
 };
 
-const actionList = [
-  { label: "Add new item", command: "addNewItem", key: "Ctrl+Shift+N" },
-  { label: "Trash all items", command: "trashAllItems", key: "Ctrl+Shift+D" },
+const EDIT = [
   {
-    label: "Trash all items ( excludes faved )",
-    command: "trashAllItemsWithoutFaved",
+    type: "edit",
+    label: "Add new",
+    command: "addNewItem",
+    key: "Ctrl+Shift+N"
+  },
+  {
+    type: "edit",
+    label: "Trash All On List ",
+    command: "trashAllItems",
     key: "Ctrl+Shift+D"
   },
   {
-    label: "Show filter/sort settings",
+    type: "edit",
+    label: "Trash all items ( excludes faved )",
+    command: "trashAllItemsWithoutFaved",
+    key: "Ctrl+Shift+D"
+  }
+];
+
+const FILTER_SETTINGS = [
+  {
+    type: "filter",
+    label: "Open Setting panel",
     command: "showFilterSortSettings",
     key: "Ctrl+Shift+F"
   },
   {
-    label: "Save filter/sort settings",
+    type: "filter",
+    label: "Save",
     command: "saveFilterSortSettings",
     key: "Ctrl+Shift+S"
   },
   {
-    label: "Clear filter/sort settings",
+    type: "filter",
+    label: "Clear",
     command: "clearFilterSortSettings",
     key: "Ctrl+Shift+C"
   },
   {
-    label: "Reload filter/sort settings",
+    type: "filter",
+    label: "Reload",
     command: "reloadFilterSortSettings",
     key: "Ctrl+Shift+C"
   }

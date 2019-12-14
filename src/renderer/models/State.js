@@ -386,7 +386,12 @@ class State extends StateRecord {
 
   updateFilter() {
     const filterName = this.get("filterName");
-    const id = new Message("filters", "update", { filterName }).dispatch();
+    const filterShortcutKeyOpt = this.get("filterShortcutKeyOpt");
+    const id = new Message("filters", "update", {
+      filterName,
+      filterShortcutKeyOpt
+    }).dispatch();
+
     return this.withMutations(state => {
       state.setIn(
         ["filtersList", id, "filterShortcutKeyOpt"],

@@ -1,12 +1,15 @@
 .rc-menu {
   z-index: 999;
-  background-color: #191921;
+  background-color: #111514;
   font-size: 11px;
   outline: none;
   margin-bottom: 0;
+  margin-top: 0;
   padding-left: 0;
   list-style: none;
-  color: #cccccc;
+  color: #bcbcbc;
+  /* -webkit-background-clip: text; */
+  transition: background-color 0.3s;
 }
 .rc-menu-hidden {
   display: none;
@@ -22,11 +25,12 @@
   padding: 0;
 }
 .rc-menu-item-group-title {
-  color: #999;
+  color: #cbcbcb;
   line-height: 1.5;
-  padding: 8px 10px;
-  border-bottom: 1px solid #dedede;
+  padding: 3px 17px;
+  background-color: #020213;
 }
+
 .rc-menu-item-active,
 .rc-menu-submenu-active > .rc-menu-submenu-title {
   background-color: #354154;
@@ -53,7 +57,7 @@
   height: 25px;
   margin: 0;
   padding-top: 2px;
-  padding-left: 4px;
+  padding-left: 17px;
   position: relative;
   display: block;
   white-space: nowrap;
