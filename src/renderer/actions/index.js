@@ -64,6 +64,7 @@ export const {
   // Save Current Filter Settings ------------------------------
   saveFilter,
   updateFilter,
+  deleteUserFilter,
   // Set item status by hash tag ----------------------------------
   setHashTagInputValue,
   addHashTagValue,
@@ -81,7 +82,8 @@ export const {
   setActionSelected,
   increment,
   decrement,
-  updateWinState
+  updateWinState,
+  setPrevFocusedElm
 } = createActions({
   PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
@@ -140,6 +142,7 @@ export const {
   //Save Current Filter Settings
   SAVE_FILTER: () => {},
   UPDATE_FILTER: () => {},
+  DELETE_USER_FILTER: id => id,
   // Filter by data type -----------------------------------------
   SET_DATA_TYPE_FILTER_OPTIONS: options => options,
   // Filter by status --------------------------------------------
@@ -167,5 +170,6 @@ export const {
   SET_ACTION_SELECTED: actionSelected => actionSelected,
   INCREMENT: (amount = 1) => ({ amount }),
   DECREMENT: (amount = 1) => ({ amount: -amount }),
-  UPDATE_WIN_STATE: props => props
+  UPDATE_WIN_STATE: props => props,
+  SET_PREV_FOCUSED_ELM: () => {}
 });

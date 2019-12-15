@@ -34,7 +34,7 @@ const StateRecord = Record({
   keyboardHandler: "",
   modalVisibility: false,
   filterSaveModalVisibility: false,
-  prevFocusedElm: null,
+  prevFocusedElm: document.activeElement,
   actionSelected: "",
   // Filter Shortcut Key -------------------------------------------------
   // CurrentFilter Settings -------------------------------------------------
@@ -424,6 +424,15 @@ class State extends StateRecord {
         this.get("languageFilterOpt")
       );
     });
+  }
+
+  deleteUserFilter(id) {
+    return this.set(
+      "filtersList",
+      this.filtersList.filter(filter => {
+        return filter.id !== id;
+      })
+    );
   }
 
   addKeywordFilterOptions(keywords) {

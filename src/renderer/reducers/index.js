@@ -173,6 +173,9 @@ export default handleActions(
     UPDATE_FILTER: state => {
       return state.updateFilter();
     },
+    DELETE_USER_FILTER: (state, { payload: id }) => {
+      return state.deleteUserFilter(id);
+    },
 
     // Set item status by hash tag ----------------------------------
     SET_HASH_TAG_INPUT_VALUE: (state, { payload: value }) => {
@@ -208,6 +211,9 @@ export default handleActions(
     },
     UPDATE_WIN_STATE: (state, { payload: props }) => {
       return state.updateWinState(props);
+    },
+    SET_PREV_FOCUSED_ELM: state => {
+      return state.set("prevFocusedElm", document.activeElement);
     }
   },
   new State()

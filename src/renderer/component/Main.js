@@ -5,10 +5,10 @@ import {
   loadItem,
   addItemClipboard,
   deleteItem,
-  toggleItemListToolTipVisibility,
   setWinFocus,
   setWinMaximize,
-  setAlwaysOnTop
+  setAlwaysOnTop,
+  setPrevFocusedElm
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -76,13 +76,12 @@ const Main = props => {
     prevFocusedElm,
     modalVisibility,
     filterSaveModalVisibility,
-    itemListToolTipVisibility,
     addItemClipboard,
     idsTimeLine,
-    toggleItemListToolTipVisibility,
     setWinFocus,
     setWinMaximize,
-    setAlwaysOnTop
+    setAlwaysOnTop,
+    setPrevFocusedElm
   } = props;
   useEffect(() => {
     ipcRenderer.on("ON_COPY", (event, item, addMode) => {
@@ -104,41 +103,15 @@ const Main = props => {
       setAlwaysOnTop();
     });
     document.getElementById("searchbar").focus();
-    // window.addEventListener(
-    //   "keydown",
-    //   e => {
-    //     const { shiftKey, ctrlKey } = e;
-    //     const pressKey = e.keyCode;
-    //     const { O } = keyCode;
-
-    //     if (ctrlKey && !shiftKey) {
-    //       if (pressKey === O) toggleItemListToolTipVisibility();
-    //     } else if (!ctrlKey && shiftKey) {
-    //     } else if (ctrlKey && shiftKey) {
-    //     }
-    //   },
-    //   true
-    // );
   }, []);
 
   useEffect(() => {
-    window.addEventListener("click", toggleToolTipByClick, true);
     window.addEventListener("keydown", toggleToolTipByKeyDown, true);
     return () => {
-      window.removeEventListener("click", toggleToolTipByClick, true);
       window.removeEventListener("keydown", toggleToolTipByKeyDown, true);
     };
-  }, [itemListToolTipVisibility]);
+  }, [prevFocusedElm]);
 
-  const toggleToolTipByClick = () => {
-    const regex1 = /^tooltip/;
-    const regex2 = /^rc-/;
-    if (!regex1.test(document.activeElement.id) && itemListToolTipVisibility) {
-      if (!regex2.test(document.activeElement.className)) {
-        toggleItemListToolTipVisibility();
-      }
-    }
-  };
   const toggleToolTipByKeyDown = e => {
     const { shiftKey, ctrlKey } = e;
     const pressKey = e.keyCode;
@@ -146,8 +119,13 @@ const Main = props => {
 
     if (ctrlKey && !shiftKey) {
       if (pressKey === O) {
-        toggleItemListToolTipVisibility();
-        if (itemListToolTipVisibility) prevFocusedElm.focus();
+        if (document.activeElement === document.getElementById("list-menu")) {
+          document.getElementById("list-menu").blur();
+          prevFocusedElm.focus();
+        } else {
+          setPrevFocusedElm();
+          document.getElementById("list-menu").focus();
+        }
       }
     } else if (!ctrlKey && shiftKey) {
     } else if (ctrlKey && shiftKey) {
@@ -170,8 +148,6 @@ const Main = props => {
       <GridFooter>
         <Footer />
       </GridFooter>
-      {itemListToolTipVisibility && <MenuList />}
-
       {viewTagModal(modalVisibility)}
       {viewFilterSaveModal(filterSaveModalVisibility)}
     </Wrapper>
@@ -186,15 +162,14 @@ const mapStateToProps = state => ({
   itemsTimeLine: state.get("itemsTimeLine"),
   idsTimeLine: state.get("idsTimeLine"),
   modalVisibility: state.get("modalVisibility"),
-  filterSaveModalVisibility: state.get("filterSaveModalVisibility"),
-  itemListToolTipVisibility: state.get("itemListToolTipVisibility")
+  filterSaveModalVisibility: state.get("filterSaveModalVisibility")
 });
 export default connect(mapStateToProps, {
   loadItem,
   addItemClipboard,
   deleteItem,
-  toggleItemListToolTipVisibility,
   setWinFocus,
   setWinMaximize,
-  setAlwaysOnTop
+  setAlwaysOnTop,
+  setPrevFocusedElm
 })(Main);

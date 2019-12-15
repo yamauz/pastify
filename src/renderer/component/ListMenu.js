@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
+import arraySort from "array-sort";
+import keycode from "keycode";
 // import Select from "react-select";
 import {
   callActionOnItemList,
   setIdsFromDatastore,
-  setDetailType
+  setDetailType,
+  deleteUserFilter
 } from "../actions";
 import Select, { components } from "react-select";
 import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
 
 import styled from "@emotion/styled";
-
-const svgFav =
-  "data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20576%20512%22%3E%3Cpath%20d%3D%22M259.3%2017.8L194%20150.2%2047.9%20171.5c-26.2%203.8-36.7%2036.1-17.7%2054.6l105.7%20103-25%20145.5c-4.5%2026.3%2023.2%2046%2046.4%2033.7L288%20439.6l130.7%2068.7c23.2%2012.2%2050.9-7.4%2046.4-33.7l-25-145.5%20105.7-103c19-18.5%208.5-50.8-17.7-54.6L382%20150.2%20316.7%2017.8c-11.7-23.6-45.6-23.9-57.4%200z%22%2F%3E%3C%2Fsvg%3E";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -67,29 +67,95 @@ const IconWrapper = styled.div`
   position: absolute;
   top: 0;
   padding-left: 2px;
+  width: 25px;
 `;
 
 const Component = props => {
+  const selectRef = useRef(null);
   const {
     filtersList,
     callActionOnItemList,
     setIdsFromDatastore,
-    setDetailType
+    setDetailType,
+    deleteUserFilter,
+    prevFocusedElm
   } = props;
+
+  const DropdownIndicator = props => {
+    return (
+      <components.DropdownIndicator {...props}>
+        <IconWrapper>
+          <Ellipsis
+            style={{ width: "2.6px", fill: "#dddddd", marginTop: "0.5px" }}
+          ></Ellipsis>
+        </IconWrapper>
+      </components.DropdownIndicator>
+    );
+  };
+
+  const Option = optProps => {
+    return (
+      <components.Option {...optProps}>
+        <OptionWrapper
+          id={
+            optProps.isFocused && optProps.data.type === "user"
+              ? "selected"
+              : ""
+          }
+        >
+          <OptionLeftSec id={optProps.data.id}>
+            <DelIcon
+              type={optProps.data.type}
+              isFocused={optProps.isFocused}
+              onClick={e => {
+                e.stopPropagation();
+                deleteUserFilter(optProps.data.id);
+                selectRef.current.blur();
+              }}
+            >
+              X
+            </DelIcon>
+          </OptionLeftSec>
+          <OptionRightSec>
+            <Command> {optProps.data.label}</Command>
+            <ShortcutKey>{optProps.data.shortcutKey}</ShortcutKey>
+          </OptionRightSec>
+        </OptionWrapper>
+      </components.Option>
+    );
+  };
 
   return (
     <Wrapper>
       <Select
+        openMenuOnFocus={true}
+        inputId={"list-menu"}
+        ref={selectRef}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
-        // options={groupedOptions}
         options={createGroupedOptions(filtersList)}
         formatGroupLabel={formatGroupLabel}
         placeholder={null}
         value={null}
-        components={{ DropdownIndicator, Option }}
+        components={{
+          DropdownIndicator,
+          Option
+        }}
+        onKeyDown={e => {
+          e.stopPropagation();
+          if (keycode(e) === "delete") {
+            const selectedElm = document.getElementById("selected");
+            if (selectedElm !== null) {
+              const { id } = selectedElm.firstElementChild;
+              deleteUserFilter(id);
+              selectRef.current.blur();
+            }
+          }
+        }}
+        onMenuClose={() => {
+          prevFocusedElm.focus();
+        }}
         onChange={opt => {
-          console.log(document.activeElement);
           const { type, command, id } = opt;
           if (type === "system") {
             callActionOnItemList(command);
@@ -115,43 +181,6 @@ const Component = props => {
         styles={customStyles}
       />
     </Wrapper>
-  );
-};
-
-const DropdownIndicator = props => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <IconWrapper>
-        <Ellipsis
-          style={{ width: "2.6px", fill: "#dddddd", marginTop: "0.5px" }}
-        ></Ellipsis>
-      </IconWrapper>
-    </components.DropdownIndicator>
-  );
-};
-
-const Option = props => {
-  return (
-    <components.Option {...props}>
-      <OptionWrapper>
-        <OptionLeftSec>
-          <DelIcon
-            type={props.data.type}
-            isFocused={props.isFocused}
-            onClick={e => {
-              e.stopPropagation();
-              console.log(e);
-            }}
-          >
-            X
-          </DelIcon>
-        </OptionLeftSec>
-        <OptionRightSec>
-          <Command> {props.data.label}</Command>
-          <ShortcutKey>{props.data.shortcutKey}</ShortcutKey>
-        </OptionRightSec>
-      </OptionWrapper>
-    </components.Option>
   );
 };
 
@@ -185,17 +214,11 @@ const customStyles = {
   menu: (provided, state) => ({
     ...provided,
     width: 299,
-    // max-height: ${() => `${window.innerHeight - 125}px`};
-
     position: "absolute",
     top: -10,
     left: -275,
     backgroundColor: "#111514",
     paddingBottom: "6px"
-
-    // "&::-webkit-scrollbar-thumb": {
-    //   backgroundColor: "red"
-    // }
   }),
   menuList: (provided, state) => ({
     ...provided,
@@ -259,12 +282,17 @@ const createGroupedOptions = filtersList => {
 
     filtersToRender.push({ type, label, command, id, shortcutKey });
   });
+
   if (filtersToRender.length !== 0) {
     const userFilterOptions = {
       label: "Apply User Filter",
-      options: filtersToRender
+      options: arraySort(filtersToRender, (a, b) =>
+        a.label.localeCompare(b.label)
+      )
     };
     groupedOptions[2] = userFilterOptions;
+  } else {
+    groupedOptions.splice(2, 1);
   }
   return groupedOptions;
 };
@@ -323,11 +351,13 @@ const groupedOptions = [
 ];
 
 const mapStateToProps = state => ({
-  filtersList: state.get("filtersList")
+  filtersList: state.get("filtersList"),
+  prevFocusedElm: state.get("prevFocusedElm")
 });
 
 export default connect(mapStateToProps, {
   callActionOnItemList,
   setIdsFromDatastore,
-  setDetailType
+  setDetailType,
+  deleteUserFilter
 })(Component);
