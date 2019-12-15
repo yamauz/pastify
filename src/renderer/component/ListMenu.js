@@ -77,32 +77,13 @@ const Component = props => {
     setDetailType
   } = props;
 
-  const filtersToRender = [];
-  filtersList.forEach(val => {
-    const id = val.get("id");
-    const type = "user";
-    const command = "setUserFilter";
-    const label = val.get("filterName");
-    const filterShortcutKeyOpt = val.get("filterShortcutKeyOpt");
-    const shortcutKey =
-      filterShortcutKeyOpt === null ? "" : filterShortcutKeyOpt.label;
-
-    filtersToRender.push({ type, label, command, id, shortcutKey });
-  });
-  if (filtersToRender.length !== 0) {
-    const userFilterOptions = {
-      label: "Apply User Filter",
-      options: filtersToRender
-    };
-    groupedOptions.push(userFilterOptions);
-  }
-
   return (
     <Wrapper>
       <Select
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
-        options={groupedOptions}
+        // options={groupedOptions}
+        options={createGroupedOptions(filtersList)}
         formatGroupLabel={formatGroupLabel}
         placeholder={null}
         value={null}
@@ -263,6 +244,29 @@ const customStyles = {
     margin: 0,
     padding: "0 0 0 5"
   })
+};
+
+const createGroupedOptions = filtersList => {
+  const filtersToRender = [];
+  filtersList.forEach(val => {
+    const id = val.get("id");
+    const type = "user";
+    const command = "setUserFilter";
+    const label = val.get("filterName");
+    const filterShortcutKeyOpt = val.get("filterShortcutKeyOpt");
+    const shortcutKey =
+      filterShortcutKeyOpt === null ? "" : filterShortcutKeyOpt.label;
+
+    filtersToRender.push({ type, label, command, id, shortcutKey });
+  });
+  if (filtersToRender.length !== 0) {
+    const userFilterOptions = {
+      label: "Apply User Filter",
+      options: filtersToRender
+    };
+    groupedOptions[2] = userFilterOptions;
+  }
+  return groupedOptions;
 };
 
 const EDIT = [
