@@ -214,6 +214,9 @@ export default handleActions(
     },
     SET_PREV_FOCUSED_ELM: state => {
       return state.set("prevFocusedElm", document.activeElement);
+    },
+    SET_TOOL_TIP_ARROW_POS: (state, { payload: pos }) => {
+      return state.set("toolTipArrowPos", pos);
     }
   },
   new State()

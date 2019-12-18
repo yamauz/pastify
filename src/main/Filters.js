@@ -52,6 +52,15 @@ module.exports = class Filters {
     return id;
   }
 
+  delete(props) {
+    const { id } = props;
+
+    this.DB.get(this.storeName)
+      .remove({ id })
+      .write();
+    return null;
+  }
+
   _createResoucePath() {
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const resourcePath = path.resolve(distDir, "resource");

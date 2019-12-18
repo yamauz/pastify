@@ -11,6 +11,7 @@ import {
 } from "../actions";
 import Select, { components } from "react-select";
 import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
+import Cog from "../../icon/listheader/cog.svg";
 
 import styled from "@emotion/styled";
 
@@ -85,9 +86,14 @@ const Component = props => {
     return (
       <components.DropdownIndicator {...props}>
         <IconWrapper>
-          <Ellipsis
-            style={{ width: "2.6px", fill: "#dddddd", marginTop: "0.5px" }}
-          ></Ellipsis>
+          <Cog
+            style={{
+              width: "15px",
+              fill: "#dddddd",
+              marginTop: "4px",
+              marginLeft: "-5px"
+            }}
+          ></Cog>
         </IconWrapper>
       </components.DropdownIndicator>
     );

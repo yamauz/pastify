@@ -1,7 +1,7 @@
 .rc-menu {
   z-index: 999;
   background-color: #111514;
-  font-size: 11px;
+  font-size: 10px;
   outline: none;
   margin-bottom: 0;
   margin-top: 0;
@@ -26,9 +26,9 @@
 }
 .rc-menu-item-group-title {
   color: #cbcbcb;
-  line-height: 1.5;
-  padding: 3px 17px;
+  padding: 0px 13px;
   background-color: #020213;
+  font-size: 10px;
 }
 
 .rc-menu-item-active,
@@ -54,10 +54,8 @@
 }
 .rc-menu-item,
 .rc-menu-submenu-title {
-  height: 25px;
   margin: 0;
-  padding-top: 2px;
-  padding-left: 17px;
+  padding-left: 13px;
   position: relative;
   display: block;
   white-space: nowrap;

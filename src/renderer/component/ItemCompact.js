@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "@emotion/styled";
 import _ from "lodash";
+import ContextMenu from "./ContextMenu";
 
 const Wrapper = styled.div`
   transition: background-color 0.1s;
   height: 100%;
   border-bottom: solid 1px #1d1d1d;
+  padding-right: 20px;
   &:before {
     content: "";
     top: 0;
@@ -32,7 +34,6 @@ const Text = styled.p`
   word-wrap: break-word;
   overflow-wrap: break-word;
   display: -webkit-box;
-  /* -webkit-line-clamp: 2; */
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -69,8 +70,9 @@ const DetectPosBlockBottom = styled.div`
 
 const ItemCompact = props => {
   const { style, item, index } = props;
-
   const { id, mainFormat, textData, isFaved, isTrashed } = item;
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDeleteButton = () => setIsOpen(!isOpen);
 
   return (
     <Wrapper
@@ -79,7 +81,10 @@ const ItemCompact = props => {
       style={style}
       isFaved={isFaved}
       className="list-item"
+      onMouseEnter={toggleDeleteButton}
+      onMouseLeave={toggleDeleteButton}
     >
+      <ContextMenu index={index} id={id} isOpen={isOpen} />
       <DetectPosBlockTop id="detect-pos-block" />
       <DetectPosBlockBottom id="detect-pos-block" />
       {renderTitle(textData, mainFormat, isTrashed)}

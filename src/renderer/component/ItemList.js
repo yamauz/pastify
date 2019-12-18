@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactTooltip from "react-tooltip";
 import styled from "@emotion/styled";
+import keycode from "keycode";
 import shortid from "shortid";
 import keyCode from "../../common/keycode";
 import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
@@ -14,6 +16,7 @@ import {
   setItemListRef,
   setScrollToRow,
   setFocusItemList,
+  setPrevFocusedElm,
   setDetailType,
   deleteIds,
   trashItem,
@@ -56,6 +59,7 @@ const ItemList = props => {
     setScrollToRow,
     setFocusItemList,
     setDetailType,
+    setPrevFocusedElm,
     focusItemList,
     pasteItem
   } = props;
@@ -105,17 +109,14 @@ const ItemList = props => {
       onKeyDown={e => {
         // no action when no item on list
         if (ids.size === 0) return;
-
-        const { DELETE, END, HOME, PAGEDOWN, PAGEUP, ENTER } = keyCode;
-
         const idSelected = ids.get(scrollToRow);
+        console.log(keycode(e));
 
         e.preventDefault();
-        switch (e.keyCode) {
-          case DELETE:
+        switch (keycode(e)) {
+          case "delete":
             const itemValue = itemsTimeLine.get(ids.get(scrollToRow));
             const isFaved = itemValue.get("isFaved");
-            console.log(isFaved);
             if (!isFaved) {
               removeItem(props, itemValue);
               break;
@@ -128,13 +129,13 @@ const ItemList = props => {
               });
             }
             break;
-          case HOME:
+          case "home":
             setScrollToRow(0);
             break;
-          case END:
+          case "end":
             setScrollToRow(ids.size - 1);
             break;
-          case PAGEUP:
+          case "page up":
             moveToEdge(
               "UP",
               setScrollToRow,
@@ -144,7 +145,7 @@ const ItemList = props => {
               isCompact
             );
             break;
-          case PAGEDOWN:
+          case "page down":
             moveToEdge(
               "DOWN",
               setScrollToRow,
@@ -154,9 +155,13 @@ const ItemList = props => {
               isCompact
             );
             break;
-          case ENTER:
+          case "enter":
             const mode = e.shiftKey ? "RETURN" : "NORMAL";
             pasteItem(ids.get(scrollToRow), mode);
+            break;
+          case ";":
+            setPrevFocusedElm();
+            document.getElementById(`${idSelected}-option`).click();
             break;
           default:
             break;
@@ -201,6 +206,10 @@ const ItemList = props => {
                     stop: overscanStopIndex + 1
                   });
                 }}
+                onScroll={_.throttle(() => {
+                  ReactTooltip.rebuild();
+                  ReactTooltip.hide();
+                }, 100)}
                 scrollToIndex={scrollToRow}
                 overscanRowCount={8}
                 rowRenderer={params =>
@@ -298,7 +307,6 @@ const removeItem = (props, itemValue) => {
   } = props;
   // Don't remove new item when filtered list by trashed item
   const isTrashed = itemValue.get("isTrashed");
-  console.log(statusFilterOpt.length);
   if (!isTrashed && statusFilterOpt.length) {
     const [st] = statusFilterOpt;
     if (st.value.hasOwnProperty("isTrashed")) {
@@ -510,6 +518,7 @@ export default connect(mapStateToProps, {
   setScrollToRow,
   setFocusItemList,
   setDetailType,
+  setPrevFocusedElm,
   deleteIds,
   trashItem,
   pasteItem

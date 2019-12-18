@@ -8,7 +8,7 @@ const StateRecord = Record({
   alwaysOnTop: false,
   winFocus: true,
   winMaximize: false,
-  isCompact: false,
+  isCompact: true,
   isFold: true,
   // detailType: "DEFAULT",
   detailType: "filter-sort-settings",
@@ -55,7 +55,8 @@ const StateRecord = Record({
   hashTagOptions: [],
   hashTagInputValue: "",
   keyOptions: [],
-  keyInputValue: ""
+  keyInputValue: "",
+  toolTipArrowPos: "down"
 });
 
 class State extends StateRecord {
@@ -427,6 +428,7 @@ class State extends StateRecord {
   }
 
   deleteUserFilter(id) {
+    new Message("filters", "delete", { id }).dispatch();
     return this.set(
       "filtersList",
       this.filtersList.filter(filter => {

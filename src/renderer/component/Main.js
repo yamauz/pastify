@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactTooltip from "react-tooltip";
 // Redux
 import { connect } from "react-redux";
 import {
@@ -8,13 +9,15 @@ import {
   setWinFocus,
   setWinMaximize,
   setAlwaysOnTop,
-  setPrevFocusedElm
+  setPrevFocusedElm,
+  setToolTipArrowPos
 } from "../actions";
 // Components
 import Container from "./Container";
 import SearchBar from "./SearchBar";
 import TitleBar from "./TitleBar";
 import Modal from "./Modal";
+import ItemToolTip from "./ItemToolTip";
 import FilterSaveModal from "./FilterSaveModal/FilterSaveModal";
 import Footer from "./Footer";
 // Style
@@ -69,6 +72,8 @@ const GridFooter = styled.div`
   background-color: #50505f;
 `;
 
+let arrowPos;
+
 const { ipcRenderer } = window.require("electron");
 
 const Main = props => {
@@ -81,28 +86,63 @@ const Main = props => {
     setWinFocus,
     setWinMaximize,
     setAlwaysOnTop,
-    setPrevFocusedElm
+    setPrevFocusedElm,
+    setToolTipArrowPos
   } = props;
   useEffect(() => {
-    ipcRenderer.on("ON_COPY", (event, item, addMode) => {
-      addItemClipboard(item, "TimeLine", addMode);
+    ipcRenderer.on("useIpc", (event, triger, args) => {
+      switch (triger) {
+        case "COPY":
+          const { clip, mode } = args;
+          addItemClipboard(clip, "TimeLine", mode);
+          break;
+        case "BLUR":
+          setWinFocus(false);
+          break;
+        case "FOCUS":
+          setWinFocus(true);
+          break;
+        case "MAXIMIZE":
+          setWinMaximize(true);
+          break;
+        case "UNMAXIMIZE":
+          setWinMaximize(false);
+          break;
+        case "ALWAYS_ON_TOP_CHANGED":
+          setAlwaysOnTop();
+          break;
+        case "RESIZE":
+          break;
+        default:
+          break;
+      }
+      console.log("rebuild");
+      ReactTooltip.rebuild();
     });
-    ipcRenderer.on("ON_BLUR", () => {
-      setWinFocus(false);
-    });
-    ipcRenderer.on("ON_FOCUS", () => {
-      setWinFocus(true);
-    });
-    ipcRenderer.on("ON_MAXIMIZE", () => {
-      setWinMaximize(true);
-    });
-    ipcRenderer.on("ON_UNMAXIMIZE", () => {
-      setWinMaximize(false);
-    });
-    ipcRenderer.on("ON_ALWAYS_ON_TOP_CHANGED", () => {
-      setAlwaysOnTop();
-    });
+
     document.getElementById("searchbar").focus();
+    setTimeout(() => {
+      console.log("rebuild");
+      ReactTooltip.rebuild();
+    }, 0);
+    // ipcRenderer.on("ON_COPY", (event, item, addMode) => {
+    //   addItemClipboard(item, "TimeLine", addMode);
+    // });
+    // ipcRenderer.on("ON_BLUR", () => {
+    //   setWinFocus(false);
+    // });
+    // ipcRenderer.on("ON_FOCUS", () => {
+    //   setWinFocus(true);
+    // });
+    // ipcRenderer.on("ON_MAXIMIZE", () => {
+    //   setWinMaximize(true);
+    // });
+    // ipcRenderer.on("ON_UNMAXIMIZE", () => {
+    //   setWinMaximize(false);
+    // });
+    // ipcRenderer.on("ON_ALWAYS_ON_TOP_CHANGED", () => {
+    //   setAlwaysOnTop();
+    // });
   }, []);
 
   useEffect(() => {
@@ -150,6 +190,61 @@ const Main = props => {
       </GridFooter>
       {viewTagModal(modalVisibility)}
       {viewFilterSaveModal(filterSaveModalVisibility)}
+      <ReactTooltip
+        effect="solid"
+        id="global"
+        globalEventOff="click"
+        // event="click"
+        clickable={true}
+        scrollHide={true}
+        resizeHide={true}
+        className="item-tooltip"
+        afterShow={() => {
+          document.getElementById("item-tooltip").focus();
+        }}
+        overridePosition={(
+          { left, top },
+          currentEvent,
+          currentTarget,
+          node,
+          place
+        ) => {
+          const listHeight =
+            document.getElementById("item-list").clientHeight - 50;
+          const clientRect = currentTarget.getBoundingClientRect();
+          const targetOffsetTop = clientRect.top - 91;
+          switch (place) {
+            case "top":
+              left = left - 61;
+              break;
+            case "bottom":
+              left = left - 61;
+              top = top + 4;
+              break;
+            case "left":
+              if (targetOffsetTop < listHeight / 2) {
+                top = top + 135;
+                left = left + 22;
+                setToolTipArrowPos("up");
+              } else {
+                top = top - 135;
+                left = left + 22;
+                setToolTipArrowPos("down");
+              }
+              break;
+            case "right":
+              break;
+
+            default:
+              break;
+          }
+
+          return { top, left };
+        }}
+        getContent={index => {
+          return <ItemToolTip index={index} arrowpos={arrowPos}></ItemToolTip>;
+        }}
+      ></ReactTooltip>
     </Wrapper>
   );
 };
@@ -171,5 +266,6 @@ export default connect(mapStateToProps, {
   setWinFocus,
   setWinMaximize,
   setAlwaysOnTop,
-  setPrevFocusedElm
+  setPrevFocusedElm,
+  setToolTipArrowPos
 })(Main);

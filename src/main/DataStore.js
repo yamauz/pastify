@@ -28,7 +28,8 @@ module.exports = class DataStore {
     this.DB.get(this.storeName)
       .push(clip)
       .write();
-    win.sendToRenderer("ON_COPY", [clip], "MANUAL");
+    const args = { clip: [clip], mode: "MANUAL" };
+    win.sendToRenderer("useIpc", "COPY", args);
   }
   createByCopy(copiedData, win) {
     const { format, extracts } = copiedData;
@@ -36,7 +37,8 @@ module.exports = class DataStore {
     this.DB.get(this.storeName)
       .push(clip)
       .write();
-    win.sendToRenderer("ON_COPY", [clip], "AUTO");
+    const args = { clip: [clip], mode: "AUTO" };
+    win.sendToRenderer("useIpc", "COPY", args);
   }
 
   readAll() {

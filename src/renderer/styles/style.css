@@ -89,3 +89,18 @@
 .dropdown2 {
   height: 5px;
 }
+
+.__react_component_tooltip.place-left:after {
+  display: none;
+}
+.__react_component_tooltip.place-top:after {
+  display: none;
+}
+
+.item-tooltip {
+  background-color: #111514 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+}

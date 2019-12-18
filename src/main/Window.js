@@ -84,24 +84,24 @@ module.exports = class Window {
 
   setEventListener(settings) {
     this.window.on("blur", () => {
-      this.sendToRenderer("ON_BLUR");
+      this.sendToRenderer("useIpc", "BLUR");
     });
     this.window.on("focus", () => {
-      this.sendToRenderer("ON_FOCUS");
+      this.sendToRenderer("useIpc", "FOCUS");
     });
     this.window.on("always-on-top-changed", () => {
       settings.updateWin({ alwaysOnTop: !this.window.isAlwaysOnTop() });
-      this.sendToRenderer("ON_ALWAYS_ON_TOP_CHANGED");
+      this.sendToRenderer("useIpc", "ALWAYS_ON_TOP_CHANGED");
     });
     this.window.on("maximize", () => {
       settings.updateWin({ isMaximized: true });
-      this.sendToRenderer("ON_MAXIMIZE");
+      this.sendToRenderer("useIpc", "MAXIMIZE");
     });
     this.window.on("unmaximize", () => {
       settings.updateWin({ isMaximized: false });
       const { width, height } = settings.readWin();
       this.window.setSize(width, height);
-      this.sendToRenderer("ON_UNMAXIMIZE");
+      this.sendToRenderer("useIpc", "UNMAXIMIZE");
     });
     this.window.on(
       "resize",
@@ -110,6 +110,7 @@ module.exports = class Window {
           const width = this.window.getSize()[0];
           const height = this.window.getSize()[1];
           settings.updateWin({ width, height });
+          this.sendToRenderer("useIpc", "RESIZE");
         }
       }, 200)
     );
@@ -157,8 +158,8 @@ module.exports = class Window {
     this.window.webContents.openDevTools();
   }
 
-  sendToRenderer(event, data, addMode) {
-    this.window.webContents.send(event, data, addMode);
+  sendToRenderer(event, useIpc, triger, arg) {
+    this.window.webContents.send(event, useIpc, triger, arg);
   }
 
   show() {
