@@ -44,7 +44,7 @@ module.exports = class Window {
       width,
       height,
       minWidth: 301,
-      minHeight: 400,
+      minHeight: 500,
       frame: false,
       webPreferences: {
         webSecurity: false,
