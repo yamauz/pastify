@@ -359,7 +359,8 @@ const moveToEdge = (
         edgeElm = elmForDetect.parentElement.parentElement.firstElementChild;
       } else {
         edgeElm =
-          elmForDetect.parentElement.nextElementSibling.firstElementChild;
+          elmForDetect.parentElement.parentElement.nextElementSibling
+            .firstElementChild;
       }
     } else {
       // move to list end item when no item on edge"
@@ -371,7 +372,8 @@ const moveToEdge = (
         edgeElm = elmForDetect.parentElement.parentElement.firstElementChild;
       } else {
         edgeElm =
-          elmForDetect.parentElement.previousElementSibling.firstElementChild;
+          elmForDetect.parentElement.parentElement.previousElementSibling
+            .firstElementChild;
       }
     }
   } else {

@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 
 const KeyTag = styled.span`
   font-family: sans-serif;
-  vertical-align: top;
   display: inline-block;
   color: #dddddd;
   padding: 1px 6px 0px 6px;

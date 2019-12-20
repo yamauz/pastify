@@ -3,12 +3,16 @@ import { connect } from "react-redux";
 import styled from "@emotion/styled";
 import _ from "lodash";
 import ContextMenu from "./ContextMenu";
+import TextLanguage from "./TextLanguage";
+import Key from "./Key";
+import Hash from "./Hash";
 
 const Wrapper = styled.div`
+  font-family: sans-serif;
   transition: background-color 0.1s;
   height: 100%;
+  overflow: hidden;
   border-bottom: solid 1px #1d1d1d;
-  padding-right: 20px;
   &:before {
     content: "";
     top: 0;
@@ -27,15 +31,14 @@ const Wrapper = styled.div`
     return props.index % 2 ? "#2b2b2b6e" : "inherit";
   }};
 `;
-const Text = styled.p`
-  padding-top: 4px;
-  margin-left: 10px;
+const Text = styled.span`
+  max-width: 255px;
+  vertical-align: middle;
+  display: inline-block;
   text-align: left;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-right: 4px;
   overflow: hidden;
   color: ${props => {
     switch (props.format) {
@@ -50,7 +53,6 @@ const Text = styled.p`
     }
   }};
   opacity: ${props => (props.isTrashed ? 0.8 : 1)};
-  font-family: sans-serif;
   font-size: 12px;
 `;
 
@@ -58,6 +60,7 @@ const DetectPosBlockTop = styled.div`
   position: absolute;
   width: 1px;
   height: 1px;
+  z-index: 200;
 `;
 
 const DetectPosBlockBottom = styled.div`
@@ -66,11 +69,17 @@ const DetectPosBlockBottom = styled.div`
   height: 1px;
   bottom: 0;
   left: 0;
+  z-index: 200;
+`;
+
+const TextWrapper = styled.div`
+  padding-left: 10px;
+  padding-right: 25px;
 `;
 
 const ItemCompact = props => {
   const { style, item, index } = props;
-  const { id, mainFormat, textData, isFaved, isTrashed } = item;
+  const { id, mainFormat, textData, isFaved, isTrashed, key, lang, tag } = item;
   const [isOpen, setIsOpen] = useState(false);
   const toggleDeleteButton = () => setIsOpen(!isOpen);
 
@@ -87,21 +96,26 @@ const ItemCompact = props => {
       <ContextMenu index={index} id={id} isOpen={isOpen} />
       <DetectPosBlockTop id="detect-pos-block" />
       <DetectPosBlockBottom id="detect-pos-block" />
-      {renderTitle(textData, mainFormat, isTrashed)}
+      {renderTitle(textData, mainFormat, isTrashed, key, lang, tag)}
     </Wrapper>
   );
 };
 
-const renderTitle = (text, format, isTrashed) => {
+const renderTitle = (text, format, isTrashed, key, lang, tag) => {
   const ext = ".png";
   // insert blank title when text has only line break code.
   const regex = /^\s+$/;
   const title = regex.test(text) ? "　" : text;
   const component = format === "IMAGE" ? `${title}${ext}` : title;
   return (
-    <Text format={format} isTrashed={isTrashed}>
-      {component}
-    </Text>
+    <TextWrapper>
+      <Text format={format} isTrashed={isTrashed}>
+        {component}
+      </Text>
+      <Key keyTag={key} />
+      <TextLanguage lang={lang} />
+      <Hash tag={tag} />
+    </TextWrapper>
   );
 };
 

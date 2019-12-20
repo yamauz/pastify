@@ -220,12 +220,8 @@ const Container = props => {
             </InfoMid>
             <InfoBottom id={`${id}-taginfo`}>
               <Key keyTag={key} />
-              <Key keyTag={key} />
-              <Key keyTag={key} />
-              <Key keyTag={key} />
-              <Key keyTag={key} />
-              {/* <TextLanguage lang={lang} />
-              <Hash tag={tag} /> */}
+              <TextLanguage lang={lang} />
+              <Hash tag={tag} />
             </InfoBottom>
             <EditButtons
               id={id}
