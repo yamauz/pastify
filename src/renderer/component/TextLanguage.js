@@ -9,10 +9,12 @@ const Wrapper = styled.div`
   display: ${props => (props.langName === "" ? "none" : "inline-block")};
 `;
 const LanguageTag = styled.div`
+  font-family: sans-serif;
   display: inline-block;
   color: #ffffff;
-  padding: 0px 8px 1px 6px;
-  font-size: 10px;
+  padding: 1px 8px 1px 6px;
+  margin: 0;
+  font-size: 8.5px;
   border-radius: 10px;
   background-color: ${props => {
     switch (props.langName) {
@@ -25,7 +27,7 @@ const LanguageTag = styled.div`
       case "dockerfile":
         return "#005d90";
       case "elm":
-        return "#72af2a";
+        return "#3b5f12";
       case "erlang":
         return "#A40532";
       case "gitignore":
@@ -43,7 +45,7 @@ const LanguageTag = styled.div`
       case "json":
         return "#ad9140";
       case "jsx":
-        return "#B072DA";
+        return "#4a2e5d";
       case "kotlin":
         return "#ce5e1b";
       case "latex":

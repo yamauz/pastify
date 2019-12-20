@@ -217,6 +217,9 @@ export default handleActions(
     },
     SET_TOOL_TIP_ARROW_POS: (state, { payload: pos }) => {
       return state.set("toolTipArrowPos", pos);
+    },
+    TOGGLE_CLIP_TOOL_TIP: state => {
+      return state.set("isOpenClipToolTip", !state.get("isOpenClipToolTip"));
     }
   },
   new State()

@@ -10,7 +10,8 @@ import {
   setWinMaximize,
   setAlwaysOnTop,
   setPrevFocusedElm,
-  setToolTipArrowPos
+  setToolTipArrowPos,
+  toggleClipToolTip
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -72,8 +73,6 @@ const GridFooter = styled.div`
   background-color: #50505f;
 `;
 
-let arrowPos;
-
 const { ipcRenderer } = window.require("electron");
 
 const Main = props => {
@@ -87,7 +86,8 @@ const Main = props => {
     setWinMaximize,
     setAlwaysOnTop,
     setPrevFocusedElm,
-    setToolTipArrowPos
+    setToolTipArrowPos,
+    toggleClipToolTip
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -194,13 +194,21 @@ const Main = props => {
         effect="solid"
         id="global"
         globalEventOff="click"
-        // event="click"
+        event="click"
         clickable={true}
         scrollHide={true}
         resizeHide={true}
         className="item-tooltip"
         afterShow={() => {
-          document.getElementById("item-tooltip").focus();
+          setPrevFocusedElm();
+          toggleClipToolTip();
+          setTimeout(() => {
+            document.getElementById("item-tooltip").focus();
+          }, 0);
+        }}
+        afterHide={() => {
+          toggleClipToolTip();
+          prevFocusedElm.focus();
         }}
         overridePosition={(
           { left, top },
@@ -223,11 +231,11 @@ const Main = props => {
               break;
             case "left":
               if (targetOffsetTop < listHeight / 2) {
-                top = top + 135;
+                top = top + 20;
                 left = left + 22;
                 setToolTipArrowPos("up");
               } else {
-                top = top - 135;
+                top = top - 245;
                 left = left + 22;
                 setToolTipArrowPos("down");
               }
@@ -241,8 +249,9 @@ const Main = props => {
 
           return { top, left };
         }}
-        getContent={index => {
-          return <ItemToolTip index={index} arrowpos={arrowPos}></ItemToolTip>;
+        getContent={clip => {
+          const [id, index] = clip !== null ? clip.split(":") : [null, null];
+          return <ItemToolTip index={index} id={id}></ItemToolTip>;
         }}
       ></ReactTooltip>
     </Wrapper>
@@ -267,5 +276,6 @@ export default connect(mapStateToProps, {
   setWinMaximize,
   setAlwaysOnTop,
   setPrevFocusedElm,
-  setToolTipArrowPos
+  setToolTipArrowPos,
+  toggleClipToolTip
 })(Main);

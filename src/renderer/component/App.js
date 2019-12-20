@@ -15,7 +15,7 @@ const store = createStore(
 );
 
 store.subscribe(() => {
-  // ReactTooltip.rebuild();
+  ReactTooltip.rebuild();
 });
 
 const App = () => {

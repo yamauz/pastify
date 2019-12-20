@@ -8,7 +8,7 @@ const StateRecord = Record({
   alwaysOnTop: false,
   winFocus: true,
   winMaximize: false,
-  isCompact: true,
+  isCompact: false,
   isFold: true,
   // detailType: "DEFAULT",
   detailType: "filter-sort-settings",
@@ -56,7 +56,8 @@ const StateRecord = Record({
   hashTagInputValue: "",
   keyOptions: [],
   keyInputValue: "",
-  toolTipArrowPos: "down"
+  toolTipArrowPos: "down",
+  isOpenClipToolTip: false
 });
 
 class State extends StateRecord {

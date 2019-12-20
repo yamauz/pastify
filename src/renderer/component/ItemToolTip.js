@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import { setScrollToRow } from "../actions";
+import {
+  setScrollToRow,
+  favItem,
+  toggleModalVisibility,
+  storeItemOnModalOpen
+} from "../actions";
 import ReactTooltip from "react-tooltip";
+import keycode from "keycode";
 import Menu, {
   Item as MenuItem,
   Divider,
@@ -51,7 +57,7 @@ const ItemWrapper = styled.div`
   align-items: center;
 `;
 
-const Command = styled.span`
+const Label = styled.span`
   color: #cccccc;
   overflow: hidden;
   white-space: nowrap;
@@ -62,99 +68,119 @@ const Key = styled.span`
   color: #999999;
 `;
 
-const handleAction = prevFocusedElm => {
-  return () => {
-    console.log("handleAction");
+const handleAction = props => {
+  const { id, favItem, toggleModalVisibility, storeItemOnModalOpen } = props;
+  return info => {
+    switch (info.key) {
+      case "Fav":
+        favItem(id);
+        break;
+      case "Label":
+        toggleModalVisibility(id);
+        storeItemOnModalOpen(id);
+        break;
+
+      default:
+        break;
+    }
     ReactTooltip.hide();
-    prevFocusedElm.focus();
   };
 };
 
+const handleKeyDown = e => {
+  switch (keycode(e)) {
+    case "esc":
+    case "p":
+      ReactTooltip.hide();
+      break;
+
+    default:
+      break;
+  }
+};
+
 const Component = props => {
-  const { index, setScrollToRow, prevFocusedElm, toolTipArrowPos } = props;
+  const { index, setScrollToRow, toolTipArrowPos, isOpenClipToolTip } = props;
   if (index !== null) {
     setScrollToRow(Number(index));
   }
+
   return (
-    <Wrapper toolTipArrowPos={toolTipArrowPos}>
-      {/* <BottomArrow></BottomArrow> */}
-      <Menu
-        onSelect={handleAction(prevFocusedElm)}
-        defaultActiveFirst
-        id={"item-tooltip"}
-      >
-        <MenuItemGroup title="Edit Clip" key="editclip">
-          {EDITCLIP.map(action => {
-            return (
-              <MenuItem
-                key={action.command}
-                command={action.command}
-                tabIndex={1}
-              >
-                <ItemWrapper>
-                  <Command> {action.command}</Command>
-                  <Key>{action.shortcutKey}</Key>
-                </ItemWrapper>
-              </MenuItem>
-            );
-          })}
-        </MenuItemGroup>
-        <MenuItemGroup title="Paste as" key="pasteas">
-          {PASTEAS.map(action => {
-            return (
-              <MenuItem
-                key={action.command}
-                command={action.command}
-                tabIndex={1}
-              >
-                <ItemWrapper>
-                  <Command> {action.command}</Command>
-                  <Key>{action.shortcutKey}</Key>
-                </ItemWrapper>
-              </MenuItem>
-            );
-          })}
-        </MenuItemGroup>
-        <MenuItemGroup title="Other" key="other">
-          {OTHER.map(action => {
-            return (
-              <MenuItem
-                key={action.command}
-                command={action.command}
-                tabIndex={1}
-              >
-                <ItemWrapper>
-                  <Command> {action.command}</Command>
-                  <Key>{action.shortcutKey}</Key>
-                </ItemWrapper>
-              </MenuItem>
-            );
-          })}
-        </MenuItemGroup>
-      </Menu>
+    <Wrapper
+      toolTipArrowPos={toolTipArrowPos}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
+      {isOpenClipToolTip && (
+        <Menu
+          onSelect={handleAction(props)}
+          defaultActiveFirst
+          id={"item-tooltip"}
+          activeKey={"Fav"}
+        >
+          <MenuItemGroup title="Edit Clip" key="editclip">
+            {EDITCLIP.map(action => {
+              return (
+                <MenuItem key={action.label}>
+                  <ItemWrapper>
+                    <Label> {action.label}</Label>
+                    <Key>{action.shortcutKey}</Key>
+                  </ItemWrapper>
+                </MenuItem>
+              );
+            })}
+          </MenuItemGroup>
+          <MenuItemGroup title="Paste as" key="pasteas">
+            {PASTEAS.map(action => {
+              return (
+                <MenuItem key={action.label}>
+                  <ItemWrapper>
+                    <Label> {action.label}</Label>
+                    <Key>{action.shortcutKey}</Key>
+                  </ItemWrapper>
+                </MenuItem>
+              );
+            })}
+          </MenuItemGroup>
+          <MenuItemGroup title="Other" key="other">
+            {OTHER.map(action => {
+              return (
+                <MenuItem key={action.label}>
+                  <ItemWrapper>
+                    <Label> {action.label}</Label>
+                    <Key>{action.shortcutKey}</Key>
+                  </ItemWrapper>
+                </MenuItem>
+              );
+            })}
+          </MenuItemGroup>
+        </Menu>
+      )}
     </Wrapper>
   );
-  // return <div>test</div>;
 };
 
 const EDITCLIP = [
-  { command: "Fav", shortcutKey: "F" },
-  { command: "Label", shortcutKey: "L" },
-  { command: "Trash", shortcutKey: "Del" },
-  { command: "Remove", shortcutKey: "Ctrl+Del" }
+  { label: "Fav", shortcutKey: "F" },
+  { label: "Label", shortcutKey: "L" },
+  { label: "Trash", shortcutKey: "Del" },
+  { label: "Remove", shortcutKey: "Ctrl+Del" }
 ];
 const PASTEAS = [
-  { command: "Text", shortcutKey: "T" },
-  { command: "Image", shortcutKey: "I" },
-  { command: "File", shortcutKey: "F" },
-  { command: "Excel", shortcutKey: "E" }
+  { label: "Text", shortcutKey: "0" },
+  { label: "Image", shortcutKey: "1" },
+  { label: "File", shortcutKey: "2" },
+  { label: "Shhet", shortcutKey: "3" }
 ];
-const OTHER = [{ command: "Copy Clip ID", shortcutKey: "C" }];
+const OTHER = [{ label: "Copy Clip ID", shortcutKey: "@" }];
 
 const mapStateToProps = state => ({
-  prevFocusedElm: state.get("prevFocusedElm"),
-  toolTipArrowPos: state.get("toolTipArrowPos")
+  toolTipArrowPos: state.get("toolTipArrowPos"),
+  isOpenClipToolTip: state.get("isOpenClipToolTip")
 });
 export default connect(mapStateToProps, {
-  setScrollToRow
+  setScrollToRow,
+  favItem,
+  toggleModalVisibility,
+  storeItemOnModalOpen
 })(Component);

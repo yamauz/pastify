@@ -10,17 +10,13 @@ const Wrapper = styled.div`
 `;
 const HashTag = styled.div`
   color: #ffffff;
-  font-size: 10px;
-  padding-left: 6px;
-  padding-right: 6px;
-  border-radius: 10px;
-  /* background-color: #6b8c37; */
-  box-sizing: border-box;
-  border: solid 0.5px #cccccc;
-  opacity: 0.9;
+  font-family: sans-serif;
   display: inline-block;
+  padding: 1px 8px 1px 6px;
   margin: 0;
-  margin-right: 3px;
+  font-size: 8.5px;
+  border-radius: 10px;
+  background-color: #154030;
 `;
 
 const IconWrapper = styled.span`

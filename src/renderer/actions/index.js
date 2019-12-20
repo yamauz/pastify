@@ -84,7 +84,8 @@ export const {
   decrement,
   updateWinState,
   setPrevFocusedElm,
-  setToolTipArrowPos
+  setToolTipArrowPos,
+  toggleClipToolTip
 } = createActions({
   PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
@@ -173,5 +174,6 @@ export const {
   DECREMENT: (amount = 1) => ({ amount: -amount }),
   UPDATE_WIN_STATE: props => props,
   SET_PREV_FOCUSED_ELM: () => {},
-  SET_TOOL_TIP_ARROW_POS: pos => pos
+  SET_TOOL_TIP_ARROW_POS: pos => pos,
+  TOGGLE_CLIP_TOOL_TIP: () => {}
 });

@@ -25,6 +25,7 @@ import Key from "./Key";
 import Hash from "./Hash";
 
 const Wrapper = styled.div`
+  font-family: sans-serif;
   transition: background-color 0.1s;
   &:hover {
     background-color: rgba(110, 148, 255, 0.05);
@@ -73,7 +74,6 @@ const FormatIdBlock = styled.div`
 const Format = styled.span`
   font-size: 14px;
   color: #efefef;
-  font-family: sans-serif;
   font-weight: bold;
   opacity: ${props => (props.isTrashed ? 0.7 : 1)};
 `;
@@ -81,7 +81,6 @@ const Id = styled.span`
   margin-left: 10px;
   font-size: 11px;
   color: #7b7b7b;
-  font-family: sans-serif;
 `;
 const DateBlock = styled.div`
   padding-right: 5px;
@@ -96,14 +95,31 @@ const Date = styled.span`
 `;
 const InfoMid = styled.div`
   width: 230px;
-  /* min-height: 30px; */
   min-height: 30px;
-  margin: 4px 0 0px 0;
+  margin: 0 0 3px 0;
 `;
 
 const InfoBottom = styled.div`
   text-align: left;
-  overflow: hidden;
+  white-space: nowrap;
+  overflow: overlay;
+  overflow-y: hidden;
+  margin-right: 10px;
+  padding: 3px 3px 0px 3px;
+  user-select: contain;
+  -webkit-background-clip: text;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  &::-webkit-scrollbar {
+    height: 5px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb:horizontal {
+    background-color: inherit;
+    width: 5px !important;
+  }
 `;
 
 const DetectPosBlockTop = styled.div`
@@ -204,8 +220,12 @@ const Container = props => {
             </InfoMid>
             <InfoBottom id={`${id}-taginfo`}>
               <Key keyTag={key} />
-              <TextLanguage lang={lang} />
-              <Hash tag={tag} />
+              <Key keyTag={key} />
+              <Key keyTag={key} />
+              <Key keyTag={key} />
+              <Key keyTag={key} />
+              {/* <TextLanguage lang={lang} />
+              <Hash tag={tag} /> */}
             </InfoBottom>
             <EditButtons
               id={id}

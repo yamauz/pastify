@@ -76,12 +76,6 @@ const ItemList = props => {
       }
     }
 
-    const tagModalElm = document.getElementById("tag-modal");
-    if (!!tagModalElm) {
-      const id = tagModalElm.getAttribute("name");
-      const taginfo = document.getElementById(`${id}-taginfo`);
-      setItemTagHeight(taginfo.clientHeight);
-    }
     list.recomputeRowHeights();
   });
 
@@ -110,7 +104,6 @@ const ItemList = props => {
         // no action when no item on list
         if (ids.size === 0) return;
         const idSelected = ids.get(scrollToRow);
-        console.log(keycode(e));
 
         e.preventDefault();
         switch (keycode(e)) {
@@ -159,7 +152,7 @@ const ItemList = props => {
             const mode = e.shiftKey ? "RETURN" : "NORMAL";
             pasteItem(ids.get(scrollToRow), mode);
             break;
-          case ";":
+          case "p":
             setPrevFocusedElm();
             document.getElementById(`${idSelected}-option`).click();
             break;
@@ -196,8 +189,16 @@ const ItemList = props => {
                     return 25;
                   } else {
                     const id = ids.get(index);
-                    const { itemHeight, itemTagHeight } = itemsTimeLine.get(id);
-                    return itemHeight + itemTagHeight;
+                    const { itemHeight, lang, tag, key } = itemsTimeLine.get(
+                      id
+                    );
+                    let rowHeight;
+                    if (lang !== "" || key !== "" || tag.length !== 0) {
+                      rowHeight = itemHeight + 29; //label height
+                    } else {
+                      rowHeight = itemHeight;
+                    }
+                    return rowHeight;
                   }
                 }}
                 onRowsRendered={({ overscanStartIndex, overscanStopIndex }) => {

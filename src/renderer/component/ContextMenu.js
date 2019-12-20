@@ -45,7 +45,8 @@ const Component = props => {
   return (
     <Wrapper
       isOpen={isOpen}
-      data-tip={index}
+      data-tip={`${id}:${index}`}
+      // data-tip={index}
       data-place={"left"}
       id={`${id}-option`}
       data-for="global"
