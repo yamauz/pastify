@@ -41,12 +41,11 @@ const Modal = props => {
           const elm = document.getElementById("item-list");
           elm.focus();
         }}
-        // animation="fade"
         duration={50}
         showCloseButton={false}
-        closeOnEsc={true}
+        // closeOnEsc={true}
         customStyles={{
-          backgroundColor: "#3e3d32",
+          backgroundColor: "rgb(34, 39, 41)",
           borderRadius: 0
         }}
       >
@@ -67,10 +66,7 @@ const mapStateToProps = state => ({
   modalVisibility: state.get("modalVisibility")
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    toggleModalVisibility,
-    restoreItemOnCancel
-  }
-)(Modal);
+export default connect(mapStateToProps, {
+  toggleModalVisibility,
+  restoreItemOnCancel
+})(Modal);

@@ -170,7 +170,7 @@ const PASTEAS = [
   { label: "Text", shortcutKey: "0" },
   { label: "Image", shortcutKey: "1" },
   { label: "File", shortcutKey: "2" },
-  { label: "Shhet", shortcutKey: "3" }
+  { label: "Sheet", shortcutKey: "3" }
 ];
 const OTHER = [{ label: "Copy Clip ID", shortcutKey: "@" }];
 
