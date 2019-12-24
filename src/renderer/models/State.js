@@ -2,7 +2,9 @@ import { OrderedMap, Set, Record, List } from "immutable";
 import ItemValue from "./ItemValue";
 import FilterValue from "./FilterValue";
 import Message from "./Message";
+import userDialog from "./../../common/dialog";
 import _ from "lodash";
+const dialog = window.require("electron").remote.dialog;
 
 const StateRecord = Record({
   alwaysOnTop: false,
@@ -10,8 +12,8 @@ const StateRecord = Record({
   winMaximize: false,
   isCompact: false,
   isFold: true,
-  // detailType: "DEFAULT",
-  detailType: "filter-sort-settings",
+  detailType: "DEFAULT",
+  // detailType: "filter-sort-settings",
   moment: new Date().getTime(),
   addMode: "",
   itemsTimeLine: OrderedMap(),
@@ -101,8 +103,10 @@ class State extends StateRecord {
   }
 
   setScrollToRow(scrollToRow, itemIdAddedManually) {
+    const idSelected = this.get("idsTimeLine").get(scrollToRow);
     return this.withMutations(state => {
       state
+        .set("idSelected", idSelected)
         .set("scrollToRow", scrollToRow)
         .set("itemIdAddedManually", itemIdAddedManually);
     });
@@ -134,15 +138,91 @@ class State extends StateRecord {
     });
   }
   deleteIds(id) {
-    // this._updateItems(id, { isTrashed: true });
-    const value = { isTrashed: true };
-    new Message("dataStore", "update", { id, value }).dispatch();
+    const clip = this._getClipStateById(id);
+
+    // if (!clip.isFaved) {
+    //   return this._deleteClip(clip);
+    // } else {
+    //   const options = userDialog.get("DELETE_FAVED_CLIP");
+    //   const resNum = dialog.showMessageBox(null, options);
+    //   if (resNum === 0) {
+    //     return this._deleteClip(clip);
+    //   } else {
+    //     return this;
+    //   }
+    // }
+
+    const value = { isTrashed: !clip.isTrashed };
+    new Message("dataStore", "update", { id: clip.id, value }).dispatch();
+    const statusFilterOpt = this.get("statusFilterOpt");
+    const scrollToRow = this.get("scrollToRow");
+    const idsTimeLine = this.get("idsTimeLine");
+
+    if (
+      // !clip.isTrashed &&
+      statusFilterOpt.length !== 0 &&
+      statusFilterOpt[0].value.hasOwnProperty("isTrashed") &&
+      statusFilterOpt[0].value.isTrashed
+    ) {
+      return this._setClipState(clip.id, "isTrashed", !clip.isTrashed);
+    }
+
+    const nextRow =
+      scrollToRow === idsTimeLine.size - 1 ? idsTimeLine.size - 2 : scrollToRow;
+    const nextId =
+      scrollToRow === idsTimeLine.size - 1
+        ? idsTimeLine.get(nextRow)
+        : idsTimeLine.get(nextRow + 1);
+    // console.log(`clip.id : ${clip.id}`);
+    // console.log(`scrollToRow : ${scrollToRow}`);
+    // console.log(`idsTimeLine.size : ${idsTimeLine.size}`);
+    // console.log(`nextRow : ${nextRow}`);
+    // console.log(`nextId : ${nextId}`);
 
     return this.withMutations(state => {
-      state.setIn(["itemsTimeLine", id, "isTrashed"], true).set(
-        "idsTimeLine",
-        this.idsTimeLine.filterNot(_id => _id === id)
-      );
+      state
+        .setIn(["itemsTimeLine", clip.id, "isTrashed"], !clip.isTrashed)
+        .set(
+          "idsTimeLine",
+          this.idsTimeLine.filterNot(_id => _id === clip.id)
+        )
+        .set("idSelected", nextId)
+        .set("scrollToRow", nextRow);
+    });
+  }
+
+  deleteClipCompletely(id) {
+    const clip = this._getClipStateById(id);
+
+    new Message("dataStore", "delete", { id: clip.id }).dispatch();
+    const scrollToRow = this.get("scrollToRow");
+    const idsTimeLine = this.get("idsTimeLine");
+
+    const nextRow =
+      scrollToRow === idsTimeLine.size - 1 ? idsTimeLine.size - 2 : scrollToRow;
+    const nextId =
+      scrollToRow === idsTimeLine.size - 1
+        ? idsTimeLine.get(nextRow)
+        : idsTimeLine.get(nextRow + 1);
+
+    // console.log(`clip.id : ${clip.id}`);
+    // console.log(`scrollToRow : ${scrollToRow}`);
+    // console.log(`idsTimeLine.size : ${idsTimeLine.size}`);
+    // console.log(`nextRow : ${nextRow}`);
+    // console.log(`nextId : ${nextId}`);
+
+    return this.withMutations(state => {
+      state
+        .set(
+          "idsTimeLine",
+          this.idsTimeLine.filterNot(_id => _id === clip.id)
+        )
+        .set(
+          "itemsTimeLine",
+          this.itemsTimeLine.filterNot(item => item.get("id") === clip.id)
+        )
+        .set("idSelected", nextId)
+        .set("scrollToRow", nextRow);
     });
   }
   trashItem(id) {
@@ -570,6 +650,21 @@ class State extends StateRecord {
     new Message("win", "updateWinState", props).dispatch();
     return this;
   }
+
+  _getClipStateById(id = null) {
+    if (id === null) {
+      const idSelected = this.get("idSelected");
+      return this.getIn(["itemsTimeLine", idSelected]).toJS();
+    } else {
+      return this.getIn(["itemsTimeLine", id]).toJS();
+    }
+  }
+
+  _setClipState(id, stateName, state) {
+    return this.setIn(["itemsTimeLine", id, stateName], state);
+  }
+
+  _deleteClip(clip) {}
 }
 
 export default State;

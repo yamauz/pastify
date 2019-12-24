@@ -26,6 +26,11 @@ const kernel32 = new ffi.Library("kernel32", {
   GetCurrentThreadId: ["uint32", []]
 });
 
+const {
+  default: installExtension,
+  REACT_DEVELOPER_TOOLS
+} = require("electron-devtools-installer");
+
 module.exports = class Window {
   constructor(settings) {
     const {
@@ -153,8 +158,11 @@ module.exports = class Window {
   }
 
   _openDevTools() {
-    loadDevtool(loadDevtool.REDUX_DEVTOOLS);
-    loadDevtool(loadDevtool.REACT_DEVELOPER_TOOLS);
+    // loadDevtool(loadDevtool.REDUX_DEVTOOLS);
+    // loadDevtool(loadDevtool.REACT_DEVELOPER_TOOLS);
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then(name => console.log(`Added Extension:  ${name}`))
+      .catch(err => console.log("An error occurred: ", err));
     this.window.webContents.openDevTools();
   }
 

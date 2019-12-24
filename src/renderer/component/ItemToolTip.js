@@ -4,7 +4,9 @@ import {
   setScrollToRow,
   favItem,
   toggleModalVisibility,
-  storeItemOnModalOpen
+  storeItemOnModalOpen,
+  deleteIds,
+  deleteClipCompletely
 } from "../actions";
 import ReactTooltip from "react-tooltip";
 import keycode from "keycode";
@@ -69,8 +71,17 @@ const Key = styled.span`
 `;
 
 const handleAction = props => {
-  const { id, favItem, toggleModalVisibility, storeItemOnModalOpen } = props;
+  const {
+    id,
+    favItem,
+    toggleModalVisibility,
+    storeItemOnModalOpen,
+    deleteIds,
+    deleteClipCompletely
+  } = props;
   return info => {
+    info.domEvent.stopPropagation();
+    // console.log(info.domEvent.stopPropagation());
     switch (info.key) {
       case "Fav":
         favItem(id);
@@ -79,7 +90,16 @@ const handleAction = props => {
         toggleModalVisibility(id);
         storeItemOnModalOpen(id);
         break;
-
+      case "Trash":
+        deleteIds(id);
+        break;
+      case "Remove":
+        console.log("deleteClipCompletely");
+        deleteClipCompletely();
+        break;
+      // case "Remove":
+      //   deleteIds(id);
+      //   break;
       default:
         break;
     }
@@ -101,10 +121,9 @@ const handleKeyDown = e => {
 
 const Component = props => {
   const { index, setScrollToRow, toolTipArrowPos, isOpenClipToolTip } = props;
-  if (index !== null) {
-    setScrollToRow(Number(index));
-  }
-
+  // if (index !== null) {
+  //   setScrollToRow(Number(index));
+  // }
   return (
     <Wrapper
       toolTipArrowPos={toolTipArrowPos}
@@ -118,12 +137,13 @@ const Component = props => {
           id={"item-tooltip"}
           activeKey={"Fav"}
         >
-          <MenuItemGroup title="Edit Clip" key="editclip">
+          <MenuItemGroup title="Edit Status" key="editclip">
             {EDITCLIP.map(action => {
               return (
                 <MenuItem key={action.label}>
                   <ItemWrapper>
                     <Label> {action.label}</Label>
+                    {/* <Label> {createEditLabel(props, action)}</Label> */}
                     <Key>{action.shortcutKey}</Key>
                   </ItemWrapper>
                 </MenuItem>
@@ -160,10 +180,26 @@ const Component = props => {
   );
 };
 
+const createEditLabel = (props, action) => {
+  const { index, idsTimeLine, itemsTimeLine } = props;
+  const idSelected = idsTimeLine.get(index);
+  console.log(index);
+  console.log(idSelected);
+  const { isFaved, isTrashed } = itemsTimeLine.get(idSelected).toJS();
+  switch (action.label) {
+    case "Fav":
+      return isFaved ? action.undoLabel : action.label;
+    case "Trash":
+      return isTrashed ? action.undoLabel : action.label;
+    default:
+      return action.label;
+  }
+};
+
 const EDITCLIP = [
-  { label: "Fav", shortcutKey: "F" },
+  { label: "Fav", undoLabel: "Undo Fav", shortcutKey: "F" },
   { label: "Label", shortcutKey: "L" },
-  { label: "Trash", shortcutKey: "Del" },
+  { label: "Trash", undoLabel: "Undo Trash", shortcutKey: "Del" },
   { label: "Remove", shortcutKey: "Ctrl+Del" }
 ];
 const PASTEAS = [
@@ -175,6 +211,8 @@ const PASTEAS = [
 const OTHER = [{ label: "Copy Clip ID", shortcutKey: "@" }];
 
 const mapStateToProps = state => ({
+  idsTimeLine: state.get("idsTimeLine"),
+  itemsTimeLine: state.get("itemsTimeLine"),
   toolTipArrowPos: state.get("toolTipArrowPos"),
   isOpenClipToolTip: state.get("isOpenClipToolTip")
 });
@@ -182,5 +220,7 @@ export default connect(mapStateToProps, {
   setScrollToRow,
   favItem,
   toggleModalVisibility,
-  storeItemOnModalOpen
+  storeItemOnModalOpen,
+  deleteIds,
+  deleteClipCompletely
 })(Component);

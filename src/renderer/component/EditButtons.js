@@ -5,16 +5,17 @@ import {
   storeItemOnModalOpen,
   deleteIds,
   setActionSelected,
-  favItem
+  favItem,
+  setScrollToRow
 } from "../actions";
 import styled from "@emotion/styled";
-import Icon from "react-eva-icons";
 import Star from "../../icon/editbutton/star.svg";
 import StarSolid from "../../icon/editbutton/star-solid.svg";
 import Tag from "../../icon/editbutton/tag.svg";
 import TagSolid from "../../icon/editbutton/tag-solid.svg";
 import Trash from "../../icon/editbutton/trash.svg";
 import TrashFill from "../../icon/editbutton/trash-fill.svg";
+import Ellipsis from "../../icon/editbutton/ellipsis-h.svg";
 
 const Wrapper = styled.div`
   flex-basis: 20px;
@@ -22,8 +23,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 const IconWrapper = styled.div`
   border-radius: 50%;
@@ -35,18 +36,21 @@ const IconWrapper = styled.div`
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
   }
+  pointer-events: ${props => (props.isOpenClipToolTip ? "none" : "auto")};
 `;
 
 const EditButtons = props => {
   const {
     id,
+    index,
     isFaved,
     isTrashed,
     favItem,
     hasTags,
     toggleModalVisibility,
     storeItemOnModalOpen,
-    deleteIds
+    deleteIds,
+    isOpenClipToolTip
   } = props;
   return (
     <Wrapper>
@@ -69,12 +73,28 @@ const EditButtons = props => {
       </IconWrapper>
       <IconWrapper
         id={`${id}-action-delete`}
-        onClick={() => {
-          console.log("trashed");
+        onClick={e => {
+          e.stopPropagation();
           deleteIds(id);
         }}
       >
         {toggleTrashIcon(isTrashed)}
+      </IconWrapper>
+      <IconWrapper
+        isOpenClipToolTip={isOpenClipToolTip}
+        data-tip={`${id}:${index}`}
+        data-place={"left"}
+        data-for="global"
+        id={`${id}-option`}
+        // data-iscapture={true}
+        // onClick={e => {
+        //   e.stopPropagation();
+        //   setTimeout(() => {
+        //     setScrollToRow(index);
+        //   }, 200);
+        // }}
+      >
+        {renderToolTipIcon()}
       </IconWrapper>
     </Wrapper>
   );
@@ -142,8 +162,19 @@ const toggleTrashIcon = isTrashed => {
   }
 };
 
+const renderToolTipIcon = () => {
+  const style = {
+    fill: "#eeeeee",
+    width: "16px",
+    marginTop: "1px",
+    marginLeft: "1px"
+  };
+  return <Ellipsis style={style} />;
+};
+
 const mapStateToProps = state => ({
-  modalVisibility: state.get("modalVisibility")
+  modalVisibility: state.get("modalVisibility"),
+  isOpenClipToolTip: state.get("isOpenClipToolTip")
 });
 
 export default connect(mapStateToProps, {
@@ -151,5 +182,6 @@ export default connect(mapStateToProps, {
   storeItemOnModalOpen,
   deleteIds,
   setActionSelected,
-  favItem
+  favItem,
+  setScrollToRow
 })(EditButtons);

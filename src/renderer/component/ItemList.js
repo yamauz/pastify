@@ -19,12 +19,14 @@ import {
   setPrevFocusedElm,
   setDetailType,
   deleteIds,
+  deleteClipCompletely,
   trashItem,
   pasteItem
 } from "../actions";
 import _ from "lodash";
-
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
+import userDialog from "./../../common/dialog";
+
 const dialog = window.require("electron").remote.dialog;
 
 const Wrapper = styled.div`
@@ -53,16 +55,16 @@ const ItemList = props => {
     ids,
     itemsTimeLine,
     scrollToRow,
-    setItemTagHeight,
     setItemDisplayRange,
     setItemListRef,
     setScrollToRow,
     setFocusItemList,
     setDetailType,
-    setPrevFocusedElm,
     focusItemList,
-    pasteItem
+    pasteItem,
+    deleteClipCompletely
   } = props;
+
   const prevItemSize = usePrevious(ids.size);
 
   useEffect(() => {
@@ -100,66 +102,7 @@ const ItemList = props => {
         const mode = e.shiftKey ? "RETURN" : "NORMAL";
         pasteItem(ids.get(scrollToRow), mode);
       }}
-      onKeyDown={e => {
-        // no action when no item on list
-        if (ids.size === 0) return;
-        const idSelected = ids.get(scrollToRow);
-
-        e.preventDefault();
-        switch (keycode(e)) {
-          case "delete":
-            const itemValue = itemsTimeLine.get(ids.get(scrollToRow));
-            const isFaved = itemValue.get("isFaved");
-            if (!isFaved) {
-              removeItem(props, itemValue);
-              break;
-            } else {
-              const options = createWarningSet();
-              dialog.showMessageBox(null, options, (resNum, checked) => {
-                if (resNum === 0) {
-                  removeItem(props, itemValue);
-                }
-              });
-            }
-            break;
-          case "home":
-            setScrollToRow(0);
-            break;
-          case "end":
-            setScrollToRow(ids.size - 1);
-            break;
-          case "page up":
-            moveToEdge(
-              "UP",
-              setScrollToRow,
-              scrollToRow,
-              idSelected,
-              ids.size,
-              isCompact
-            );
-            break;
-          case "page down":
-            moveToEdge(
-              "DOWN",
-              setScrollToRow,
-              scrollToRow,
-              idSelected,
-              ids.size,
-              isCompact
-            );
-            break;
-          case "enter":
-            const mode = e.shiftKey ? "RETURN" : "NORMAL";
-            pasteItem(ids.get(scrollToRow), mode);
-            break;
-          case "p":
-            setPrevFocusedElm();
-            document.getElementById(`${idSelected}-option`).click();
-            break;
-          default:
-            break;
-        }
-      }}
+      onKeyDown={handleKeyDown(props)}
     >
       <AutoSizer disableWidth>
         {({ height }) => (
@@ -201,7 +144,12 @@ const ItemList = props => {
                     return rowHeight;
                   }
                 }}
-                onRowsRendered={({ overscanStartIndex, overscanStopIndex }) => {
+                onRowsRendered={({
+                  overscanStartIndex,
+                  overscanStopIndex,
+                  startIndex,
+                  stopIndex
+                }) => {
                   setDisplayRange(setItemDisplayRange, {
                     start: overscanStartIndex,
                     stop: overscanStopIndex + 1
@@ -297,45 +245,69 @@ const setDisplayRange = _.debounce((setFn, index) => {
   setFn(index);
 }, 150);
 
-const removeItem = (props, itemValue) => {
+const handleKeyDown = props => {
   const {
     ids,
-    scrollToRow,
-    statusFilterOpt,
-    setScrollToRow,
     deleteIds,
-    trashItem
+    deleteClipCompletely,
+    setScrollToRow,
+    scrollToRow,
+    isCompact,
+    pasteItem,
+    setPrevFocusedElm
   } = props;
-  // Don't remove new item when filtered list by trashed item
-  const isTrashed = itemValue.get("isTrashed");
-  if (!isTrashed && statusFilterOpt.length) {
-    const [st] = statusFilterOpt;
-    if (st.value.hasOwnProperty("isTrashed")) {
-      const filterisTrashed = st.value.isTrashed;
-      if (filterisTrashed) {
-        trashItem(ids.get(scrollToRow));
-      } else {
-        deleteIds(ids.get(scrollToRow));
-        if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
-      }
+  // no action when no item on list
+  if (ids.size === 0) return;
+  const idSelected = ids.get(scrollToRow);
+
+  return e => {
+    e.preventDefault();
+    switch (keycode(e)) {
+      case "delete":
+        if (e.ctrlKey) {
+          deleteClipCompletely();
+        } else {
+          deleteIds();
+        }
+        break;
+      case "home":
+        setScrollToRow(0);
+        break;
+      case "end":
+        setScrollToRow(ids.size - 1);
+        break;
+      case "page up":
+        moveToEdge(
+          "UP",
+          setScrollToRow,
+          scrollToRow,
+          idSelected,
+          ids.size,
+          isCompact
+        );
+        break;
+      case "page down":
+        moveToEdge(
+          "DOWN",
+          setScrollToRow,
+          scrollToRow,
+          idSelected,
+          ids.size,
+          isCompact
+        );
+        break;
+      case "enter":
+        const mode = e.shiftKey ? "RETURN" : "NORMAL";
+        pasteItem(ids.get(scrollToRow), mode);
+        break;
+      case "p":
+        setPrevFocusedElm();
+        document.getElementById(`${idSelected}-option`).click();
+        break;
+      default:
+        break;
     }
-  } else {
-    deleteIds(ids.get(scrollToRow));
-    if (scrollToRow === ids.size - 1) setScrollToRow(ids.size - 2);
-  }
-};
-
-const createWarningSet = () => {
-  const options = {
-    type: "info",
-    buttons: ["OK", "Cancel"],
-    title: "タイトル",
-    message: "Remove Item",
-    detail: "You will remove faved item. you sure you want to do this?",
-    checkboxLabel: "Do not display this dialog again."
   };
-
-  return options;
 };
 
 const moveToEdge = (
@@ -524,5 +496,6 @@ export default connect(mapStateToProps, {
   setPrevFocusedElm,
   deleteIds,
   trashItem,
-  pasteItem
+  pasteItem,
+  deleteClipCompletely
 })(ItemList);

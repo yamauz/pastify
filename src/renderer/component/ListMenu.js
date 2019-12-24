@@ -306,20 +306,14 @@ const createGroupedOptions = filtersList => {
 const EDIT = [
   {
     type: "system",
-    label: "Add new",
+    label: "Add New",
     command: "addNewItem",
     shortcutKey: "Ctrl+Shift+N"
   },
   {
     type: "system",
-    label: "Trash All On List ",
+    label: "Trash All",
     command: "trashAllItems",
-    shortcutKey: "Ctrl+Shift+D"
-  },
-  {
-    type: "system",
-    label: "Trash all items ( excludes faved )",
-    command: "trashAllItemsWithoutFaved",
     shortcutKey: "Ctrl+Shift+D"
   }
 ];

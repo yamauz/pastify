@@ -167,7 +167,8 @@ const Container = props => {
     deleteIds,
     toggleModalVisibility,
     storeItemOnModalOpen,
-    item
+    item,
+    index
   } = props;
 
   const {
@@ -225,6 +226,7 @@ const Container = props => {
             </InfoBottom>
             <EditButtons
               id={id}
+              index={index}
               isFaved={isFaved}
               isTrashed={isTrashed}
               hasTags={checkTags(key, tag, lang)}

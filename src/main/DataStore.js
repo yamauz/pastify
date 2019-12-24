@@ -147,20 +147,19 @@ module.exports = class DataStore {
   update(props) {
     const { id, value } = props;
 
-    if (value.hasOwnProperty("isTrashed")) {
-      // const { isTrashed } = value;
-      if (value.isTrashed) {
-        const isTrashedMaster = this.DB.get(this.storeName)
-          .find({ id })
-          .value().isTrashed;
-        if (isTrashedMaster) {
-          this.DB.get(this.storeName)
-            .remove({ id })
-            .write();
-          return;
-        }
-      }
-    }
+    // if (value.hasOwnProperty("isTrashed")) {
+    //   if (value.isTrashed) {
+    //     const isTrashedMaster = this.DB.get(this.storeName)
+    //       .find({ id })
+    //       .value().isTrashed;
+    //     if (isTrashedMaster) {
+    //       this.DB.get(this.storeName)
+    //         .remove({ id })
+    //         .write();
+    //       return;
+    //     }
+    //   }
+    // }
     this.DB.get(this.storeName)
       .find({ id })
       .assign(value)
@@ -189,6 +188,16 @@ module.exports = class DataStore {
         .assign(value)
         .write();
     });
+    return null;
+  }
+
+  delete(props) {
+    const { id } = props;
+
+    this.DB.get(this.storeName)
+      .remove({ id })
+      .write();
+
     return null;
   }
 

@@ -152,7 +152,7 @@ const _setFiltersName = props => {
     if (filterName !== "") {
       headerTitle = filterName;
     } else {
-      headerTitle = "All Items";
+      headerTitle = "All Clips";
     }
   }
 

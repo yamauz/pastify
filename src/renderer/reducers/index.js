@@ -16,6 +16,9 @@ export default handleActions(
     DELETE_IDS: (state, { payload: ids }) => {
       return state.deleteIds(ids);
     },
+    DELETE_CLIP_COMPLETELY: (state, { payload: ids }) => {
+      return state.deleteClipCompletely(ids);
+    },
     TRASH_ITEM: (state, { payload: id }) => {
       return state.trashItem(id);
     },

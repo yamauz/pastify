@@ -116,13 +116,14 @@ const Main = props => {
         default:
           break;
       }
-      console.log("rebuild");
+      console.log("rebuild_useIpc");
+      // console.log(new Date().getTime());
       ReactTooltip.rebuild();
     });
 
     document.getElementById("searchbar").focus();
     setTimeout(() => {
-      console.log("rebuild");
+      console.log("rebuild_initial");
       ReactTooltip.rebuild();
     }, 0);
     // ipcRenderer.on("ON_COPY", (event, item, addMode) => {
@@ -207,6 +208,7 @@ const Main = props => {
           }, 0);
         }}
         afterHide={() => {
+          console.log("afterHide");
           toggleClipToolTip();
           prevFocusedElm.focus();
         }}
