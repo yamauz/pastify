@@ -121,7 +121,7 @@ const ItemList = props => {
               <List
                 ref={ref => {
                   list = ref;
-                  setItemListRef(ref);
+                  // setItemListRef(ref);
                 }}
                 height={height}
                 width={300}
@@ -199,7 +199,8 @@ const itemRenderer = ({
   const isActive = index === scrollToRow;
 
   let background;
-  if (isActive && focusItemList) {
+  // if (isActive && focusItemList) {
+  if (isActive) {
     background = isCompact ? "#354154" : "#2F353D";
   } else {
     background = "inherit";
@@ -225,7 +226,7 @@ const itemRenderer = ({
           scrollToRow: index,
           setScrollToRow
         });
-        setFocusItemList(true);
+        // setFocusItemList(true);
       }}
     >
       {isCompact ? (
@@ -241,7 +242,7 @@ const selectItem = ({ id, scrollToRow, setScrollToRow }) => {
   setScrollToRow(scrollToRow);
 };
 
-const setDisplayRange = _.debounce((setFn, index) => {
+const setDisplayRange = _.throttle((setFn, index) => {
   setFn(index);
 }, 150);
 
