@@ -6,7 +6,8 @@ import {
   toggleModalVisibility,
   storeItemOnModalOpen,
   deleteIds,
-  deleteClipCompletely
+  deleteClipCompletely,
+  copyClipId
 } from "../actions";
 import ReactTooltip from "react-tooltip";
 import keycode from "keycode";
@@ -64,10 +65,12 @@ const Label = styled.span`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  opacity: ${props => (props.disabled ? "0.5" : "1")};
 `;
 
 const Key = styled.span`
   color: #999999;
+  opacity: ${props => (props.disabled ? "0.5" : "1")};
 `;
 
 const handleAction = props => {
@@ -77,7 +80,8 @@ const handleAction = props => {
     toggleModalVisibility,
     storeItemOnModalOpen,
     deleteIds,
-    deleteClipCompletely
+    deleteClipCompletely,
+    copyClipId
   } = props;
   return info => {
     info.domEvent.stopPropagation();
@@ -97,9 +101,9 @@ const handleAction = props => {
         console.log("deleteClipCompletely");
         deleteClipCompletely();
         break;
-      // case "Remove":
-      //   deleteIds(id);
-      //   break;
+      case "Copy Clip ID":
+        copyClipId();
+        break;
       default:
         break;
     }
@@ -120,10 +124,17 @@ const handleKeyDown = e => {
 };
 
 const Component = props => {
-  const { index, setScrollToRow, toolTipArrowPos, isOpenClipToolTip } = props;
-  // if (index !== null) {
-  //   setScrollToRow(Number(index));
-  // }
+  const {
+    index,
+    toolTipArrowPos,
+    isOpenClipToolTip,
+    idsTimeLine,
+    itemsTimeLine
+  } = props;
+
+  const idSelected = idsTimeLine.get(index);
+  const clip = itemsTimeLine.get(idSelected);
+
   return (
     <Wrapper
       toolTipArrowPos={toolTipArrowPos}
@@ -139,39 +150,19 @@ const Component = props => {
         >
           <MenuItemGroup title="Edit Status" key="editclip">
             {EDITCLIP.map(action => {
-              return (
-                <MenuItem key={action.label}>
-                  <ItemWrapper>
-                    <Label> {action.label}</Label>
-                    {/* <Label> {createEditLabel(props, action)}</Label> */}
-                    <Key>{action.shortcutKey}</Key>
-                  </ItemWrapper>
-                </MenuItem>
-              );
+              const labelShow = getClipLabelShow(clip, action);
+              return createMenuItem(action, labelShow);
             })}
           </MenuItemGroup>
           <MenuItemGroup title="Paste as" key="pasteas">
             {PASTEAS.map(action => {
-              return (
-                <MenuItem key={action.label}>
-                  <ItemWrapper>
-                    <Label> {action.label}</Label>
-                    <Key>{action.shortcutKey}</Key>
-                  </ItemWrapper>
-                </MenuItem>
-              );
+              const disabled = getClipDisabled(clip, action);
+              return createMenuItem(action, action.label, disabled);
             })}
           </MenuItemGroup>
           <MenuItemGroup title="Other" key="other">
             {OTHER.map(action => {
-              return (
-                <MenuItem key={action.label}>
-                  <ItemWrapper>
-                    <Label> {action.label}</Label>
-                    <Key>{action.shortcutKey}</Key>
-                  </ItemWrapper>
-                </MenuItem>
-              );
+              return createMenuItem(action, action.label);
             })}
           </MenuItemGroup>
         </Menu>
@@ -180,20 +171,47 @@ const Component = props => {
   );
 };
 
-const createEditLabel = (props, action) => {
-  const { index, idsTimeLine, itemsTimeLine } = props;
-  const idSelected = idsTimeLine.get(index);
-  console.log(index);
-  console.log(idSelected);
-  const { isFaved, isTrashed } = itemsTimeLine.get(idSelected).toJS();
-  switch (action.label) {
+const getClipLabelShow = (clip, action) => {
+  const { isFaved, isTrashed } = clip.toJS();
+  const { label, undoLabel } = action;
+  switch (label) {
     case "Fav":
-      return isFaved ? action.undoLabel : action.label;
+      return isFaved ? undoLabel : label;
     case "Trash":
-      return isTrashed ? action.undoLabel : action.label;
+      return isTrashed ? undoLabel : label;
     default:
-      return action.label;
+      return label;
   }
+};
+
+const getClipDisabled = (clip, action) => {
+  const { mainFormat } = clip.toJS();
+  const { label } = action;
+  switch (label) {
+    case "Image":
+      if (mainFormat === "TEXT") return true;
+      if (mainFormat === "FILE") return true;
+      break;
+    case "Sheet":
+      if (mainFormat === "FILE") return true;
+      if (mainFormat === "TEXT") return true;
+      if (mainFormat === "IMAGE") return true;
+      break;
+    default:
+      break;
+  }
+  return false;
+};
+
+const createMenuItem = (action, labelShow, disabled = false) => {
+  return (
+    <MenuItem key={action.label} disabled={disabled}>
+      <ItemWrapper>
+        <Label disabled={disabled}> {labelShow}</Label>
+        <Key disabled={disabled}>{action.shortcutKey}</Key>
+      </ItemWrapper>
+    </MenuItem>
+  );
 };
 
 const EDITCLIP = [
@@ -222,5 +240,6 @@ export default connect(mapStateToProps, {
   toggleModalVisibility,
   storeItemOnModalOpen,
   deleteIds,
-  deleteClipCompletely
+  deleteClipCompletely,
+  copyClipId
 })(Component);

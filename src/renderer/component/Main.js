@@ -87,7 +87,8 @@ const Main = props => {
     setAlwaysOnTop,
     setPrevFocusedElm,
     setToolTipArrowPos,
-    toggleClipToolTip
+    toggleClipToolTip,
+    isOpenClipToolTip
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -147,31 +148,48 @@ const Main = props => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("keydown", toggleToolTipByKeyDown, true);
+    const toggleListToolTipByKeyDown = e => {
+      console.log("keydown");
+      const { shiftKey, ctrlKey } = e;
+      const pressKey = e.keyCode;
+      const { O } = keyCode;
+
+      if (ctrlKey && !shiftKey) {
+        if (pressKey === O) {
+          if (document.activeElement === document.getElementById("list-menu")) {
+            document.getElementById(prevFocusedElm).focus();
+            // document.getElementById("list-menu").blur();
+          } else {
+            setPrevFocusedElm(document.activeElement);
+            document.getElementById("list-menu").focus();
+          }
+        }
+      } else if (!ctrlKey && shiftKey) {
+      } else if (ctrlKey && shiftKey) {
+      }
+    };
+
+    window.addEventListener("keydown", toggleListToolTipByKeyDown, true);
     return () => {
-      window.removeEventListener("keydown", toggleToolTipByKeyDown, true);
+      window.removeEventListener("keydown", toggleListToolTipByKeyDown, true);
     };
   }, [prevFocusedElm]);
 
-  const toggleToolTipByKeyDown = e => {
-    const { shiftKey, ctrlKey } = e;
-    const pressKey = e.keyCode;
-    const { O } = keyCode;
-
-    if (ctrlKey && !shiftKey) {
-      if (pressKey === O) {
-        if (document.activeElement === document.getElementById("list-menu")) {
-          document.getElementById("list-menu").blur();
-          prevFocusedElm.focus();
-        } else {
-          setPrevFocusedElm();
-          document.getElementById("list-menu").focus();
-        }
-      }
-    } else if (!ctrlKey && shiftKey) {
-    } else if (ctrlKey && shiftKey) {
-    }
-  };
+  // useEffect(() => {
+  //   const toggleClipToolTipByClick = () => {
+  //     const currentElmId = document.activeElement.id;
+  //     const regex = /^clip-tooltip/;
+  //     console.log(regex.test(currentElmId));
+  //     if (isOpenClipToolTip && !regex.test(currentElmId)) {
+  //       toggleClipToolTip();
+  //     }
+  //   };
+  //   window.addEventListener("click", toggleClipToolTipByClick, true);
+  //   return () => {
+  //     console.log("unmount");
+  //     window.removeEventListener("click", toggleClipToolTipByClick, true);
+  //   };
+  // }, [isOpenClipToolTip]);
 
   return (
     <Wrapper tabIndex="0">
@@ -201,7 +219,7 @@ const Main = props => {
         resizeHide={true}
         className="item-tooltip"
         afterShow={() => {
-          setPrevFocusedElm();
+          setPrevFocusedElm(document.activeElement);
           toggleClipToolTip();
           setTimeout(() => {
             document.getElementById("item-tooltip").focus();
@@ -210,7 +228,8 @@ const Main = props => {
         afterHide={() => {
           console.log("afterHide");
           toggleClipToolTip();
-          prevFocusedElm.focus();
+          document.getElementById(prevFocusedElm).focus();
+          // prevFocusedElm.focus();
         }}
         overridePosition={(
           { left, top },
@@ -267,6 +286,7 @@ const mapStateToProps = state => ({
   prevFocusedElm: state.get("prevFocusedElm"),
   itemsTimeLine: state.get("itemsTimeLine"),
   idsTimeLine: state.get("idsTimeLine"),
+  isOpenClipToolTip: state.get("isOpenClipToolTip"),
   modalVisibility: state.get("modalVisibility"),
   filterSaveModalVisibility: state.get("filterSaveModalVisibility")
 });

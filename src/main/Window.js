@@ -160,9 +160,9 @@ module.exports = class Window {
   _openDevTools() {
     // loadDevtool(loadDevtool.REDUX_DEVTOOLS);
     // loadDevtool(loadDevtool.REACT_DEVELOPER_TOOLS);
-    installExtension(REACT_DEVELOPER_TOOLS)
-      .then(name => console.log(`Added Extension:  ${name}`))
-      .catch(err => console.log("An error occurred: ", err));
+    // installExtension(REACT_DEVELOPER_TOOLS)
+    //   .then(name => console.log(`Added Extension:  ${name}`))
+    //   .catch(err => console.log("An error occurred: ", err));
     this.window.webContents.openDevTools();
   }
 

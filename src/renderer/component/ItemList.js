@@ -242,7 +242,7 @@ const selectItem = ({ id, scrollToRow, setScrollToRow }) => {
   setScrollToRow(scrollToRow);
 };
 
-const setDisplayRange = _.throttle((setFn, index) => {
+const setDisplayRange = _.debounce((setFn, index) => {
   setFn(index);
 }, 150);
 
@@ -302,7 +302,7 @@ const handleKeyDown = props => {
         pasteItem(ids.get(scrollToRow), mode);
         break;
       case "p":
-        setPrevFocusedElm();
+        // setPrevFocusedElm(e);
         document.getElementById(`${idSelected}-option`).click();
         break;
       default:

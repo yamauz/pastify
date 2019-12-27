@@ -1,9 +1,13 @@
 import { handleActions } from "redux-actions";
 import State from "../models/State";
 import _ from "lodash";
+import shortid from "shortid";
 
 export default handleActions(
   {
+    COPY_CLIP_ID: (state, { payload: id }) => {
+      return state.copyClipId(id);
+    },
     PASTE_ITEM: (state, { payload: { id, mode } }) => {
       return state.pasteItem(id, mode);
     },
@@ -215,8 +219,15 @@ export default handleActions(
     UPDATE_WIN_STATE: (state, { payload: props }) => {
       return state.updateWinState(props);
     },
-    SET_PREV_FOCUSED_ELM: state => {
-      return state.set("prevFocusedElm", document.activeElement);
+    SET_PREV_FOCUSED_ELM: (state, { payload: elm }) => {
+      let id;
+      if (!!elm.id) {
+        id = elm.id;
+      } else {
+        id = shortid.generate();
+        elm.setAttribute("id", id);
+      }
+      return state.set("prevFocusedElm", id);
     },
     SET_TOOL_TIP_ARROW_POS: (state, { payload: pos }) => {
       return state.set("toolTipArrowPos", pos);

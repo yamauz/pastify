@@ -7,7 +7,8 @@ import {
   callActionOnItemList,
   setIdsFromDatastore,
   setDetailType,
-  deleteUserFilter
+  deleteUserFilter,
+  setPrevFocusedElm
 } from "../actions";
 import Select, { components } from "react-select";
 import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
@@ -79,7 +80,8 @@ const Component = props => {
     setIdsFromDatastore,
     setDetailType,
     deleteUserFilter,
-    prevFocusedElm
+    prevFocusedElm,
+    setPrevFocusedElm
   } = props;
 
   const DropdownIndicator = props => {
@@ -159,7 +161,7 @@ const Component = props => {
           }
         }}
         onMenuClose={() => {
-          prevFocusedElm.focus();
+          document.getElementById(prevFocusedElm).focus();
         }}
         onChange={opt => {
           const { type, command, id } = opt;
@@ -359,5 +361,6 @@ export default connect(mapStateToProps, {
   callActionOnItemList,
   setIdsFromDatastore,
   setDetailType,
-  deleteUserFilter
+  deleteUserFilter,
+  setPrevFocusedElm
 })(Component);

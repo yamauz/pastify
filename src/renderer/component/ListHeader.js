@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Tooltip from "rc-tooltip";
 import styled from "@emotion/styled";
 
 // Components
@@ -9,15 +8,8 @@ import AngleDoubleRight from "../../icon/listheader/angle-double-right.svg";
 import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
 import Bars from "../../icon/listheader/bars.svg";
 import ThList from "../../icon/listheader/th-list.svg";
-import EllipsisOff from "../../icon/listheader/ellipsis-v-alt.svg";
-import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
-import ToolTipList from "./ToolTipList";
 
-import {
-  toggleMainPanel,
-  toggleListMode,
-  toggleItemListToolTipVisibility
-} from "../actions";
+import { toggleMainPanel, toggleListMode } from "../actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,14 +61,7 @@ const ItemCount = styled.span`
 `;
 
 const ListHeader = props => {
-  const {
-    ids,
-    isCompact,
-    isFold,
-    toggleItemListToolTipVisibility,
-    toggleListMode,
-    toggleMainPanel
-  } = props;
+  const { ids, isCompact, isFold, toggleListMode, toggleMainPanel } = props;
 
   return (
     <Wrapper>
@@ -102,15 +87,6 @@ const ListHeader = props => {
         <IconWrapper>
           <ListMenu />
         </IconWrapper>
-        {/* <IconWrapper
-          onClick={() => {
-            toggleItemListToolTipVisibility();
-          }}
-        >
-          <Ellipsis
-            style={{ width: "2.6px", fill: "#dddddd", marginTop: "1px" }}
-          ></Ellipsis>
-        </IconWrapper> */}
       </Right>
     </Wrapper>
   );
@@ -199,12 +175,10 @@ const mapStateToProps = state => ({
   languageFilterOpt: state.get("languageFilterOpt"),
   isCompact: state.get("isCompact"),
   isFold: state.get("isFold"),
-  itemsTimeLine: state.get("itemsTimeLine"),
-  itemListToolTipVisibility: state.get("itemListToolTipVisibility")
+  itemsTimeLine: state.get("itemsTimeLine")
 });
 
 export default connect(mapStateToProps, {
-  toggleItemListToolTipVisibility,
   toggleListMode,
   toggleMainPanel
 })(ListHeader);

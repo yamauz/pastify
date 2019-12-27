@@ -10,7 +10,7 @@ const StateRecord = Record({
   alwaysOnTop: false,
   winFocus: true,
   winMaximize: false,
-  isCompact: false,
+  isCompact: true,
   isFold: true,
   detailType: "DEFAULT",
   // detailType: "filter-sort-settings",
@@ -36,7 +36,8 @@ const StateRecord = Record({
   keyboardHandler: "",
   modalVisibility: false,
   filterSaveModalVisibility: false,
-  prevFocusedElm: document.activeElement,
+  // prevFocusedElm: document.activeElement,
+  prevFocusedElm: null,
   actionSelected: "",
   // Filter Shortcut Key -------------------------------------------------
   // CurrentFilter Settings -------------------------------------------------
@@ -648,6 +649,11 @@ class State extends StateRecord {
   }
   updateWinState(props) {
     new Message("win", "updateWinState", props).dispatch();
+    return this;
+  }
+  copyClipId() {
+    const args = { id: this.get("idSelected") };
+    new Message("pastify", "copyClipId", args).dispatch();
     return this;
   }
 

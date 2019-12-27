@@ -1,6 +1,7 @@
 import { createActions } from "redux-actions";
 
 export const {
+  copyClipId,
   pasteItem,
   loadItem,
   addItemClipboard,
@@ -88,6 +89,7 @@ export const {
   setToolTipArrowPos,
   toggleClipToolTip
 } = createActions({
+  COPY_CLIP_ID: id => id,
   PASTE_ITEM: (id, mode) => ({ id, mode }),
   LOAD_ITEM: item => item,
   ADD_ITEM_CLIPBOARD: (item, dist, addMode) => ({ item, dist, addMode }),
@@ -175,7 +177,7 @@ export const {
   INCREMENT: (amount = 1) => ({ amount }),
   DECREMENT: (amount = 1) => ({ amount: -amount }),
   UPDATE_WIN_STATE: props => props,
-  SET_PREV_FOCUSED_ELM: () => {},
+  SET_PREV_FOCUSED_ELM: elm => elm,
   SET_TOOL_TIP_ARROW_POS: pos => pos,
   TOGGLE_CLIP_TOOL_TIP: () => {}
 });
