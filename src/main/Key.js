@@ -39,8 +39,9 @@ module.exports = class Key {
 
   _on_altF11() {
     globalShortcut.register("alt+F11", () => {
-      this.win.show();
-      this.win.focus();
+      // this.win.show();
+      this.win.foreground();
+      // this.win.focus();
     });
   }
 

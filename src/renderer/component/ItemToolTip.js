@@ -7,7 +7,8 @@ import {
   storeItemOnModalOpen,
   deleteIds,
   deleteClipCompletely,
-  copyClipId
+  copyClipId,
+  copyClip
 } from "../actions";
 import ReactTooltip from "react-tooltip";
 import keycode from "keycode";
@@ -81,7 +82,8 @@ const handleAction = props => {
     storeItemOnModalOpen,
     deleteIds,
     deleteClipCompletely,
-    copyClipId
+    copyClipId,
+    copyClip
   } = props;
   return info => {
     info.domEvent.stopPropagation();
@@ -104,6 +106,18 @@ const handleAction = props => {
       case "Copy Clip ID":
         copyClipId();
         break;
+      case "Text":
+        copyClip(info.domEvent, "TEXT");
+        break;
+      case "Image":
+        copyClip(info.domEvent, "IMAGE");
+        break;
+      case "File":
+        copyClip(info.domEvent, "FILE");
+        break;
+      case "Sheet":
+        copyClip(info.domEvent, "SHEET");
+        break;
       default:
         break;
     }
@@ -114,7 +128,7 @@ const handleAction = props => {
 const handleKeyDown = e => {
   switch (keycode(e)) {
     case "esc":
-    case "p":
+    case "o":
       ReactTooltip.hide();
       break;
 
@@ -129,11 +143,16 @@ const Component = props => {
     toolTipArrowPos,
     isOpenClipToolTip,
     idsTimeLine,
-    itemsTimeLine
+    itemsTimeLine,
+    setScrollToRow
   } = props;
 
   const idSelected = idsTimeLine.get(index);
   const clip = itemsTimeLine.get(idSelected);
+
+  if (index !== null) {
+    setScrollToRow(Number(index));
+  }
 
   return (
     <Wrapper
@@ -241,5 +260,7 @@ export default connect(mapStateToProps, {
   storeItemOnModalOpen,
   deleteIds,
   deleteClipCompletely,
-  copyClipId
+  copyClipId,
+  copyClip,
+  setScrollToRow
 })(Component);

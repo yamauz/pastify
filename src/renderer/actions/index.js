@@ -2,7 +2,7 @@ import { createActions } from "redux-actions";
 
 export const {
   copyClipId,
-  pasteItem,
+  copyClip,
   loadItem,
   addItemClipboard,
   deleteIds,
@@ -90,7 +90,11 @@ export const {
   toggleClipToolTip
 } = createActions({
   COPY_CLIP_ID: id => id,
-  PASTE_ITEM: (id, mode) => ({ id, mode }),
+  COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
+    const isReturn = event.shiftKey;
+    const copyOnly = event.ctrlKey;
+    return { isReturn, copyOnly, copyAs };
+  },
   LOAD_ITEM: item => item,
   ADD_ITEM_CLIPBOARD: (item, dist, addMode) => ({ item, dist, addMode }),
   DELETE_IDS: ids => ids,

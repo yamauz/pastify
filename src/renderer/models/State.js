@@ -113,9 +113,11 @@ class State extends StateRecord {
     });
   }
 
-  pasteItem(id, mode) {
-    const args = { id, mode };
-    new Message("pastify", "pasteClip", args).dispatch();
+  copyClip(isReturn, copyOnly, copyAs) {
+    const id = this.get("idSelected");
+    console.log(copyAs);
+    const args = { id, isReturn, copyOnly, copyAs };
+    new Message("pastify", "copyClip", args).dispatch();
     return this;
   }
 

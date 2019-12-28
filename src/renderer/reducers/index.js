@@ -8,8 +8,8 @@ export default handleActions(
     COPY_CLIP_ID: (state, { payload: id }) => {
       return state.copyClipId(id);
     },
-    PASTE_ITEM: (state, { payload: { id, mode } }) => {
-      return state.pasteItem(id, mode);
+    COPY_CLIP: (state, { payload: { isReturn, copyOnly, copyAs } }) => {
+      return state.copyClip(isReturn, copyOnly, copyAs);
     },
     LOAD_ITEM: (state, { payload: item }) => {
       return state.loadItem(item);

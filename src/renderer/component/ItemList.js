@@ -21,7 +21,7 @@ import {
   deleteIds,
   deleteClipCompletely,
   trashItem,
-  pasteItem
+  copyClip
 } from "../actions";
 import _ from "lodash";
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
@@ -61,7 +61,7 @@ const ItemList = props => {
     setFocusItemList,
     setDetailType,
     focusItemList,
-    pasteItem,
+    copyClip,
     deleteClipCompletely
   } = props;
 
@@ -99,8 +99,7 @@ const ItemList = props => {
       }}
       onDoubleClick={e => {
         if (e.target.id === "item-list") return;
-        const mode = e.shiftKey ? "RETURN" : "NORMAL";
-        pasteItem(ids.get(scrollToRow), mode);
+        copyClip(e);
       }}
       onKeyDown={handleKeyDown(props)}
     >
@@ -254,7 +253,7 @@ const handleKeyDown = props => {
     setScrollToRow,
     scrollToRow,
     isCompact,
-    pasteItem,
+    copyClip,
     setPrevFocusedElm
   } = props;
   // no action when no item on list
@@ -298,11 +297,9 @@ const handleKeyDown = props => {
         );
         break;
       case "enter":
-        const mode = e.shiftKey ? "RETURN" : "NORMAL";
-        pasteItem(ids.get(scrollToRow), mode);
+        copyClip(e);
         break;
-      case "p":
-        // setPrevFocusedElm(e);
+      case "o":
         document.getElementById(`${idSelected}-option`).click();
         break;
       default:
@@ -497,6 +494,6 @@ export default connect(mapStateToProps, {
   setPrevFocusedElm,
   deleteIds,
   trashItem,
-  pasteItem,
+  copyClip,
   deleteClipCompletely
 })(ItemList);

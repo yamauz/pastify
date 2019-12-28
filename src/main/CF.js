@@ -1,7 +1,11 @@
 const { clipboard } = require("electron");
 const ffi = require("ffi");
 const ref = require("ref");
-const extractFile = require("./Extractor_Sub/extractFile");
+const fs = require("fs");
+const moment = require("moment");
+const path = require("path");
+const extractFile = require("./CF_Sub/extractFile");
+const writeFile = require("./CF_Sub/writeFile");
 const user32 = new ffi.Library("user32", {
   RegisterClipboardFormatA: ["uint", ["string"]]
 });
@@ -37,6 +41,18 @@ const CF = new Map([
       extract: extractFile,
       addText: files => {
         return files.join("\n");
+      },
+      write: clip => {
+        let filePath;
+        switch (clip.mainFormat) {
+          case "TEXT":
+            filePath = getTextFilePath();
+            fs.writeFileSync(filePath, clip.textData);
+            break;
+          default:
+            break;
+        }
+        writeFile(filePath);
       }
     }
   ],
@@ -45,8 +61,20 @@ const CF = new Map([
     {
       fNum: 1,
       extract: () => clipboard.readText(),
-      write: text => clipboard.writeText(text)
+      write: clip => clipboard.writeText(clip.textData)
     }
   ]
 ]);
+
+const getTextFilePath = () => {
+  const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
+  const filePath = `${path.resolve(
+    distDir,
+    "resource",
+    "temp",
+    "files"
+  )}\\${moment().format("YYYYMMDDhhmmss")}.txt`;
+  return filePath;
+};
+
 module.exports = CF;

@@ -24,4 +24,23 @@ module.exports = class Pastify {
     CF.get("TEXT").write(id);
     return null;
   }
+
+  copyClip(props, { dataStore, settings, win }) {
+    const { id, isReturn, copyOnly, copyAs } = props;
+    const clip = dataStore.getClipById(id);
+    const _copyAs = copyAs === "_ORIGINAL_" ? clip.mainFormat : copyAs;
+    CF.get(_copyAs).write(clip);
+    this.isCopiedBySelf = true;
+
+    if (!copyOnly) {
+      this._pasteClip(settings, win, isReturn);
+    }
+    return null;
+  }
+
+  _pasteClip(settings, win, isReturn) {
+    win.showLastActiveWindow(settings);
+    robot.keyTap("v", "control");
+    if (isReturn) win.focus();
+  }
 };

@@ -180,6 +180,7 @@ module.exports = class Window {
 
   foreground() {
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
+    console.log(this.lastActiveWindowClassName);
     this.window.setSkipTaskbar(false);
     const foregroundHWnd = user32.GetForegroundWindow();
     const currentThreadId = kernel32.GetCurrentThreadId();

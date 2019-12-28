@@ -224,19 +224,21 @@ module.exports = class DataStore {
     return keysOptions;
   }
 
-  getTextById(id) {
+  getClipById(id) {
     return this.DB.get(this.storeName)
       .find({ id })
-      .value().textData;
+      .value();
   }
 
   _createResoucePath() {
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const resourcePath = path.resolve(distDir, "resource");
     const tempPath = path.resolve(resourcePath, "temp");
+    const filesPath = path.resolve(tempPath, "files");
     if (!fs.existsSync(resourcePath)) {
       fs.mkdirSync(resourcePath);
       fs.mkdirSync(tempPath);
+      fs.mkdirSync(filesPath);
     }
     return resourcePath;
   }
