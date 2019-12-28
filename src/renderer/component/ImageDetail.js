@@ -81,7 +81,7 @@ const Image = styled.img`
 const ImageDetail = props => {
   const { id, data, setItemText } = props;
   const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
-  const imagePath = `file:///${distDir}/resource/temp/${id}`;
+  const imagePath = `file:///${distDir}/resource/temp/images/${id}`;
 
   useEffect(() => {
     maxlengthContentEditable();

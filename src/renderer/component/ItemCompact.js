@@ -6,6 +6,7 @@ import ContextMenu from "./ContextMenu";
 import TextLanguage from "./TextLanguage";
 import Key from "./Key";
 import Hash from "./Hash";
+import path from "path";
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -102,21 +103,35 @@ const ItemCompact = props => {
 };
 
 const renderTitle = (text, format, isTrashed, key, lang, tag) => {
-  const ext = ".png";
-  // insert blank title when text has only line break code.
-  const regex = /^\s+$/;
-  const title = regex.test(text) ? "　" : text;
-  const component = format === "IMAGE" ? `${title}${ext}` : title;
   return (
     <TextWrapper>
       <Text format={format} isTrashed={isTrashed}>
-        {component}
+        {createTextData(format, text)}
       </Text>
       <Key keyTag={key} />
       <TextLanguage lang={lang} />
       <Hash tag={tag} />
     </TextWrapper>
   );
+};
+
+const createTextData = (format, text) => {
+  const regex = /^\s+$/;
+  const _text = regex.test(text) ? "　" : text;
+  switch (format) {
+    case "TEXT":
+    case "SHEET":
+      return _text;
+    case "IMAGE":
+      return `${_text}.png`;
+    case "FILE":
+      const fileList = _text.split("\n");
+      const fileNames = fileList.map(f => path.basename(f));
+      return fileNames.join("  ");
+
+    default:
+      break;
+  }
 };
 
 export default ItemCompact;

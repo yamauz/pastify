@@ -234,10 +234,12 @@ module.exports = class DataStore {
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const resourcePath = path.resolve(distDir, "resource");
     const tempPath = path.resolve(resourcePath, "temp");
+    const imagesPath = path.resolve(tempPath, "images");
     const filesPath = path.resolve(tempPath, "files");
     if (!fs.existsSync(resourcePath)) {
       fs.mkdirSync(resourcePath);
       fs.mkdirSync(tempPath);
+      fs.mkdirSync(imagesPath);
       fs.mkdirSync(filesPath);
     }
     return resourcePath;

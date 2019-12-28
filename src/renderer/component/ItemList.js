@@ -300,6 +300,7 @@ const handleKeyDown = props => {
         copyClip(e);
         break;
       case "o":
+        if (e.ctrlKey) return;
         document.getElementById(`${idSelected}-option`).click();
         break;
       default:

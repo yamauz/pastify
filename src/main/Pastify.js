@@ -6,22 +6,22 @@ module.exports = class Pastify {
     this.isCopiedBySelf = false;
   }
 
-  pasteClip(props, { dataStore, settings, win }) {
-    const { id, mode } = props;
-    this.isCopiedBySelf = true;
-    const text = dataStore.getTextById(id);
-    CF.get("TEXT").write(text);
-    win.showLastActiveWindow(settings);
-    robot.keyTap("v", "control");
+  // pasteClip(props, { dataStore, settings, win }) {
+  //   const { id, mode } = props;
+  //   this.isCopiedBySelf = true;
+  //   const text = dataStore.getTextById(id);
+  //   CF.get("TEXT").write(text);
+  //   win.showLastActiveWindow(settings);
+  //   robot.keyTap("v", "control");
 
-    if (mode === "RETURN") win.focus();
+  //   if (mode === "RETURN") win.focus();
 
-    return null;
-  }
+  //   return null;
+  // }
   copyClipId(props) {
     const { id } = props;
     this.isCopiedBySelf = true;
-    CF.get("TEXT").write(id);
+    CF.get("TEXT").writeId(id);
     return null;
   }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import path from "path";
 
 const Wrapper = styled.div``;
 
@@ -41,16 +42,30 @@ const Text = styled.p`
 `;
 
 const renderTitle = (text, format, isTrashed) => {
-  const ext = ".png";
-  // insert blank title when text has only line break code.
-  const regex = /^\s+$/;
-  const title = regex.test(text) ? "　" : text;
-  const component = format === "IMAGE" ? `${title}${ext}` : title;
   return (
     <Text format={format} isTrashed={isTrashed}>
-      {component}
+      {createTextData(format, text)}
     </Text>
   );
+};
+
+const createTextData = (format, text) => {
+  const regex = /^\s+$/;
+  const _text = regex.test(text) ? "　" : text;
+  switch (format) {
+    case "TEXT":
+    case "SHEET":
+      return _text;
+    case "IMAGE":
+      return `${_text}.png`;
+    case "FILE":
+      const fileList = _text.split("\n");
+      const fileNames = fileList.map(f => path.basename(f));
+      return fileNames.join("  ");
+
+    default:
+      break;
+  }
 };
 
 const ItemText = props => {

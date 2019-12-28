@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import {
-  setScrollToRow,
   favItem,
   toggleModalVisibility,
   storeItemOnModalOpen,
@@ -87,7 +86,6 @@ const handleAction = props => {
   } = props;
   return info => {
     info.domEvent.stopPropagation();
-    // console.log(info.domEvent.stopPropagation());
     switch (info.key) {
       case "Fav":
         favItem(id);
@@ -129,6 +127,7 @@ const handleKeyDown = e => {
   switch (keycode(e)) {
     case "esc":
     case "o":
+      ReactTooltip.rebuild();
       ReactTooltip.hide();
       break;
 
@@ -143,16 +142,11 @@ const Component = props => {
     toolTipArrowPos,
     isOpenClipToolTip,
     idsTimeLine,
-    itemsTimeLine,
-    setScrollToRow
+    itemsTimeLine
   } = props;
 
   const idSelected = idsTimeLine.get(index);
   const clip = itemsTimeLine.get(idSelected);
-
-  if (index !== null) {
-    setScrollToRow(Number(index));
-  }
 
   return (
     <Wrapper
@@ -254,13 +248,11 @@ const mapStateToProps = state => ({
   isOpenClipToolTip: state.get("isOpenClipToolTip")
 });
 export default connect(mapStateToProps, {
-  setScrollToRow,
   favItem,
   toggleModalVisibility,
   storeItemOnModalOpen,
   deleteIds,
   deleteClipCompletely,
   copyClipId,
-  copyClip,
-  setScrollToRow
+  copyClip
 })(Component);

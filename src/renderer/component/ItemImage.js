@@ -35,7 +35,7 @@ const Image = styled.img`
 
 const renderImage = (id, format) => {
   const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
-  const imagePath = `file:///${distDir}/resource/temp/${id}`;
+  const imagePath = `file:///${distDir}/resource/temp/images/${id}`;
   switch (format) {
     case "IMAGE":
     case "SHEET":

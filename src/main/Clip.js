@@ -71,7 +71,7 @@ module.exports = class Clip {
     const imageBuf = this.extractDataList.get("IMAGE").toPNG();
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     fs.writeFileSync(
-      `${path.resolve(distDir, "resource", "temp")}\\${this.id}`,
+      `${path.resolve(distDir, "resource", "temp", "images")}\\${this.id}`,
       imageBuf
     );
     this.extractDataList.delete("IMAGE");
