@@ -1,4 +1,4 @@
-const { clipboard } = require("electron");
+const { clipboard, nativeImage } = require("electron");
 const ffi = require("ffi");
 const ref = require("ref");
 const fs = require("fs");
@@ -18,6 +18,10 @@ const CF = new Map([
       fNum: user32.RegisterClipboardFormatA(formatNameEXCEL),
       extract: () => {
         return clipboard.readBuffer("XML Spreadsheet").toJSON();
+      },
+      write: clip => {
+        const excelBuf = Buffer.from(clip.contents.SHEET.data);
+        clipboard.writeBuffer("XML Spreadsheet", excelBuf);
       }
     }
   ],
@@ -32,6 +36,19 @@ const CF = new Map([
         const extension = ".png";
         // return `${id}${extension}`;
         return `${id}`;
+      },
+      write: clip => {
+        const imagePath = path.resolve(
+          distDir,
+          "resource",
+          "temp",
+          "images",
+          clip.id
+        );
+        const imageData = nativeImage.createFromPath(imagePath);
+        // clipboard.writeBuffer("image/png", imageData.toPNG());
+        // clipboard.writeImage(imageData);
+        clipboard.write({ image: imageData });
       }
     }
   ],
@@ -55,7 +72,9 @@ const CF = new Map([
             break;
           case "IMAGE":
             filePath = getImageFilePath(clip);
-            // clipboard.writeImage(nativeImage.createFromDataURL(imageData.data));
+            break;
+          case "SHEET":
+            // filePath = getImageFilePath(clip);
             break;
           default:
             break;

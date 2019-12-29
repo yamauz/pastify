@@ -48,7 +48,7 @@ const Image = styled.img`
 const SheetDetail = props => {
   const { id } = props;
   const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
-  const imagePath = `file:///${distDir}/resource/temp/${id}`;
+  const imagePath = `file:///${distDir}/resource/temp/images/${id}`;
 
   return (
     <Wrapper>
