@@ -11,7 +11,8 @@ import {
   setAlwaysOnTop,
   setPrevFocusedElm,
   setToolTipArrowPos,
-  toggleClipToolTip
+  toggleClipToolTip,
+  setMainFold
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -88,7 +89,7 @@ const Main = props => {
     setPrevFocusedElm,
     setToolTipArrowPos,
     toggleClipToolTip,
-    isOpenClipToolTip
+    setMainFold
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -113,6 +114,8 @@ const Main = props => {
           setAlwaysOnTop();
           break;
         case "RESIZE":
+          const { isFold } = args;
+          setMainFold(isFold);
           break;
         default:
           break;
@@ -161,7 +164,8 @@ const Main = props => {
             // document.getElementById("list-menu").blur();
           } else {
             setPrevFocusedElm(document.activeElement);
-            document.getElementById("list-menu").focus();
+            // document.getElementById("list-menu").focus();
+            document.getElementById("list-menu-wrapper").focus();
           }
         }
       } else if (!ctrlKey && shiftKey) {
@@ -299,5 +303,6 @@ export default connect(mapStateToProps, {
   setAlwaysOnTop,
   setPrevFocusedElm,
   setToolTipArrowPos,
-  toggleClipToolTip
+  toggleClipToolTip,
+  setMainFold
 })(Main);

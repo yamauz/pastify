@@ -3,6 +3,7 @@ const ffi = require("ffi");
 const ref = require("ref");
 const fs = require("fs");
 const moment = require("moment");
+const xlsx = require("xlsx-style");
 const path = require("path");
 const extractFile = require("./CF_Sub/extractFile");
 const writeFile = require("./CF_Sub/writeFile");
@@ -67,14 +68,13 @@ const CF = new Map([
             filePath = clip.contents.FILE;
             break;
           case "TEXT":
-            filePath = getTextFilePath();
-            fs.writeFileSync(filePath, clip.textData);
+            filePath = getTextFilePath(clip);
             break;
           case "IMAGE":
             filePath = getImageFilePath(clip);
             break;
           case "SHEET":
-            // filePath = getImageFilePath(clip);
+            filePath = getSheetFilePath(clip);
             break;
           default:
             break;
@@ -94,13 +94,14 @@ const CF = new Map([
   ]
 ]);
 
-const getTextFilePath = () => {
+const getTextFilePath = clip => {
   const filePath = `${path.resolve(
     distDir,
     "resource",
     "temp",
     "files"
   )}\\${moment().format("YYYYMMDDhhmmss")}.txt`;
+  fs.writeFileSync(filePath, clip.textData);
   return filePath;
 };
 
@@ -127,6 +128,28 @@ const getImageFilePath = clip => {
   fs.mkdirSync(_imageDestDirPath);
   fs.copyFileSync(_imageOrigPath, _imageDestPath);
   return _imageDestPath;
+};
+
+const getSheetFilePath = clip => {
+  const buffer = Buffer.from(clip.contents.SHEET.data);
+  const type = "buffer";
+  const cellStyles = true;
+  const bookType = "xlsx";
+  const bookSST = false;
+  const wb = xlsx.read(buffer, { type, cellStyles });
+  const content = xlsx.write(wb, {
+    type,
+    bookType,
+    bookSST
+  });
+  const filePath = `${path.resolve(
+    distDir,
+    "resource",
+    "temp",
+    "files"
+  )}\\${moment().format("YYYYMMDDhhmmss")}.xlsx`;
+  fs.writeFileSync(filePath, content);
+  return filePath;
 };
 
 module.exports = CF;

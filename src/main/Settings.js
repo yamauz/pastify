@@ -11,8 +11,11 @@ module.exports = class Settings {
       WIN: {
         alwaysOnTop: false,
         width: 1200,
+        widthUnfold: 1200,
         height: 600,
-        isMaximized: false
+        minWidth: 301,
+        isMaximized: false,
+        isFold: false
       },
       FILTER: {
         filterName: "",

@@ -35,11 +35,15 @@ export default handleActions(
     GET_MOMENT: (state, { payload: currentTime }) => {
       return state.set("moment", currentTime);
     },
-    TOGGLE_MAIN_PANEL: state => {
-      return state.set("isFold", !state.get("isFold"));
+    TOGGLE_MAIN_FOLD: state => {
+      return state.toggleMainFold();
+    },
+    SET_MAIN_FOLD: (state, { payload: isFold }) => {
+      return state.set("isFold", isFold);
     },
     TOGGLE_LIST_MODE: state => {
-      return state.set("isCompact", !state.get("isCompact"));
+      return state.toggleListMode();
+      // return state.set("isCompact", !state.get("isCompact"));
     },
     TOGGLE_MODAL_VISIBILITY: (state, { payload: id }) => {
       return state.toggleModalVisibility(id);

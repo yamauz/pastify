@@ -9,7 +9,7 @@ import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
 import Bars from "../../icon/listheader/bars.svg";
 import ThList from "../../icon/listheader/th-list.svg";
 
-import { toggleMainPanel, toggleListMode } from "../actions";
+import { toggleMainFold, toggleListMode } from "../actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const ItemCount = styled.span`
 `;
 
 const ListHeader = props => {
-  const { ids, isCompact, isFold, toggleListMode, toggleMainPanel } = props;
+  const { ids, isCompact, isFold, toggleListMode, toggleMainFold } = props;
 
   return (
     <Wrapper>
@@ -72,10 +72,10 @@ const ListHeader = props => {
       <Right id="tooltip" tabIndex="0">
         <IconWrapper
           onClick={() => {
-            toggleMainPanel();
+            toggleMainFold();
           }}
         >
-          {_toggleMainPanel(isFold)}
+          {_toggleMainFold(isFold)}
         </IconWrapper>
         <IconWrapper
           onClick={() => {
@@ -135,15 +135,15 @@ const _setFiltersName = props => {
   return headerTitle;
 };
 
-const _toggleMainPanel = isFold => {
+const _toggleMainFold = isFold => {
   const style = {
     width: "14px",
     fill: "#dddddd"
   };
   if (isFold) {
-    return <AngleDoubleLeft style={style}></AngleDoubleLeft>;
-  } else {
     return <AngleDoubleRight style={style}></AngleDoubleRight>;
+  } else {
+    return <AngleDoubleLeft style={style}></AngleDoubleLeft>;
   }
 };
 
@@ -180,5 +180,5 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   toggleListMode,
-  toggleMainPanel
+  toggleMainFold
 })(ListHeader);

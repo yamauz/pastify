@@ -105,7 +105,9 @@
     "ttf-loader": "^1.0.2",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.3.1",
+    "xlsx": "^0.15.4",
+    "xlsx-style": "^0.8.13"
   },
   "dependencies": {
     "ffi": "^2.3.0",

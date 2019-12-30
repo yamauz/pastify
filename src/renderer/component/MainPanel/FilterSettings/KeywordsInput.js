@@ -52,6 +52,7 @@ const KeywordsInput = props => {
         results. Allows multi-registration.
       </FilterDescription>
       <CreatableSelect
+        inputId={"keyword-input"}
         autoFocus={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}

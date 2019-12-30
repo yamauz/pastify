@@ -11,7 +11,7 @@ const StateRecord = Record({
   winFocus: true,
   winMaximize: false,
   isCompact: true,
-  isFold: true,
+  isFold: false,
   detailType: "DEFAULT",
   // detailType: "filter-sort-settings",
   moment: new Date().getTime(),
@@ -90,10 +90,14 @@ class State extends StateRecord {
     ).dispatch();
     const idsTimeLine = List(clipIdsFiltered);
     const filterOptSelected = new Message("settings", "readFilter").dispatch();
-    const { alwaysOnTop } = new Message("settings", "readWin").dispatch();
+    const { alwaysOnTop, isFold } = new Message(
+      "settings",
+      "readWin"
+    ).dispatch();
     super({
       // windows settings
       alwaysOnTop,
+      isFold,
       itemsTimeLine,
       idsTimeLine,
       filtersList,
@@ -357,6 +361,15 @@ class State extends StateRecord {
     });
   }
   showFilterSortSettings() {
+    const isFold = this.get("isFold");
+    if (isFold) {
+      new Message("win", "updateWinState", "unfoldWindow").dispatch();
+      console.log("vbbbbbbbbbbbbbbb");
+      setTimeout(() => {
+        console.log("aaaaaaaaaaaa");
+        document.getElementById("keyword-input").focus();
+      }, 200);
+    }
     return this.withMutations(state => {
       state
         .set("detailType", "filter-sort-settings")
@@ -648,6 +661,13 @@ class State extends StateRecord {
         .set("idSelected", id)
         .set("modalVisibility", !this.get("modalVisibility"));
     });
+  }
+
+  toggleMainFold() {
+    const isFold = this.get("isFold");
+    const command = isFold ? "unfoldWindow" : "foldWindow";
+    new Message("win", "updateWinState", command).dispatch();
+    return this;
   }
   updateWinState(props) {
     new Message("win", "updateWinState", props).dispatch();

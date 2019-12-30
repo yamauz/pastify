@@ -1,7 +1,7 @@
 const ffi = require("ffi");
 const ref = require("ref");
 const { ipcMain } = require("electron");
-const loadDevtool = require("electron-load-devtool");
+const { WIDTH_UNFOLD } = require("../common/settings");
 const _ = require("lodash");
 const { BrowserWindow } = require("electron");
 const user32 = new ffi.Library("user32", {
@@ -26,21 +26,18 @@ const kernel32 = new ffi.Library("kernel32", {
   GetCurrentThreadId: ["uint32", []]
 });
 
-const {
-  default: installExtension,
-  REACT_DEVELOPER_TOOLS
-} = require("electron-devtools-installer");
-
 module.exports = class Window {
   constructor(settings) {
     const {
       alwaysOnTop,
       width,
+      minWidth,
       height,
       x,
       y,
       isMaximized
     } = settings.readWin();
+    console.log(settings.readWin());
 
     this.window = new BrowserWindow({
       title: "Pastify",
@@ -48,7 +45,7 @@ module.exports = class Window {
       y,
       width,
       height,
-      minWidth: 301,
+      minWidth,
       minHeight: 500,
       frame: false,
       webPreferences: {
@@ -66,6 +63,8 @@ module.exports = class Window {
     }
 
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
+    this.prevWidth = settings.readWin().width;
+    this.isResizedByFolding = false;
   }
   open() {
     const MODE = process.env.NODE_ENV;
@@ -108,16 +107,28 @@ module.exports = class Window {
       this.window.setSize(width, height);
       this.sendToRenderer("useIpc", "UNMAXIMIZE");
     });
+    this.window.on("will-resize", (e, newBounds) => {
+      this.prevWidth = newBounds.width;
+    });
     this.window.on(
       "resize",
       _.debounce(() => {
         if (!this.window.isMaximized()) {
-          const width = this.window.getSize()[0];
-          const height = this.window.getSize()[1];
-          settings.updateWin({ width, height });
-          this.sendToRenderer("useIpc", "RESIZE");
+          const [width, height] = this.window.getSize();
+          const { minWidth } = settings.readWin();
+          if (this.isResizedByFolding) {
+            settings.updateWin({ width, height });
+          } else {
+            const widthUnfold =
+              this.prevWidth < WIDTH_UNFOLD ? WIDTH_UNFOLD : width;
+            settings.updateWin({ width, height, widthUnfold });
+          }
+          this.isResizedByFolding = false;
+          const isFold = width === minWidth ? true : false;
+          this.sendToRenderer("useIpc", "RESIZE", { isFold });
+          settings.updateWin({ isFold });
         }
-      }, 200)
+      }, 100)
     );
     this.window.on(
       "move",
@@ -136,8 +147,21 @@ module.exports = class Window {
     });
   }
 
-  updateWinState(state) {
+  updateWinState(state, { settings }) {
     switch (state) {
+      case "foldWindow": {
+        const { minWidth } = settings.readWin();
+        const [_, height] = this.window.getSize();
+        this.isResizedByFolding = true;
+        this.window.setSize(minWidth, height);
+        break;
+      }
+      case "unfoldWindow": {
+        const { widthUnfold } = settings.readWin();
+        const [_, height] = this.window.getSize();
+        this.window.setSize(widthUnfold, height);
+        break;
+      }
       case "alwaysOnTop":
         this.window.setAlwaysOnTop(!this.window.isAlwaysOnTop());
         break;
@@ -180,7 +204,6 @@ module.exports = class Window {
 
   foreground() {
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
-    console.log(this.lastActiveWindowClassName);
     this.window.setSkipTaskbar(false);
     const foregroundHWnd = user32.GetForegroundWindow();
     const currentThreadId = kernel32.GetCurrentThreadId();

@@ -24,7 +24,9 @@ const configMain = {
   externals: {
     // bindings: "require('bindings')",
     ffi: "require('ffi')",
-    ref: "require('ref')"
+    ref: "require('ref')",
+    "./cptable": "var cptable",
+    "../xlsx.js": "var _XLSX"
   },
   node: {
     __dirname: false

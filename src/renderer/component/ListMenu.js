@@ -160,8 +160,12 @@ const Component = props => {
             }
           }
         }}
+        onMenuOpen={() => {
+          // setPrevFocusedElm(document.activeElement);
+          console.log("onMenuOpen");
+        }}
         onMenuClose={() => {
-          document.getElementById(prevFocusedElm).focus();
+          // document.getElementById(prevFocusedElm).focus();
         }}
         onChange={opt => {
           const { type, command, id } = opt;
@@ -260,7 +264,9 @@ const customStyles = {
     margin: 0,
     padding: 0,
     width: 0,
-    height: 0
+    height: 0,
+    // left: 7,
+    backgroundColor: "red"
   }),
   group: (styles, state) => ({
     ...styles,
