@@ -20,8 +20,10 @@ import {
   setDetailType,
   deleteIds,
   deleteClipCompletely,
-  trashItem,
-  copyClip
+  favItem,
+  copyClip,
+  toggleModalVisibility,
+  storeItemOnModalOpen
 } from "../actions";
 import _ from "lodash";
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
@@ -249,22 +251,26 @@ const handleKeyDown = props => {
   const {
     ids,
     deleteIds,
+    favItem,
     deleteClipCompletely,
     setScrollToRow,
     scrollToRow,
     isCompact,
     copyClip,
-    setPrevFocusedElm
+    toggleModalVisibility,
+    storeItemOnModalOpen
   } = props;
   // no action when no item on list
   if (ids.size === 0) return;
   const idSelected = ids.get(scrollToRow);
 
   return e => {
+    if (e.altKey) return;
     e.preventDefault();
     e.stopPropagation();
     switch (keycode(e)) {
       case "delete":
+      case "x":
         if (e.ctrlKey) {
           deleteClipCompletely();
         } else {
@@ -301,8 +307,22 @@ const handleKeyDown = props => {
         copyClip(e);
         break;
       case "o":
-        if (e.altKey) return;
         document.getElementById(`${idSelected}-option`).click();
+        break;
+      case "j":
+        if (scrollToRow === ids.size - 1) return;
+        setScrollToRow(scrollToRow + 1);
+        break;
+      case "k":
+        if (scrollToRow === 0) return;
+        setScrollToRow(scrollToRow - 1);
+        break;
+      case "f":
+        favItem(idSelected);
+        break;
+      case "l":
+        toggleModalVisibility(idSelected);
+        storeItemOnModalOpen(idSelected);
         break;
       default:
         break;
@@ -495,7 +515,9 @@ export default connect(mapStateToProps, {
   setDetailType,
   setPrevFocusedElm,
   deleteIds,
-  trashItem,
+  favItem,
   copyClip,
-  deleteClipCompletely
+  deleteClipCompletely,
+  toggleModalVisibility,
+  storeItemOnModalOpen
 })(ItemList);
