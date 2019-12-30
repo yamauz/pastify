@@ -164,8 +164,7 @@ const Main = props => {
             // document.getElementById("list-menu").blur();
           } else {
             setPrevFocusedElm(document.activeElement);
-            // document.getElementById("list-menu").focus();
-            document.getElementById("list-menu-wrapper").focus();
+            document.getElementById("list-menu").focus();
           }
         }
       } else if (!ctrlKey && shiftKey) {

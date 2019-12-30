@@ -162,10 +162,9 @@ const Component = props => {
         }}
         onMenuOpen={() => {
           // setPrevFocusedElm(document.activeElement);
-          console.log("onMenuOpen");
         }}
         onMenuClose={() => {
-          // document.getElementById(prevFocusedElm).focus();
+          document.getElementById(prevFocusedElm).focus();
         }}
         onChange={opt => {
           const { type, command, id } = opt;

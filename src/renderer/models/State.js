@@ -90,7 +90,7 @@ class State extends StateRecord {
     ).dispatch();
     const idsTimeLine = List(clipIdsFiltered);
     const filterOptSelected = new Message("settings", "readFilter").dispatch();
-    const { alwaysOnTop, isFold } = new Message(
+    const { alwaysOnTop, isFold, isCompact } = new Message(
       "settings",
       "readWin"
     ).dispatch();
@@ -98,6 +98,7 @@ class State extends StateRecord {
       // windows settings
       alwaysOnTop,
       isFold,
+      isCompact,
       itemsTimeLine,
       idsTimeLine,
       filtersList,
@@ -668,6 +669,12 @@ class State extends StateRecord {
     const command = isFold ? "unfoldWindow" : "foldWindow";
     new Message("win", "updateWinState", command).dispatch();
     return this;
+  }
+  toggleListMode() {
+    const isCompact = this.get("isCompact");
+    const args = { isCompact: !isCompact };
+    new Message("settings", "updateWin", args).dispatch();
+    return this.set("isCompact", !isCompact);
   }
   updateWinState(props) {
     new Message("win", "updateWinState", props).dispatch();

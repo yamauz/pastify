@@ -15,7 +15,8 @@ module.exports = class Settings {
         height: 600,
         minWidth: 301,
         isMaximized: false,
-        isFold: false
+        isFold: false,
+        isCompact: false
       },
       FILTER: {
         filterName: "",
