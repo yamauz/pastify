@@ -262,6 +262,7 @@ const handleKeyDown = props => {
 
   return e => {
     e.preventDefault();
+    e.stopPropagation();
     switch (keycode(e)) {
       case "delete":
         if (e.ctrlKey) {
@@ -300,7 +301,7 @@ const handleKeyDown = props => {
         copyClip(e);
         break;
       case "o":
-        if (e.ctrlKey) return;
+        if (e.altKey) return;
         document.getElementById(`${idSelected}-option`).click();
         break;
       default:

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ReactTooltip from "react-tooltip";
+import keycode from "keycode";
 // Redux
 import { connect } from "react-redux";
 import {
@@ -12,7 +13,9 @@ import {
   setPrevFocusedElm,
   setToolTipArrowPos,
   toggleClipToolTip,
-  setMainFold
+  setMainFold,
+  toggleMainFold,
+  toggleListMode
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -89,7 +92,11 @@ const Main = props => {
     setPrevFocusedElm,
     setToolTipArrowPos,
     toggleClipToolTip,
-    setMainFold
+    setMainFold,
+    toggleMainFold,
+    toggleListMode,
+    isFold,
+    isCompact
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -130,53 +137,82 @@ const Main = props => {
       console.log("rebuild_initial");
       ReactTooltip.rebuild();
     }, 0);
-    // ipcRenderer.on("ON_COPY", (event, item, addMode) => {
-    //   addItemClipboard(item, "TimeLine", addMode);
-    // });
-    // ipcRenderer.on("ON_BLUR", () => {
-    //   setWinFocus(false);
-    // });
-    // ipcRenderer.on("ON_FOCUS", () => {
-    //   setWinFocus(true);
-    // });
-    // ipcRenderer.on("ON_MAXIMIZE", () => {
-    //   setWinMaximize(true);
-    // });
-    // ipcRenderer.on("ON_UNMAXIMIZE", () => {
-    //   setWinMaximize(false);
-    // });
-    // ipcRenderer.on("ON_ALWAYS_ON_TOP_CHANGED", () => {
-    //   setAlwaysOnTop();
-    // });
   }, []);
 
-  useEffect(() => {
-    const toggleListToolTipByKeyDown = e => {
-      console.log("keydown");
-      const { shiftKey, ctrlKey } = e;
-      const pressKey = e.keyCode;
-      const { O } = keyCode;
+  const handleKeyDown = useCallback(
+    e => {
+      const { shiftKey, ctrlKey, altKey } = e;
 
-      if (ctrlKey && !shiftKey) {
-        if (pressKey === O) {
+      if (!altKey) return;
+
+      switch (keycode(e)) {
+        case "o": {
           if (document.activeElement === document.getElementById("list-menu")) {
             document.getElementById(prevFocusedElm).focus();
-            // document.getElementById("list-menu").blur();
           } else {
             setPrevFocusedElm(document.activeElement);
             document.getElementById("list-menu").focus();
           }
+          break;
         }
-      } else if (!ctrlKey && shiftKey) {
-      } else if (ctrlKey && shiftKey) {
-      }
-    };
+        case "w": {
+          toggleMainFold();
+          break;
+        }
+        case "q": {
+          toggleListMode();
+          break;
+        }
 
-    window.addEventListener("keydown", toggleListToolTipByKeyDown, true);
+        default:
+          break;
+      }
+
+      // if (ctrlKey && !shiftKey) {
+      //   if (pressKey === O) {
+      //     if (document.activeElement === document.getElementById("list-menu")) {
+      //       document.getElementById(prevFocusedElm).focus();
+      //     } else {
+      //       setPrevFocusedElm(document.activeElement);
+      //       document.getElementById("list-menu").focus();
+      //     }
+      //   }
+      // }
+    },
+    [prevFocusedElm, isFold, isCompact]
+  );
+
+  useEffect(() => {
+    // const handleKeyDown = e => {
+    //   const { shiftKey, ctrlKey } = e;
+    //   const pressKey = e.keyCode;
+    //   const { O } = keyCode;
+
+    //   if (ctrlKey && !shiftKey) {
+    //     if (pressKey === O) {
+    //       if (document.activeElement === document.getElementById("list-menu")) {
+    //         document.getElementById(prevFocusedElm).focus();
+    //       } else {
+    //         setPrevFocusedElm(document.activeElement);
+    //         document.getElementById("list-menu").focus();
+    //       }
+    //     }
+    //   }
+    // };
+
+    window.addEventListener("keydown", handleKeyDown, true);
     return () => {
-      window.removeEventListener("keydown", toggleListToolTipByKeyDown, true);
+      window.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, [prevFocusedElm]);
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    console.log("isFold");
+    // window.addEventListener("keydown", handleKeyDown, true);
+    // return () => {
+    //   window.removeEventListener("keydown", handleKeyDown, true);
+    // };
+  }, [isFold]);
 
   // useEffect(() => {
   //   const toggleClipToolTipByClick = () => {
@@ -291,7 +327,9 @@ const mapStateToProps = state => ({
   idsTimeLine: state.get("idsTimeLine"),
   isOpenClipToolTip: state.get("isOpenClipToolTip"),
   modalVisibility: state.get("modalVisibility"),
-  filterSaveModalVisibility: state.get("filterSaveModalVisibility")
+  filterSaveModalVisibility: state.get("filterSaveModalVisibility"),
+  isFold: state.get("isFold"),
+  isCompact: state.get("isCompact")
 });
 export default connect(mapStateToProps, {
   loadItem,
@@ -303,5 +341,7 @@ export default connect(mapStateToProps, {
   setPrevFocusedElm,
   setToolTipArrowPos,
   toggleClipToolTip,
-  setMainFold
+  setMainFold,
+  toggleMainFold,
+  toggleListMode
 })(Main);
