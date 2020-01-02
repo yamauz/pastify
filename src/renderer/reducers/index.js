@@ -238,6 +238,12 @@ export default handleActions(
     },
     TOGGLE_CLIP_TOOL_TIP: state => {
       return state.set("isOpenClipToolTip", !state.get("isOpenClipToolTip"));
+    },
+    SET_SEARCH_INPUT_VALUE: (state, { payload: value }) => {
+      return state.set("searchInputValue", value);
+    },
+    SET_SEARCH_OPT: (state, { payload: { handle, args } }) => {
+      return state.setSearchOpt(handle, args);
     }
   },
   new State()

@@ -78,6 +78,7 @@
     "react-dom": "^16.8.6",
     "react-electron-titlebar": "^1.0.7",
     "react-eva-icons": "^0.0.7",
+    "react-highlight-words": "^0.16.0",
     "react-hot-loader": "^4.8.4",
     "react-imask": "^5.1.5",
     "react-inlinesvg": "^0.8.4",

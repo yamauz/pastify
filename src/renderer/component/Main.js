@@ -101,6 +101,9 @@ const Main = props => {
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
       switch (triger) {
+        case "SHOW":
+          document.getElementById("searchbar").focus();
+          break;
         case "COPY":
           const { clip, mode } = args;
           addItemClipboard(clip, "TimeLine", mode);
@@ -161,6 +164,14 @@ const Main = props => {
         }
         case "q": {
           toggleListMode();
+          break;
+        }
+        case "j": {
+          document.getElementById("item-list").focus();
+          break;
+        }
+        case "k": {
+          document.getElementById("searchbar").focus();
           break;
         }
 

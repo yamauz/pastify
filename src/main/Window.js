@@ -80,7 +80,7 @@ module.exports = class Window {
   }
 
   setIpcListener(instance) {
-    const { dataStore, settings, filters, pastify, win } = instance;
+    const { dataStore, settings, filters, pastify, win, key } = instance;
     ipcMain.on("useIpc", (event, msg) => {
       event.returnValue = eval(msg.DB)[msg.command](msg.args, instance);
     });
@@ -217,6 +217,7 @@ module.exports = class Window {
 
     // robot.keyTap("f11", "alt");
     this.window.focus();
+    this.sendToRenderer("useIpc", "SHOW");
   }
 
   showLastActiveWindow(settings) {

@@ -18,15 +18,14 @@ app.on("ready", () => {
   const settings = new Settings();
   const pastify = new Pastify();
   const win = new Window(settings);
-  const instances = { dataStore, filters, settings, pastify, win };
-  win.setIpcListener(instances);
-  win.setEventListener(settings);
-  win.open(settings);
-
   const key = new Key(win);
   key.register("shift", "");
   key.register("alt", "F11");
   // key.register("ctrl", "a");
+  const instances = { dataStore, filters, settings, pastify, win, key };
+  win.setIpcListener(instances);
+  win.setEventListener(settings);
+  win.open(settings);
 
   clipboardListener.subscribe((hwnd, uMsg, wParam, lParam) => {
     // check the condition of clipboard listener

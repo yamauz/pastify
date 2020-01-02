@@ -60,7 +60,9 @@ const StateRecord = Record({
   keyOptions: [],
   keyInputValue: "",
   toolTipArrowPos: "down",
-  isOpenClipToolTip: false
+  isOpenClipToolTip: false,
+  searchInputValue: "",
+  searchOpt: []
 });
 
 class State extends StateRecord {
@@ -120,7 +122,6 @@ class State extends StateRecord {
 
   copyClip(isReturn, copyOnly, copyAs) {
     const id = this.get("idSelected");
-    console.log(copyAs);
     const args = { id, isReturn, copyOnly, copyAs };
     new Message("pastify", "copyClip", args).dispatch();
     return this;
@@ -684,6 +685,40 @@ class State extends StateRecord {
     const args = { id: this.get("idSelected") };
     new Message("pastify", "copyClipId", args).dispatch();
     return this;
+  }
+  setSearchOpt(handle, args) {
+    const _hotKeyOpt = [{ value: "_HOT_", label: "H" }];
+    if (handle === "onKeyDown") {
+      const keycode = args;
+      if (this.get("searchInputValue") === "") {
+        switch (keycode) {
+          case "space":
+            return this.set("searchOpt", _hotKeyOpt);
+          default:
+            return this;
+        }
+      } else {
+        return this;
+      }
+    } else {
+      const options = args;
+      const selectOpt = options.filter(opt => opt.label !== "H");
+      if (selectOpt.length !== 0) {
+        const { shiftKey, ctrlKey, altKey } = new Message(
+          "key",
+          "getModifierKey",
+          {}
+        ).dispatch();
+        const id = selectOpt[0].id;
+        const isReturn = shiftKey;
+        const copyOnly = ctrlKey;
+        const copyAs = selectOpt[0].mainFormat;
+        const _args = { id, isReturn, copyOnly, copyAs };
+        console.log(_args);
+        new Message("pastify", "copyClip", _args).dispatch();
+      }
+      return this.set("searchOpt", []);
+    }
   }
 
   _getClipStateById(id = null) {

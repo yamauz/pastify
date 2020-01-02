@@ -45,6 +45,18 @@ module.exports = class DataStore {
     const data = this.DB.get(this.storeName).value();
     return data;
   }
+  readNotTrashed() {
+    const data = this.DB.get(this.storeName)
+      .filter(clip => !clip.isTrashed)
+      .value();
+    return data;
+  }
+  readHasHotKey() {
+    const data = this.DB.get(this.storeName)
+      .filter(clip => !clip.isTrashed && clip.key !== "")
+      .value();
+    return data;
+  }
 
   getIdsByFilter(args, { settings }) {
     const {

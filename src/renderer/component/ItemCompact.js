@@ -12,7 +12,6 @@ const Wrapper = styled.div`
   font-family: sans-serif;
   transition: background-color 0.1s;
   height: 100%;
-  overflow: hidden;
   border-bottom: solid 1px #1d1d1d;
   &:before {
     content: "";
@@ -35,13 +34,9 @@ const Wrapper = styled.div`
 const Text = styled.span`
   max-width: 255px;
   vertical-align: middle;
-  display: inline-block;
-  text-align: left;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   margin-right: 4px;
   overflow: hidden;
-  color: ${props => {
+  /* color: ${props => {
     switch (props.format) {
       case "TEXT":
         return "#bfd7de";
@@ -52,7 +47,7 @@ const Text = styled.span`
       case "FILE":
         return "#dddebf";
     }
-  }};
+  }}; */
   opacity: ${props => (props.isTrashed ? 0.8 : 1)};
   font-size: 12px;
 `;
@@ -74,8 +69,25 @@ const DetectPosBlockBottom = styled.div`
 `;
 
 const TextWrapper = styled.div`
+  overflow: hidden;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 290px;
   padding-left: 10px;
   padding-right: 25px;
+  color: ${props => {
+    switch (props.format) {
+      case "TEXT":
+        return "#bfd7de";
+      case "IMAGE":
+        return "#c3bfde";
+      case "SHEET":
+        return "#bfdebf";
+      case "FILE":
+        return "#dddebf";
+    }
+  }};
 `;
 
 const ItemCompact = props => {
@@ -104,13 +116,13 @@ const ItemCompact = props => {
 
 const renderTitle = (text, format, isTrashed, key, lang, tag) => {
   return (
-    <TextWrapper>
-      <Text format={format} isTrashed={isTrashed}>
-        {createTextData(format, text)}
-      </Text>
+    <TextWrapper format={format}>
       <Key keyTag={key} />
       <TextLanguage lang={lang} />
       <Hash tag={tag} />
+      <Text format={format} isTrashed={isTrashed}>
+        {createTextData(format, text)}
+      </Text>
     </TextWrapper>
   );
 };

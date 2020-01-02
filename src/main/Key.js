@@ -8,31 +8,70 @@ module.exports = class Key {
     this.win = win;
     this.pressed = false;
     this.key = {
-      SHIFT: 42
+      SHIFT: 42,
+      CTRL: 29,
+      ALT: 56
     };
+    this.shiftKey = false;
+    this.ctrlKey = false;
+    this.altKey = false;
   }
 
   register(modifier, key) {
     const keyEvent = `_on_${modifier}${key}`;
-    // call each key event
     this[keyEvent]();
+  }
+
+  getModifierKey() {
+    const keys = {
+      shiftKey: this.shiftKey,
+      altKey: this.altKey,
+      ctrlKey: this.ctrlKey
+    };
+    return keys;
   }
 
   _on_shift() {
     const DURATION = 300;
     ioHook.on("keyup", e => {
-      if (e.keycode === this.key.SHIFT) {
-        if (!this.pressed) {
-          this.pressed = true;
-          setTimeout(() => {
-            this.pressed = false;
-          }, DURATION);
-        } else {
-          robot.keyTap("f11", "alt");
-          // this.win.show();
-          // this.win.focus();
-          // this.win.foreground();
-        }
+      switch (e.keycode) {
+        case this.key.SHIFT:
+          this.shiftKey = false;
+          if (!this.pressed) {
+            this.pressed = true;
+            setTimeout(() => {
+              this.pressed = false;
+            }, DURATION);
+          } else {
+            robot.keyTap("f11", "alt");
+            // this.win.show();
+            // this.win.focus();
+            // this.win.foreground();
+          }
+          break;
+        case this.key.CTRL:
+          this.ctrlKey = false;
+          break;
+        case this.key.ALT:
+          this.altKey = false;
+          break;
+        default:
+          break;
+      }
+    });
+    ioHook.on("keydown", e => {
+      switch (e.keycode) {
+        case this.key.SHIFT:
+          this.shiftKey = true;
+          break;
+        case this.key.CTRL:
+          this.ctrlKey = true;
+          break;
+        case this.key.ALT:
+          this.altKey = true;
+          break;
+        default:
+          break;
       }
     });
   }
