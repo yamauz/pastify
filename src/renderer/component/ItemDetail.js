@@ -24,8 +24,8 @@ const ItemDetail = props => {
     detailType
   } = props;
 
-  const { start, stop } = itemDisplayRange;
-  let idsDisplay = ids.slice(start, stop);
+  const { overscanStartIndex, overscanStopIndex } = itemDisplayRange;
+  let idsDisplay = ids.slice(overscanStartIndex, overscanStopIndex + 1);
   const currentId = scrollToRow === -1 ? "DEFAULT" : ids.get(scrollToRow);
 
   if (currentId !== "DEFAULT" && !idsDisplay.includes(currentId)) {

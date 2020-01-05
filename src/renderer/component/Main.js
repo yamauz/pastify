@@ -32,9 +32,6 @@ import "../styles/rc-tooltip.css";
 import "rodal/lib/rodal.css";
 import "electron-react-titlebar/assets/style.css";
 import styled from "@emotion/styled";
-// Common
-import keyCode from "../../common/keycode";
-import MenuList from "./MenuList";
 import "../styles/rc-menu.css";
 
 const Wrapper = styled.div`

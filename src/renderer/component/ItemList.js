@@ -145,16 +145,8 @@ const ItemList = props => {
                     return rowHeight;
                   }
                 }}
-                onRowsRendered={({
-                  overscanStartIndex,
-                  overscanStopIndex,
-                  startIndex,
-                  stopIndex
-                }) => {
-                  setDisplayRange(setItemDisplayRange, {
-                    start: overscanStartIndex,
-                    stop: overscanStopIndex + 1
-                  });
+                onRowsRendered={range => {
+                  setDisplayRange(setItemDisplayRange, range);
                 }}
                 onScroll={_.throttle(() => {
                   ReactTooltip.rebuild();
@@ -323,6 +315,9 @@ const handleKeyDown = props => {
       case "l":
         toggleModalVisibility(idSelected);
         storeItemOnModalOpen(idSelected);
+        break;
+      case "tab":
+        document.getElementById("searchbar").focus();
         break;
       default:
         break;

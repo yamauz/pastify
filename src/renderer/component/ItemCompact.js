@@ -7,6 +7,7 @@ import TextLanguage from "./TextLanguage";
 import Key from "./Key";
 import Hash from "./Hash";
 import path from "path";
+import popupKeyValue from "../../common/popupKeyValue";
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -90,8 +91,24 @@ const TextWrapper = styled.div`
   }};
 `;
 
+const PopupKey = styled.span`
+  transition: opacity 0.1s;
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  margin-top: 5px;
+  text-align: center;
+  color: #dcdcdc;
+  background-color: #0d3167b3;
+  width: 20px;
+  position: absolute;
+  right: 0;
+  bottom: 2;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+`;
+
 const ItemCompact = props => {
-  const { style, item, index } = props;
+  const { style, item, index, searchOpt, itemDisplayRange } = props;
   const { id, mainFormat, textData, isFaved, isTrashed, key, lang, tag } = item;
   const [isOpen, setIsOpen] = useState(false);
   const toggleDeleteButton = () => setIsOpen(!isOpen);
@@ -109,9 +126,20 @@ const ItemCompact = props => {
       <ContextMenu index={index} id={id} isOpen={isOpen} />
       <DetectPosBlockTop id="detect-pos-block" />
       <DetectPosBlockBottom id="detect-pos-block" />
+      {renderPopupKeys(searchOpt, itemDisplayRange, index)}
       {renderTitle(textData, mainFormat, isTrashed, key, lang, tag)}
     </Wrapper>
   );
+};
+
+const renderPopupKeys = (searchOpt, itemDisplayRange, index) => {
+  const isOpen = searchOpt.get("LABEL").has("LISTKEY");
+  const { startIndex, stopIndex } = itemDisplayRange;
+  if (index >= startIndex && index <= stopIndex) {
+    return (
+      <PopupKey isOpen={isOpen}>{popupKeyValue[index - startIndex]}</PopupKey>
+    );
+  }
 };
 
 const renderTitle = (text, format, isTrashed, key, lang, tag) => {
@@ -146,4 +174,9 @@ const createTextData = (format, text) => {
   }
 };
 
-export default ItemCompact;
+const mapStateToProps = state => ({
+  searchOpt: state.get("searchOpt"),
+  itemDisplayRange: state.get("itemDisplayRange")
+});
+
+export default connect(mapStateToProps, {})(ItemCompact);

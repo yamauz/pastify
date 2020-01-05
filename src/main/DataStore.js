@@ -51,11 +51,53 @@ module.exports = class DataStore {
       .value();
     return data;
   }
-  readHasHotKey() {
-    const data = this.DB.get(this.storeName)
-      .filter(clip => !clip.isTrashed && clip.key !== "")
-      .value();
-    return data;
+  readHasHotKey(args) {
+    if (args === undefined) return [];
+
+    const { condSelect } = args;
+    const _condSelect = new Map(condSelect);
+    let data = this.DB.get(this.storeName);
+    switch (_condSelect.get("LABEL")) {
+      case "HOTKEY":
+        data = data.filter(clip => clip.key !== "");
+        break;
+      case "LANGUAGE":
+        data = data.filter(clip => clip.lang !== "");
+        break;
+      case "HASHTAG":
+        data = data.filter(clip => clip.tag.length !== 0);
+        break;
+      default:
+        break;
+    }
+    switch (_condSelect.get("STATUS")) {
+      case "FAVED":
+        data = data.filter(clip => clip.isFaved && !clip.isTrashed);
+        break;
+      case "TRASHED":
+        data = data.filter(clip => clip.isTrashed);
+        break;
+      default:
+        data = data.filter(clip => !clip.isTrashed);
+        break;
+    }
+    switch (_condSelect.get("DATATYPE")) {
+      case "TEXT":
+        data = data.filter(clip => clip.mainFormat === "TEXT");
+        break;
+      case "IMAGE":
+        data = data.filter(clip => clip.mainFormat === "IMAGE");
+        break;
+      case "FILE":
+        data = data.filter(clip => clip.mainFormat === "FILE");
+        break;
+      case "SHEET":
+        data = data.filter(clip => clip.mainFormat === "SHEET");
+        break;
+      default:
+        break;
+    }
+    return data.value();
   }
 
   getIdsByFilter(args, { settings }) {

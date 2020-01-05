@@ -1,8 +1,9 @@
-import { OrderedMap, Set, Record, List } from "immutable";
+import { OrderedMap, Map, Record, List } from "immutable";
 import ItemValue from "./ItemValue";
 import FilterValue from "./FilterValue";
 import Message from "./Message";
-import userDialog from "./../../common/dialog";
+import popupKeyValue from "./../../common/popupKeyValue";
+import searchOptionsAll from "./../../common/searchOptionsAll";
 import _ from "lodash";
 const dialog = window.require("electron").remote.dialog;
 
@@ -62,7 +63,11 @@ const StateRecord = Record({
   toolTipArrowPos: "down",
   isOpenClipToolTip: false,
   searchInputValue: "",
-  searchOpt: []
+  searchOpt: Map([
+    ["LABEL", Map()],
+    ["STATUS", Map()],
+    ["DATATYPE", Map()]
+  ])
 });
 
 class State extends StateRecord {
@@ -686,39 +691,212 @@ class State extends StateRecord {
     new Message("pastify", "copyClipId", args).dispatch();
     return this;
   }
-  setSearchOpt(handle, args) {
-    const _hotKeyOpt = [{ value: "_HOT_", label: "H" }];
-    if (handle === "onKeyDown") {
-      const keycode = args;
-      if (this.get("searchInputValue") === "") {
-        switch (keycode) {
-          case "space":
-            return this.set("searchOpt", _hotKeyOpt);
-          default:
-            return this;
+  setSearchInputValue(value) {
+    const { shiftKey, ctrlKey } = this._getModifierKeys();
+    if (
+      value === "$" ||
+      value === "#" ||
+      value === "%" ||
+      value === "!" ||
+      value === "?" ||
+      value === "T" ||
+      value === "I" ||
+      value === "F" ||
+      value === "S"
+    ) {
+      let _type, _mapKey;
+      const _searchOpt = this.get("searchOpt");
+      switch (value) {
+        case "$": {
+          _type = "LABEL";
+          _mapKey = _searchOpt.get("LABEL").has("HOTKEY")
+            ? "LISTKEY"
+            : "HOTKEY";
+          break;
         }
-      } else {
-        return this;
+        case "#": {
+          _type = "LABEL";
+          _mapKey = "HASHTAG";
+          break;
+        }
+        case "%": {
+          _type = "LABEL";
+          _mapKey = "LANGUAGE";
+          break;
+        }
+        case "!": {
+          _type = "STATUS";
+          _mapKey = "FAVED";
+          break;
+        }
+        case "?": {
+          _type = "STATUS";
+          _mapKey = "TRASHED";
+          break;
+        }
+        case "T": {
+          _type = "DATATYPE";
+          _mapKey = "TEXT";
+          break;
+        }
+        case "I": {
+          _type = "DATATYPE";
+          _mapKey = "IMAGE";
+          break;
+        }
+        case "F": {
+          _type = "DATATYPE";
+          _mapKey = "FILE";
+          break;
+        }
+        case "S": {
+          _type = "DATATYPE";
+          _mapKey = "SHEET";
+          break;
+        }
+        default:
+          break;
       }
+      const _labels = searchOptionsAll.get(_type);
+      const _newSearchOpt = _searchOpt.set(
+        _type,
+        Map([[_mapKey, _labels.get(_mapKey)]])
+      );
+      return this.set("searchOpt", _newSearchOpt);
+    }
+    const searchOpt = this.get("searchOpt");
+    const _optLabel = searchOpt.map(opt => opt.value);
+    if (searchOpt.get("LABEL").has("HOTKEY")) {
+      const clips = new Message("dataStore", "readHasHotKey").dispatch();
+      const clipsHasInputValue = clips.filter(
+        clip => clip.key.toLowerCase() === value.toLowerCase()
+      );
+      switch (clipsHasInputValue.length) {
+        case 0:
+          return this.set("searchInputValue", value);
+        case 1:
+          const id = clipsHasInputValue[0].id;
+          const isReturn = shiftKey;
+          const copyOnly = ctrlKey;
+          const copyAs = clipsHasInputValue[0].mainFormat;
+          const _args = { id, isReturn, copyOnly, copyAs };
+          new Message("pastify", "copyClip", _args).dispatch();
+          return this.withMutations(state => {
+            state
+              .set("searchInputValue", "")
+              .set("searchOpt", this._getEmptySearchOpt());
+          });
+        default:
+          return this.set("searchInputValue", value);
+      }
+    } else if (searchOpt.get("LABEL").has("LISTKEY")) {
+      const { startIndex, stopIndex } = this.get("itemDisplayRange");
+      const popupIndex = popupKeyValue.indexOf(value.toUpperCase());
+      if (popupIndex !== -1) {
+        if (popupIndex < stopIndex - startIndex + 1) {
+          const targetIndex = popupIndex + startIndex;
+          const { shiftKey, ctrlKey } = new Message(
+            "key",
+            "getModifierKey",
+            {}
+          ).dispatch();
+          const id = this.get("idsTimeLine").get(targetIndex);
+          const clip = this._getClipStateById(id);
+          const isReturn = shiftKey;
+          const copyOnly = ctrlKey;
+          const copyAs = clip.mainFormat;
+          const _args = { id, isReturn, copyOnly, copyAs };
+          new Message("pastify", "copyClip", _args).dispatch();
+        }
+      }
+      return this.withMutations(state => {
+        state
+          .set("searchInputValue", "")
+          .set("searchOpt", this._getEmptySearchOpt());
+      });
     } else {
-      const options = args;
-      const selectOpt = options.filter(opt => opt.label !== "H");
-      if (selectOpt.length !== 0) {
-        const { shiftKey, ctrlKey, altKey } = new Message(
+      return this.set("searchInputValue", value);
+    }
+  }
+  setSearchOpt(handle, args) {
+    if (handle === "onKeyDown") {
+      let _type, _mapKey;
+      const keycode = args;
+      const _searchOpt = this.get("searchOpt");
+      switch (keycode) {
+        case "space": {
+          _type = "LABEL";
+          _mapKey = _searchOpt.get("LABEL").has("HOTKEY")
+            ? "LISTKEY"
+            : "HOTKEY";
+          break;
+        }
+        default:
+          return this;
+      }
+      const _labels = searchOptionsAll.get(_type);
+      const _newSearchOpt = _searchOpt.set(
+        _type,
+        Map([[_mapKey, _labels.get(_mapKey)]])
+      );
+      return this.set("searchOpt", _newSearchOpt);
+    } else {
+      const _opt = args;
+      const selectClip = _opt.filter(opt => opt.hasOwnProperty("id"));
+      if (selectClip.length !== 0) {
+        const { shiftKey, ctrlKey } = new Message(
           "key",
           "getModifierKey",
           {}
         ).dispatch();
-        const id = selectOpt[0].id;
+        const id = selectClip[0].id;
         const isReturn = shiftKey;
         const copyOnly = ctrlKey;
-        const copyAs = selectOpt[0].mainFormat;
+        const copyAs = selectClip[0].mainFormat;
         const _args = { id, isReturn, copyOnly, copyAs };
-        console.log(_args);
         new Message("pastify", "copyClip", _args).dispatch();
       }
-      return this.set("searchOpt", []);
+      const _newSearchOpt = this._optionsToMap(_opt);
+      return this.set("searchOpt", _newSearchOpt);
     }
+  }
+
+  _getModifierKeys() {
+    return new Message("key", "getModifierKey", {}).dispatch();
+  }
+
+  _optionsToMap(options) {
+    const _labels = [];
+    const _status = [];
+    const _dataType = [];
+    options.forEach(opt => {
+      switch (opt.origType) {
+        case "LABEL":
+          _labels.push([opt.label, opt]);
+          break;
+        case "STATUS":
+          _status.push([opt.label, opt]);
+          break;
+        case "DATATYPE":
+          _dataType.push([opt.label, opt]);
+          break;
+        default:
+          break;
+      }
+    });
+    return Map([
+      ["LABEL", Map(_labels)],
+      ["STATUS", Map(_status)],
+      ["DATATYPE", Map(_dataType)]
+    ]);
+  }
+
+  _getEmptySearchOpt() {
+    return Map([
+      ["LABEL", Map()],
+      ["STATUS", Map()],
+      ["DATATYPE", Map()]
+    ]);
   }
 
   _getClipStateById(id = null) {

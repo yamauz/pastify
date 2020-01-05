@@ -240,7 +240,7 @@ export default handleActions(
       return state.set("isOpenClipToolTip", !state.get("isOpenClipToolTip"));
     },
     SET_SEARCH_INPUT_VALUE: (state, { payload: value }) => {
-      return state.set("searchInputValue", value);
+      return state.setSearchInputValue(value);
     },
     SET_SEARCH_OPT: (state, { payload: { handle, args } }) => {
       return state.setSearchOpt(handle, args);
