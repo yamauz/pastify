@@ -126,11 +126,105 @@ const dataTypeOptions = new Map([
   ]
 ]);
 
-const searchOptions = new Map([
-  ["LABEL", labelOptions],
-  ["STATUS", statusOptions],
-  ["DATATYPE", dataTypeOptions]
-  // ["SURROUND", surroundOptions],
+const surroundOptions = new Map([
+  [
+    "SINGLE_QUOTE",
+    {
+      origType: "SURROUND",
+      label: "SINGLE_QUOTE",
+      value: "_SINGLE_QUOTE_",
+      labelShow: "' '",
+      left: "'",
+      right: "'",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "DOUBLE_QUOTE",
+    {
+      origType: "SURROUND",
+      label: "DOUBLE_QUOTE",
+      value: "_DOUBLE_QUOTE_",
+      labelShow: '" "',
+      left: '"',
+      right: '"',
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "BACK_QUOTE",
+    {
+      origType: "SURROUND",
+      label: "BACK_QUOTE",
+      value: "_BACK_QUOTE_",
+      labelShow: "` `",
+      left: "`",
+      right: "`",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "PARENTHESES",
+    {
+      origType: "SURROUND",
+      label: "PARENTHESES",
+      value: "_PARENTHESES_",
+      labelShow: "( )",
+      left: "(",
+      right: ")",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "CURLY_BRACES",
+    {
+      origType: "SURROUND",
+      label: "CURLY_BRACES",
+      value: "_CURLY_BRACES_",
+      labelShow: "{ }",
+      left: "{",
+      right: "}",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "SQUARE_BRACKETS",
+    {
+      origType: "SURROUND",
+      label: "SQUARE_BRACKETS",
+      value: "_SQUARE_BRACKETS_",
+      labelShow: "[ ]",
+      left: "[",
+      right: "]",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "ANGLE_BRACKETS",
+    {
+      origType: "SURROUND",
+      label: "ANGLE_BRACKETS",
+      value: "_ANGLE_BRACKETS_",
+      labelShow: "< >",
+      left: "<",
+      right: ">",
+      color: "black",
+      icon: null
+    }
+  ]
 ]);
 
-module.exports = searchOptions;
+const searchOptionsAll = new Map([
+  ["LABEL", labelOptions],
+  ["STATUS", statusOptions],
+  ["DATATYPE", dataTypeOptions],
+  ["SURROUND", surroundOptions]
+]);
+
+module.exports = searchOptionsAll;

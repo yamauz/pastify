@@ -3,7 +3,8 @@ import ItemValue from "./ItemValue";
 import FilterValue from "./FilterValue";
 import Message from "./Message";
 import popupKeyValue from "./../../common/popupKeyValue";
-import searchOptionsAll from "./../../common/searchOptionsAll";
+import searchLabelOptionsAll from "./../../common/searchLabelOptionsAll";
+import searchInputOptionsAll from "./../../common/searchInputOptionsAll";
 import _ from "lodash";
 const dialog = window.require("electron").remote.dialog;
 
@@ -66,7 +67,8 @@ const StateRecord = Record({
   searchOpt: Map([
     ["LABEL", Map()],
     ["STATUS", Map()],
-    ["DATATYPE", Map()]
+    ["DATATYPE", Map()],
+    ["SURROUND", Map()]
   ])
 });
 
@@ -371,9 +373,7 @@ class State extends StateRecord {
     const isFold = this.get("isFold");
     if (isFold) {
       new Message("win", "updateWinState", "unfoldWindow").dispatch();
-      console.log("vbbbbbbbbbbbbbbb");
       setTimeout(() => {
-        console.log("aaaaaaaaaaaa");
         document.getElementById("keyword-input").focus();
       }, 200);
     }
@@ -692,78 +692,22 @@ class State extends StateRecord {
     return this;
   }
   setSearchInputValue(value) {
+    console.log(`value :${value}`);
     const { shiftKey, ctrlKey } = this._getModifierKeys();
-    if (
-      value === "$" ||
-      value === "#" ||
-      value === "%" ||
-      value === "!" ||
-      value === "?" ||
-      value === "T" ||
-      value === "I" ||
-      value === "F" ||
-      value === "S"
-    ) {
-      let _type, _mapKey;
-      const _searchOpt = this.get("searchOpt");
-      switch (value) {
-        case "$": {
-          _type = "LABEL";
-          _mapKey = _searchOpt.get("LABEL").has("HOTKEY")
-            ? "LISTKEY"
-            : "HOTKEY";
-          break;
-        }
-        case "#": {
-          _type = "LABEL";
-          _mapKey = "HASHTAG";
-          break;
-        }
-        case "%": {
-          _type = "LABEL";
-          _mapKey = "LANGUAGE";
-          break;
-        }
-        case "!": {
-          _type = "STATUS";
-          _mapKey = "FAVED";
-          break;
-        }
-        case "?": {
-          _type = "STATUS";
-          _mapKey = "TRASHED";
-          break;
-        }
-        case "T": {
-          _type = "DATATYPE";
-          _mapKey = "TEXT";
-          break;
-        }
-        case "I": {
-          _type = "DATATYPE";
-          _mapKey = "IMAGE";
-          break;
-        }
-        case "F": {
-          _type = "DATATYPE";
-          _mapKey = "FILE";
-          break;
-        }
-        case "S": {
-          _type = "DATATYPE";
-          _mapKey = "SHEET";
-          break;
-        }
-        default:
-          break;
-      }
-      const _labels = searchOptionsAll.get(_type);
+    const _searchOpt = this.get("searchOpt");
+    const inputOpt = searchInputOptionsAll.has(value)
+      ? searchInputOptionsAll.get(value)
+      : undefined;
+
+    if (inputOpt !== undefined) {
+      const _labels = searchLabelOptionsAll.get(inputOpt.type);
       const _newSearchOpt = _searchOpt.set(
-        _type,
-        Map([[_mapKey, _labels.get(_mapKey)]])
+        inputOpt.type,
+        Map([[inputOpt.subType, _labels.get(inputOpt.subType)]])
       );
       return this.set("searchOpt", _newSearchOpt);
     }
+
     const searchOpt = this.get("searchOpt");
     const _optLabel = searchOpt.map(opt => opt.value);
     if (searchOpt.get("LABEL").has("HOTKEY")) {
@@ -795,11 +739,6 @@ class State extends StateRecord {
       if (popupIndex !== -1) {
         if (popupIndex < stopIndex - startIndex + 1) {
           const targetIndex = popupIndex + startIndex;
-          const { shiftKey, ctrlKey } = new Message(
-            "key",
-            "getModifierKey",
-            {}
-          ).dispatch();
           const id = this.get("idsTimeLine").get(targetIndex);
           const clip = this._getClipStateById(id);
           const isReturn = shiftKey;
@@ -819,6 +758,7 @@ class State extends StateRecord {
     }
   }
   setSearchOpt(handle, args) {
+    console.log("cccccccccccccccccccccccccccccccccccccccccccc");
     if (handle === "onKeyDown") {
       let _type, _mapKey;
       const keycode = args;
@@ -834,14 +774,17 @@ class State extends StateRecord {
         default:
           return this;
       }
-      const _labels = searchOptionsAll.get(_type);
+      const _labels = searchLabelOptionsAll.get(_type);
       const _newSearchOpt = _searchOpt.set(
         _type,
         Map([[_mapKey, _labels.get(_mapKey)]])
       );
       return this.set("searchOpt", _newSearchOpt);
     } else {
+      console.log("----------------------------------------------");
+      console.log("start");
       const _opt = args;
+      const _newSearchOpt = this._optionsToMap(_opt);
       const selectClip = _opt.filter(opt => opt.hasOwnProperty("id"));
       if (selectClip.length !== 0) {
         const { shiftKey, ctrlKey } = new Message(
@@ -853,10 +796,15 @@ class State extends StateRecord {
         const isReturn = shiftKey;
         const copyOnly = ctrlKey;
         const copyAs = selectClip[0].mainFormat;
-        const _args = { id, isReturn, copyOnly, copyAs };
+        const surround =
+          _newSearchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
+            ? _newSearchOpt.get("SURROUND").first()
+            : undefined;
+        console.log(surround);
+
+        const _args = { id, isReturn, copyOnly, copyAs, surround };
         new Message("pastify", "copyClip", _args).dispatch();
       }
-      const _newSearchOpt = this._optionsToMap(_opt);
       return this.set("searchOpt", _newSearchOpt);
     }
   }
@@ -869,6 +817,7 @@ class State extends StateRecord {
     const _labels = [];
     const _status = [];
     const _dataType = [];
+    const _surround = [];
     options.forEach(opt => {
       switch (opt.origType) {
         case "LABEL":
@@ -880,6 +829,9 @@ class State extends StateRecord {
         case "DATATYPE":
           _dataType.push([opt.label, opt]);
           break;
+        case "SURROUND":
+          _surround.push([opt.label, opt]);
+          break;
         default:
           break;
       }
@@ -887,7 +839,8 @@ class State extends StateRecord {
     return Map([
       ["LABEL", Map(_labels)],
       ["STATUS", Map(_status)],
-      ["DATATYPE", Map(_dataType)]
+      ["DATATYPE", Map(_dataType)],
+      ["SURROUND", Map(_surround)]
     ]);
   }
 
@@ -895,7 +848,8 @@ class State extends StateRecord {
     return Map([
       ["LABEL", Map()],
       ["STATUS", Map()],
-      ["DATATYPE", Map()]
+      ["DATATYPE", Map()],
+      ["SURROUND", Map()]
     ]);
   }
 

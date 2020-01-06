@@ -88,7 +88,13 @@ const CF = new Map([
     {
       fNum: 1,
       extract: () => clipboard.readText(),
-      write: clip => clipboard.writeText(clip.textData),
+      write: (clip, surround = undefined) => {
+        const textToWrite =
+          surround === undefined
+            ? clip.textData
+            : `${surround.left}${clip.textData}${surround.right}`;
+        return clipboard.writeText(textToWrite);
+      },
       writeId: id => clipboard.writeText(id)
     }
   ]

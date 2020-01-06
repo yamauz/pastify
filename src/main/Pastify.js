@@ -26,12 +26,12 @@ module.exports = class Pastify {
   }
 
   copyClip(props, { dataStore, settings, win }) {
-    const { id, isReturn, copyOnly, copyAs } = props;
+    const { id, isReturn, copyOnly, copyAs, surround } = props;
     const clip = dataStore.getClipById(id);
     const _copyAs = copyAs === "_ORIGINAL_" ? clip.mainFormat : copyAs;
     this.isCopiedBySelf = true;
 
-    CF.get(_copyAs).write(clip);
+    CF.get(_copyAs).write(clip, surround);
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }

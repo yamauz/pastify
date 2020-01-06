@@ -437,17 +437,19 @@ const customStyles = {
   }),
   multiValue: (styles, state) => ({
     ...styles,
+    display: state.data.origType === "SURROUND" ? "block" : "inherit",
     backgroundColor: state.data.color,
     borderRadius: "8px",
     width: 30,
+    textAlign: "center",
     height: 18,
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 1,
     color: "#dddddd",
-    paddingLeft: -5,
+    // paddingLeft: state.data.origType === "SURROUND" ? -2 : 0,
     ":before": {
       backgroundColor: "#eeeeee",
-      content: "''",
+      content: state.data.origType === "SURROUND" ? "none" : "''",
       display: "inline-block",
       marginLeft: 8,
       marginTop: 3,
@@ -487,7 +489,6 @@ const SearchBar = props => {
     favItem
   } = props;
   const _searchOpt = createSearchOptions(searchOpt);
-  console.log(_searchOpt);
   return (
     <Wrapper>
       <AsyncCreatableSelect
@@ -510,6 +511,7 @@ const SearchBar = props => {
         }}
         value={_searchOpt}
         onChange={value => {
+          console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
           const _value = value === null ? [] : value;
           setSearchOpt("onChange", _value);
         }}
@@ -527,11 +529,11 @@ const SearchBar = props => {
               case "space":
                 setSearchOpt("onKeyDown", keycode(e));
                 break;
-              case "f":
-              case "t":
-              case "l":
-                if (e.ctrlKey) setSearchOpt("onKeyDown", keycode(e));
-                break;
+              // case "f":
+              // case "t":
+              // case "l":
+              //   if (e.ctrlKey) setSearchOpt("onKeyDown", keycode(e));
+              //   break;
               case "tab":
                 e.preventDefault();
                 document.getElementById("item-list").focus();
@@ -550,6 +552,9 @@ const SearchBar = props => {
                     favItem(focusedOption.id);
                   }
                 }
+                break;
+              case "enter":
+                console.log("enterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
                 break;
               default:
                 break;
