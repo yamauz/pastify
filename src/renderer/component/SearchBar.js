@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import path from "path";
 import { connect } from "react-redux";
 import { setSearchInputValue, setSearchOpt, favItem } from "../actions";
 import debounce from "debounce-promise";
@@ -17,6 +18,7 @@ import StarSolid from "../../icon/editbutton/star-solid.svg";
 
 // Common
 import { MAX_SEARCH_RESULT_SHOW } from "../../common/settings";
+const APP_PATH = window.require("electron").remote.app.getAppPath();
 
 const Wrapper = styled.div`
   background-color: #2f3129;
@@ -30,6 +32,18 @@ const TextWrapper = styled.span`
   -webkit-box-orient: vertical; */
   /* overflow: hidden; */
   /* width: calc(100vw-1px); */
+  color: ${props => {
+    switch (props.mainFormat) {
+      case "TEXT":
+        return "#bfd7de";
+      case "IMAGE":
+        return "#c3bfde";
+      case "SHEET":
+        return "#bfdebf";
+      case "FILE":
+        return "#dddebf";
+    }
+  }};
 `;
 
 const KeyTag = styled.span`
@@ -183,6 +197,17 @@ const LeftContents = styled.div`
   overflow: hidden;
 `;
 
+const ImageWrapper = styled.div`
+  margin-top: 5px;
+`;
+const Image = styled.img`
+  max-width: 100%;
+  max-height: 60px;
+  height: 100%;
+  border-radius: 5px;
+  display: block;
+`;
+
 const renderStarIcon = isFaved => {
   if (isFaved) {
     return (
@@ -301,6 +326,26 @@ const promiseOptions = searchOpt => {
   // return loadOptions;
 };
 
+const renderImage = id => {
+  const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
+  const imagePath = `file:///${distDir}/resource/temp/images/${id}`;
+  return (
+    <ImageWrapper>
+      <Image src={imagePath} />
+    </ImageWrapper>
+  );
+};
+
+const createTextData = (textData, mainFormat) => {
+  if (mainFormat === "FILE") {
+    const fileList = textData.split("\n");
+    const fileNames = fileList.map(f => path.basename(f));
+    return fileNames.join("  ");
+  } else {
+    return textData;
+  }
+};
+
 const createOptionComponent = (props, _searchOpt) => {
   const { searchInputValue, itemsTimeLine } = props;
   const _optLabel = _searchOpt.map(opt => opt.value);
@@ -313,9 +358,16 @@ const createOptionComponent = (props, _searchOpt) => {
         </components.Option>
       );
     } else {
-      const { isFaved, textData, key, lang, tag } = itemsTimeLine.get(
-        optProps.data.id
-      );
+      const {
+        isFaved,
+        textData,
+        key,
+        lang,
+        tag,
+        mainFormat
+      } = itemsTimeLine.get(optProps.data.id);
+      const _textData = createTextData(textData, mainFormat);
+
       return (
         <components.Option {...optProps}>
           <OptionWrapper>
@@ -363,20 +415,22 @@ const createOptionComponent = (props, _searchOpt) => {
                   )}
                 </HashTag>
               ))}
-              <TextWrapper>
+              <TextWrapper mainFormat={mainFormat}>
                 {_optLabel.includes("_HOT_") ||
                 _optLabel.includes("_HASH_") ||
                 _optLabel.includes("_LANG_") ? (
-                  textData
+                  _textData
                 ) : (
                   <Highlighter
                     highlightClassName="highlighter-text"
                     searchWords={createInputKeys(searchInputValue)}
                     autoEscape={true}
-                    textToHighlight={textData}
+                    textToHighlight={_textData}
                   />
                 )}
               </TextWrapper>
+              {(mainFormat === "IMAGE" || mainFormat === "SHEET") &&
+                renderImage(optProps.data.id)}
             </LeftContents>
           </OptionWrapper>
         </components.Option>
@@ -511,7 +565,6 @@ const SearchBar = props => {
         }}
         value={_searchOpt}
         onChange={value => {
-          console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
           const _value = value === null ? [] : value;
           setSearchOpt("onChange", _value);
         }}
@@ -545,15 +598,14 @@ const SearchBar = props => {
             switch (keycode(e)) {
               case "f":
                 if (e.ctrlKey) {
-                  if (searchInputValue !== "") {
-                    const {
-                      focusedOption
-                    } = selectRef.current.select.select.select.state;
-                    favItem(focusedOption.id);
-                  }
+                  const {
+                    focusedOption
+                  } = selectRef.current.select.select.select.state;
+                  favItem(focusedOption.id);
                 }
                 break;
               case "enter":
+                e.preventDefault();
                 console.log("enterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
                 break;
               default:

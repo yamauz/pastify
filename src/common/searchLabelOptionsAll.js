@@ -180,6 +180,19 @@ const surroundOptions = new Map([
     }
   ],
   [
+    "PARENTHESES_FW",
+    {
+      origType: "SURROUND",
+      label: "PARENTHESES_FW",
+      value: "_PARENTHESES_FW_",
+      labelShow: "（）",
+      left: "（",
+      right: "）",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
     "CURLY_BRACES",
     {
       origType: "SURROUND",
@@ -188,6 +201,19 @@ const surroundOptions = new Map([
       labelShow: "{ }",
       left: "{",
       right: "}",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "CURLY_BRACES_FW",
+    {
+      origType: "SURROUND",
+      label: "CURLY_BRACES_FW",
+      value: "_CURLY_BRACES_FW_",
+      labelShow: "｛｝",
+      left: "｛",
+      right: "｝",
       color: "black",
       icon: null
     }
@@ -206,6 +232,45 @@ const surroundOptions = new Map([
     }
   ],
   [
+    "SQUARE_BRACKETS_FW",
+    {
+      origType: "SURROUND",
+      label: "SQUARE_BRACKETS_FW",
+      value: "_SQUARE_BRACKETS_FW_",
+      labelShow: "［］",
+      left: "［",
+      right: "］",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "JAPANESE_QUOTATIONS_FW",
+    {
+      origType: "SURROUND",
+      label: "JAPANESE_QUOTATIONS_FW",
+      value: "_JAPANESE_QUOTATIONS_FW_",
+      labelShow: "「」",
+      left: "「",
+      right: "」",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "DOUBLE_JAPANESE_QUOTATIONS_FW",
+    {
+      origType: "SURROUND",
+      label: "DOUBLE_JAPANESE_QUOTATIONS_FW",
+      value: "_DOUBLE_JAPANESE_QUOTATIONS_FW_",
+      labelShow: "『』",
+      left: "『",
+      right: "』",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
     "ANGLE_BRACKETS",
     {
       origType: "SURROUND",
@@ -214,6 +279,45 @@ const surroundOptions = new Map([
       labelShow: "< >",
       left: "<",
       right: ">",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "ANGLE_BRACKETS_FW",
+    {
+      origType: "SURROUND",
+      label: "ANGLE_BRACKETS_FW",
+      value: "_ANGLE_BRACKETS_FW_",
+      labelShow: "＜＞",
+      left: "＜",
+      right: "＞",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "DOUBLE_ANGLE_BRACKETS_FW",
+    {
+      origType: "SURROUND",
+      label: "DOUBLE_ANGLE_BRACKETS_FW",
+      value: "_DOUBLE_ANGLE_BRACKETS_FW_",
+      labelShow: "≪≫",
+      left: "≪",
+      right: "≫",
+      color: "black",
+      icon: null
+    }
+  ],
+  [
+    "LENTICULAR_BRACKET_FW",
+    {
+      origType: "SURROUND",
+      label: "LENTICULAR_BRACKET_FW",
+      value: "_LENTICULAR_BRACKET_FW_",
+      labelShow: "【】",
+      left: "【",
+      right: "】",
       color: "black",
       icon: null
     }

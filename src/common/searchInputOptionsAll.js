@@ -84,10 +84,24 @@ module.exports = new Map([
     }
   ],
   [
+    "（",
+    {
+      type: "SURROUND",
+      subType: "PARENTHESES_FW"
+    }
+  ],
+  [
     "{",
     {
       type: "SURROUND",
       subType: "CURLY_BRACES"
+    }
+  ],
+  [
+    "｛",
+    {
+      type: "SURROUND",
+      subType: "CURLY_BRACES_FW"
     }
   ],
   [
@@ -98,10 +112,52 @@ module.exports = new Map([
     }
   ],
   [
+    "［",
+    {
+      type: "SURROUND",
+      subType: "SQUARE_BRACKETS_FW"
+    }
+  ],
+  [
+    "「",
+    {
+      type: "SURROUND",
+      subType: "JAPANESE_QUOTATIONS_FW"
+    }
+  ],
+  [
+    "『",
+    {
+      type: "SURROUND",
+      subType: "DOUBLE_JAPANESE_QUOTATIONS_FW"
+    }
+  ],
+  [
     "<",
     {
       type: "SURROUND",
       subType: "ANGLE_BRACKETS"
+    }
+  ],
+  [
+    "＜",
+    {
+      type: "SURROUND",
+      subType: "ANGLE_BRACKETS_FW"
+    }
+  ],
+  [
+    "≪",
+    {
+      type: "SURROUND",
+      subType: "DOUBLE_ANGLE_BRACKETS_FW"
+    }
+  ],
+  [
+    "【",
+    {
+      type: "SURROUND",
+      subType: "LENTICULAR_BRACKET_FW"
     }
   ]
 ]);

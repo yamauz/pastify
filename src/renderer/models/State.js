@@ -758,7 +758,6 @@ class State extends StateRecord {
     }
   }
   setSearchOpt(handle, args) {
-    console.log("cccccccccccccccccccccccccccccccccccccccccccc");
     if (handle === "onKeyDown") {
       let _type, _mapKey;
       const keycode = args;
@@ -781,8 +780,6 @@ class State extends StateRecord {
       );
       return this.set("searchOpt", _newSearchOpt);
     } else {
-      console.log("----------------------------------------------");
-      console.log("start");
       const _opt = args;
       const _newSearchOpt = this._optionsToMap(_opt);
       const selectClip = _opt.filter(opt => opt.hasOwnProperty("id"));
@@ -800,7 +797,6 @@ class State extends StateRecord {
           _newSearchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
             ? _newSearchOpt.get("SURROUND").first()
             : undefined;
-        console.log(surround);
 
         const _args = { id, isReturn, copyOnly, copyAs, surround };
         new Message("pastify", "copyClip", _args).dispatch();
