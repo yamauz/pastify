@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { setSearchInputValue, setSearchOpt, favItem } from "../actions";
 import debounce from "debounce-promise";
 import AsyncCreatableSelect from "react-select/async-creatable";
+import reactStringReplace from "react-string-replace";
 import _ from "lodash";
+import moment from "moment";
 import Select, { components } from "react-select";
 import Highlighter from "react-highlight-words";
 import keycode from "keycode";
@@ -208,6 +210,11 @@ const Image = styled.img`
   display: block;
 `;
 
+const MacroText = styled.span`
+  background-color: #0a4a20;
+  color: #ddd;
+`;
+
 const renderStarIcon = isFaved => {
   if (isFaved) {
     return (
@@ -336,13 +343,59 @@ const renderImage = id => {
   );
 };
 
-const createTextData = (textData, mainFormat) => {
-  if (mainFormat === "FILE") {
-    const fileList = textData.split("\n");
-    const fileNames = fileList.map(f => path.basename(f));
-    return fileNames.join("  ");
-  } else {
-    return textData;
+const expandTextMacro = (textData, searchInputValue, itemsTimeLine) => {
+  const replacer = (match, i) => {
+    console.log(match);
+    console.log(match.slice(1));
+    let _obj;
+    eval("_obj=" + match.slice(1));
+    const [macroKey] = Object.keys(_obj);
+    let _text;
+    if (macroKey === "ID") {
+      if (itemsTimeLine.get(_obj.ID) !== undefined) {
+        _text = itemsTimeLine.get(_obj.ID).textData;
+      } else {
+        _text = "";
+      }
+    } else {
+      _text = moment().format(_obj.DT);
+    }
+    return <MacroText key={i}>{_text}</MacroText>;
+  };
+
+  const macroProps = ["ID", "DT", "CB"].join("|");
+  const regStr = `(\\$\{\\s*(?:${macroProps})\\s*:\\s*["'].+["']\\s*\\})`;
+  const regex = new RegExp(regStr, "gm");
+  const strReplaced = reactStringReplace(textData, regex, replacer);
+
+  const textMacroExpanded = strReplaced.map((str, i) => {
+    if (typeof str === "string") {
+      return (
+        <Highlighter
+          key={i}
+          highlightClassName="highlighter-text"
+          searchWords={createInputKeys(searchInputValue)}
+          autoEscape={true}
+          textToHighlight={str}
+        />
+      );
+    } else {
+      return str;
+    }
+  });
+
+  return textMacroExpanded;
+};
+
+const convertFileName = (textData, mainFormat) => {
+  switch (mainFormat) {
+    case "FILE": {
+      const fileList = textData.split("\n");
+      const fileNames = fileList.map(f => path.basename(f));
+      return fileNames.join("  ");
+    }
+    default:
+      return textData;
   }
 };
 
@@ -366,7 +419,7 @@ const createOptionComponent = (props, _searchOpt) => {
         tag,
         mainFormat
       } = itemsTimeLine.get(optProps.data.id);
-      const _textData = createTextData(textData, mainFormat);
+      const _textData = convertFileName(textData, mainFormat);
 
       return (
         <components.Option {...optProps}>
@@ -418,16 +471,16 @@ const createOptionComponent = (props, _searchOpt) => {
               <TextWrapper mainFormat={mainFormat}>
                 {_optLabel.includes("_HOT_") ||
                 _optLabel.includes("_HASH_") ||
-                _optLabel.includes("_LANG_") ? (
-                  _textData
-                ) : (
-                  <Highlighter
-                    highlightClassName="highlighter-text"
-                    searchWords={createInputKeys(searchInputValue)}
-                    autoEscape={true}
-                    textToHighlight={_textData}
-                  />
-                )}
+                _optLabel.includes("_LANG_")
+                  ? _textData
+                  : expandTextMacro(_textData, searchInputValue, itemsTimeLine)
+                // <Highlighter
+                //   highlightClassName="highlighter-text"
+                //   searchWords={createInputKeys(searchInputValue)}
+                //   autoEscape={true}
+                //   textToHighlight={_textData}
+                // />
+                }
               </TextWrapper>
               {(mainFormat === "IMAGE" || mainFormat === "SHEET") &&
                 renderImage(optProps.data.id)}

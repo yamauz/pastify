@@ -21,7 +21,7 @@ module.exports = class Pastify {
   copyClipId(props) {
     const { id } = props;
     this.isCopiedBySelf = true;
-    CF.get("TEXT").writeId(id);
+    CF.get("TEXT").write(id);
     return null;
   }
 
@@ -31,7 +31,12 @@ module.exports = class Pastify {
     const _copyAs = copyAs === "_ORIGINAL_" ? clip.mainFormat : copyAs;
     this.isCopiedBySelf = true;
 
-    CF.get(_copyAs).write(clip, surround);
+    const _textToWrite = CF.get(_copyAs).createTextToWrite(
+      clip,
+      surround,
+      dataStore
+    );
+    CF.get(_copyAs).write(_textToWrite);
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }

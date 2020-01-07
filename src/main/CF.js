@@ -88,17 +88,46 @@ const CF = new Map([
     {
       fNum: 1,
       extract: () => clipboard.readText(),
-      write: (clip, surround = undefined) => {
-        const textToWrite =
+      createTextToWrite: (clip, surround = undefined, dataStore) => {
+        const _textTemp = expandTextMacro(clip.textData, dataStore);
+        const _textToWrite =
           surround === undefined
-            ? clip.textData
-            : `${surround.left}${clip.textData}${surround.right}`;
-        return clipboard.writeText(textToWrite);
+            ? _textTemp
+            : `${surround.left}${_textTemp}${surround.right}`;
+        return _textToWrite;
       },
+      write: textToWrite => clipboard.writeText(textToWrite),
       writeId: id => clipboard.writeText(id)
     }
   ]
 ]);
+
+const expandTextMacro = (textData, dataStore) => {
+  const macroReplacer = (match, i) => {
+    let _obj;
+    eval("_obj=" + match.slice(1));
+    const [macroKey] = Object.keys(_obj);
+    let _text;
+    if (macroKey === "ID") {
+      if (dataStore.getClipById(_obj.ID) !== undefined) {
+        _text = dataStore.getClipById(_obj.ID).textData;
+      } else {
+        _text = "";
+      }
+    } else {
+      _text = moment().format(_obj.DT);
+    }
+    return _text;
+  };
+
+  const macroProps = ["ID", "DT", "CB"].join("|");
+  const regStr = `(\\$\{\\s*(?:${macroProps})\\s*:\\s*["'].+["']\\s*\\})`;
+  const regex = new RegExp(regStr, "gm");
+
+  const textMacroExpanded = textData.replace(regex, macroReplacer);
+
+  return textMacroExpanded;
+};
 
 const getTextFilePath = clip => {
   const filePath = `${path.resolve(

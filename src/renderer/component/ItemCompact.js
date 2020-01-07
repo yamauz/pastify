@@ -94,6 +94,7 @@ const TextWrapper = styled.div`
 const PopupKey = styled.span`
   transition: opacity 0.1s;
   opacity: ${props => (props.isOpen ? 1 : 0)};
+  z-index: ${props => (props.isOpen ? 0 : -1)};
   margin-top: 5px;
   text-align: center;
   color: #dcdcdc;

@@ -692,7 +692,7 @@ class State extends StateRecord {
     return this;
   }
   setSearchInputValue(value) {
-    console.log(`value :${value}`);
+    // console.log(`value :${value}`);
     const { shiftKey, ctrlKey } = this._getModifierKeys();
     const _searchOpt = this.get("searchOpt");
     const inputOpt = searchInputOptionsAll.has(value)
