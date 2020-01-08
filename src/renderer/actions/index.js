@@ -90,7 +90,8 @@ export const {
   setToolTipArrowPos,
   toggleClipToolTip,
   setSearchInputValue,
-  setSearchOpt
+  setSearchOpt,
+  exportClips
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -189,6 +190,7 @@ export const {
   SET_TOOL_TIP_ARROW_POS: pos => pos,
   TOGGLE_CLIP_TOOL_TIP: () => {},
   SET_SEARCH_INPUT_VALUE: value => value,
-  SET_SEARCH_OPT: (handle, args) => ({ handle, args })
+  SET_SEARCH_OPT: (handle, args) => ({ handle, args }),
+  EXPORT_CLIPS: exportPath => exportPath
   // SET_SEARCH_OPT: keycode => keycode
 });

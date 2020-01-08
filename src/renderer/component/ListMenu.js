@@ -8,13 +8,16 @@ import {
   setIdsFromDatastore,
   setDetailType,
   deleteUserFilter,
-  setPrevFocusedElm
+  setPrevFocusedElm,
+  exportClips
 } from "../actions";
 import Select, { components } from "react-select";
-import Ellipsis from "../../icon/listheader/ellipsis-v.svg";
 import Cog from "../../icon/listheader/cog.svg";
 
 import styled from "@emotion/styled";
+
+import userDialog from "./../../common/dialog";
+const dialog = window.require("electron").remote.dialog;
 
 const Wrapper = styled.div`
   text-align: left;
@@ -81,7 +84,8 @@ const Component = props => {
     setDetailType,
     deleteUserFilter,
     prevFocusedElm,
-    setPrevFocusedElm
+    setPrevFocusedElm,
+    exportClips
   } = props;
 
   const DropdownIndicator = props => {
@@ -168,10 +172,15 @@ const Component = props => {
         }}
         onChange={opt => {
           const { type, command, id } = opt;
-          if (type === "system") {
-            callActionOnItemList(command);
-          } else {
-            callActionOnItemList(command, id);
+          switch (type) {
+            case "system":
+              callActionOnItemList(command);
+              break;
+            case "user":
+              callActionOnItemList(command, id);
+              break;
+            default:
+              break;
           }
 
           switch (command) {
@@ -184,6 +193,15 @@ const Component = props => {
             case "reloadFilterSortSettings":
             case "setUserFilter":
               setIdsFromDatastore();
+              break;
+            case "exportClips":
+              const path = dialog.showSaveDialog(
+                null,
+                userDialog.get("EXPORT_CLIPS")
+              );
+              if (path !== undefined) {
+                exportClips(path);
+              }
               break;
             default:
               break;
@@ -304,9 +322,13 @@ const createGroupedOptions = filtersList => {
       )
     };
     groupedOptions[2] = userFilterOptions;
+    groupedOptions[3] = { label: "Other", options: OTHER };
   } else {
+    groupedOptions[2] = { label: "Other", options: OTHER };
     groupedOptions.splice(2, 1);
   }
+  // console.log(groupedOptions);
+  // console.log(OTHER);
   return groupedOptions;
 };
 
@@ -346,6 +368,27 @@ const FILTER_SETTINGS = [
   }
 ];
 
+const OTHER = [
+  {
+    type: "other",
+    label: "Import Clips",
+    command: "importClips",
+    key: "Alt+I"
+  },
+  {
+    type: "other",
+    label: "Export Clips on The List",
+    command: "exportClips",
+    key: "Alt+E"
+  },
+  {
+    type: "other",
+    label: "Prefference",
+    command: "showPrefference",
+    key: "Alt+P"
+  }
+];
+
 const groupedOptions = [
   {
     label: "Edit",
@@ -367,5 +410,6 @@ export default connect(mapStateToProps, {
   setIdsFromDatastore,
   setDetailType,
   deleteUserFilter,
-  setPrevFocusedElm
+  setPrevFocusedElm,
+  exportClips
 })(Component);

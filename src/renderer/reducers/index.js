@@ -244,6 +244,9 @@ export default handleActions(
     },
     SET_SEARCH_OPT: (state, { payload: { handle, args } }) => {
       return state.setSearchOpt(handle, args);
+    },
+    EXPORT_CLIPS: (state, { payload: exportPath }) => {
+      return state.exportClips(exportPath);
     }
   },
   new State()

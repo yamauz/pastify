@@ -1,5 +1,8 @@
 const CF = require("./CF");
 const robot = require("robotjs");
+const fs = require("fs");
+const path = require("path");
+const archiver = require("archiver");
 
 module.exports = class Pastify {
   constructor() {
@@ -43,6 +46,43 @@ module.exports = class Pastify {
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }
+    return null;
+  }
+
+  exportClips(props, { dataStore }) {
+    const { idsTimeLine, exportPath } = props;
+    const clipsExport = dataStore.readClipsById(idsTimeLine);
+    const imageClips = clipsExport.filter(clip => clip.mainFormat === "IMAGE");
+    console.log(imageClips);
+    const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
+    const imageClipsPath = imageClips.map(
+      clip =>
+        `${path.resolve(distDir, "resource", "temp", "images")}\\${clip.id}`
+    );
+    console.log(imageClipsPath);
+    const exportJSONPath = `${path.resolve(
+      distDir,
+      "resource",
+      "temp",
+      "export"
+    )}\\export.json`;
+    fs.writeFileSync(exportJSONPath, JSON.stringify(clipsExport));
+
+    const output = fs.createWriteStream(exportPath);
+    const archive = archiver("zip", {
+      zlib: { level: 9 } // Sets the compression level.
+    });
+    archive.pipe(output);
+    archive.file(exportJSONPath, { name: path.basename(exportJSONPath) });
+    imageClipsPath.forEach(imgPath => {
+      archive.file(imgPath, { name: path.basename(imgPath) });
+    });
+    archive.finalize();
+    output.on("close", function() {
+      const archive_size = archive.pointer();
+      console.log(`complete! total size : ${archive_size} bytes`);
+    });
+
     return null;
   }
 

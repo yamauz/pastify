@@ -100,6 +100,13 @@ module.exports = class DataStore {
     return data.value();
   }
 
+  readClipsById(idsTimeLine) {
+    const clips = this.DB.get(this.storeName).filter(clip =>
+      idsTimeLine.includes(clip.id)
+    );
+    return clips.value();
+  }
+
   getIdsByFilter(args, { settings }) {
     const {
       sortBy,
@@ -290,11 +297,25 @@ module.exports = class DataStore {
     const tempPath = path.resolve(resourcePath, "temp");
     const imagesPath = path.resolve(tempPath, "images");
     const filesPath = path.resolve(tempPath, "files");
+    const exportPath = path.resolve(tempPath, "export");
+    const exportImagePath = path.resolve(exportPath, "images");
     if (!fs.existsSync(resourcePath)) {
       fs.mkdirSync(resourcePath);
+    }
+    if (!fs.existsSync(tempPath)) {
       fs.mkdirSync(tempPath);
+    }
+    if (!fs.existsSync(imagesPath)) {
       fs.mkdirSync(imagesPath);
+    }
+    if (!fs.existsSync(filesPath)) {
       fs.mkdirSync(filesPath);
+    }
+    if (!fs.existsSync(exportPath)) {
+      fs.mkdirSync(exportPath);
+      if (!fs.existsSync(exportImagePath)) {
+        fs.mkdirSync(exportImagePath);
+      }
     }
     return resourcePath;
   }

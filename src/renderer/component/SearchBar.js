@@ -469,18 +469,7 @@ const createOptionComponent = (props, _searchOpt) => {
                 </HashTag>
               ))}
               <TextWrapper mainFormat={mainFormat}>
-                {_optLabel.includes("_HOT_") ||
-                _optLabel.includes("_HASH_") ||
-                _optLabel.includes("_LANG_")
-                  ? _textData
-                  : expandTextMacro(_textData, searchInputValue, itemsTimeLine)
-                // <Highlighter
-                //   highlightClassName="highlighter-text"
-                //   searchWords={createInputKeys(searchInputValue)}
-                //   autoEscape={true}
-                //   textToHighlight={_textData}
-                // />
-                }
+                {expandTextMacro(_textData, searchInputValue, itemsTimeLine)}
               </TextWrapper>
               {(mainFormat === "IMAGE" || mainFormat === "SHEET") &&
                 renderImage(optProps.data.id)}

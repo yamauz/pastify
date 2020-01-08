@@ -191,6 +191,18 @@ const Component = props => {
             );
           })}
         </MenuItemGroup>
+        <MenuItemGroup title="OTHER" key="other">
+          {OTHER.map(action => {
+            return (
+              <MenuItem key={action.command} command={action.command}>
+                <ItemWrapper tabIndex={1}>
+                  <Command> {action.label}</Command>
+                  <Key>{action.key}</Key>
+                </ItemWrapper>
+              </MenuItem>
+            );
+          })}
+        </MenuItemGroup>
       </Menu>
     </Wrapper>
   );
@@ -241,6 +253,27 @@ const FILTER_SETTINGS = [
     label: "Reload",
     command: "reloadFilterSortSettings",
     key: "Ctrl+Shift+C"
+  }
+];
+
+const OTHER = [
+  {
+    type: "other",
+    label: "Import Clips",
+    command: "importCips",
+    key: "Alt+I"
+  },
+  {
+    type: "other",
+    label: "Export Clips on The List",
+    command: "exportCips",
+    key: "Alt+E"
+  },
+  {
+    type: "other",
+    label: "Prefference",
+    command: "showPrefference",
+    key: "Alt+P"
   }
 ];
 

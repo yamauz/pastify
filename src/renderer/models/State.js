@@ -805,6 +805,14 @@ class State extends StateRecord {
     }
   }
 
+  exportClips(exportPath) {
+    const idsTimeLine = this.get("idsTimeLine").toArray();
+    const _args = { idsTimeLine, exportPath };
+
+    new Message("pastify", "exportClips", _args).dispatch();
+    return this;
+  }
+
   _getModifierKeys() {
     return new Message("key", "getModifierKey", {}).dispatch();
   }
