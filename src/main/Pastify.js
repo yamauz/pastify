@@ -31,12 +31,15 @@ module.exports = class Pastify {
     const _copyAs = copyAs === "_ORIGINAL_" ? clip.mainFormat : copyAs;
     this.isCopiedBySelf = true;
 
-    const _textToWrite = CF.get(_copyAs).createTextToWrite(
-      clip,
-      surround,
-      dataStore
-    );
-    CF.get(_copyAs).write(_textToWrite);
+    if (_copyAs === "TEXT") {
+      clip.textData = CF.get(_copyAs).createTextToWrite(
+        clip,
+        surround,
+        dataStore
+      );
+    }
+
+    CF.get(_copyAs).write(clip);
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }

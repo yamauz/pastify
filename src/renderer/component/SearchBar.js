@@ -364,7 +364,7 @@ const expandTextMacro = (textData, searchInputValue, itemsTimeLine) => {
   };
 
   const macroProps = ["ID", "DT", "CB"].join("|");
-  const regStr = `(\\$\{\\s*(?:${macroProps})\\s*:\\s*["'].+["']\\s*\\})`;
+  const regStr = `(\\$\\{\\s*(?:${macroProps})\\s*:\\s*["'].+?["']\\s*\\})`;
   const regex = new RegExp(regStr, "gm");
   const strReplaced = reactStringReplace(textData, regex, replacer);
 
