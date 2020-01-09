@@ -91,7 +91,9 @@ export const {
   toggleClipToolTip,
   setSearchInputValue,
   setSearchOpt,
-  exportClips
+  exportClips,
+  importClips,
+  addImportClips
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -191,6 +193,8 @@ export const {
   TOGGLE_CLIP_TOOL_TIP: () => {},
   SET_SEARCH_INPUT_VALUE: value => value,
   SET_SEARCH_OPT: (handle, args) => ({ handle, args }),
-  EXPORT_CLIPS: exportPath => exportPath
+  EXPORT_CLIPS: exportPath => exportPath,
+  IMPORT_CLIPS: importPath => importPath,
+  ADD_IMPORT_CLIPS: clips => clips
   // SET_SEARCH_OPT: keycode => keycode
 });

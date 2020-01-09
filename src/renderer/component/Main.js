@@ -15,7 +15,10 @@ import {
   toggleClipToolTip,
   setMainFold,
   toggleMainFold,
-  toggleListMode
+  toggleListMode,
+  importClips,
+  addImportClips,
+  setIdsFromDatastore
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -93,7 +96,10 @@ const Main = props => {
     toggleMainFold,
     toggleListMode,
     isFold,
-    isCompact
+    isCompact,
+    addImportClips,
+    importClips,
+    setIdsFromDatastore
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -101,10 +107,17 @@ const Main = props => {
         case "SHOW":
           document.getElementById("searchbar").focus();
           break;
-        case "COPY":
+        case "COPY": {
           const { clip, mode } = args;
           addItemClipboard(clip, "TimeLine", mode);
           break;
+        }
+        case "IMPORT": {
+          const { clip } = args;
+          addImportClips(clip);
+          setIdsFromDatastore();
+          break;
+        }
         case "BLUR":
           setWinFocus(false);
           break;
@@ -137,6 +150,13 @@ const Main = props => {
       console.log("rebuild_initial");
       ReactTooltip.rebuild();
     }, 0);
+    document.ondragover = document.ondrop = function(e) {
+      e.preventDefault();
+    };
+    document.body.addEventListener("drop", function(e) {
+      console.log("file dropped:", e.dataTransfer.files[0].path);
+      importClips(e.dataTransfer.files[0].path);
+    });
   }, []);
 
   const handleKeyDown = useCallback(
@@ -351,5 +371,8 @@ export default connect(mapStateToProps, {
   toggleClipToolTip,
   setMainFold,
   toggleMainFold,
-  toggleListMode
+  toggleListMode,
+  addImportClips,
+  importClips,
+  setIdsFromDatastore
 })(Main);

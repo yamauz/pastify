@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const low = require("lowdb");
 const _ = require("lodash");
+const shortid = require("shortid");
 const FileSync = require("lowdb/adapters/FileSync");
 const Clip = require("./Clip");
 
@@ -39,6 +40,37 @@ module.exports = class DataStore {
       .write();
     const args = { clip: [clip], mode: "AUTO" };
     win.sendToRenderer("useIpc", "COPY", args);
+  }
+  createByImport(importJSON, win) {
+    const importFileRenamed = importJSON.map(clip => {
+      const newId = `@${shortid.generate()}`;
+      if (clip.mainFormat === "IMAGE" || clip.mainFormat === "SHEET") {
+        const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
+        const from = `${path.resolve(
+          distDir,
+          "resource",
+          "temp",
+          "import",
+          "images"
+        )}\\${clip.id}`;
+        const to = `${path.resolve(
+          distDir,
+          "resource",
+          "temp",
+          "images"
+        )}\\${newId}`;
+        fs.renameSync(from, to);
+        clip.textData = newId;
+      }
+      clip.id = newId;
+      clip.date = new Date().getTime();
+      this.DB.get(this.storeName)
+        .push(clip)
+        .write();
+      return clip;
+    });
+    const args = { clip: importFileRenamed };
+    win.sendToRenderer("useIpc", "IMPORT", args);
   }
 
   readAll() {
@@ -298,6 +330,7 @@ module.exports = class DataStore {
     const imagesPath = path.resolve(tempPath, "images");
     const filesPath = path.resolve(tempPath, "files");
     const exportPath = path.resolve(tempPath, "export");
+    const importPath = path.resolve(tempPath, "import");
     const exportImagePath = path.resolve(exportPath, "images");
     if (!fs.existsSync(resourcePath)) {
       fs.mkdirSync(resourcePath);
@@ -316,6 +349,9 @@ module.exports = class DataStore {
       if (!fs.existsSync(exportImagePath)) {
         fs.mkdirSync(exportImagePath);
       }
+    }
+    if (!fs.existsSync(importPath)) {
+      fs.mkdirSync(importPath);
     }
     return resourcePath;
   }

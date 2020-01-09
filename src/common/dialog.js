@@ -19,5 +19,15 @@ module.exports = new Map([
         { name: "All Files", extensions: ["*"] }
       ]
     }
+  ],
+  [
+    "IMPORT_CLIPS",
+    {
+      title: "Import Clips",
+      filters: [
+        { name: "Pastify File", extensions: ["pastify"] },
+        { name: "All Files", extensions: ["*"] }
+      ]
+    }
   ]
 ]);

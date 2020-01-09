@@ -247,6 +247,12 @@ export default handleActions(
     },
     EXPORT_CLIPS: (state, { payload: exportPath }) => {
       return state.exportClips(exportPath);
+    },
+    IMPORT_CLIPS: (state, { payload: importPath }) => {
+      return state.importClips(importPath);
+    },
+    ADD_IMPORT_CLIPS: (state, { payload: clips }) => {
+      return state.addImportClips(clips);
     }
   },
   new State()

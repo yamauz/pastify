@@ -96,7 +96,7 @@ const CF = new Map([
             : `${surround.left}${_textTemp}${surround.right}`;
         return _textToWrite;
       },
-      write: textToWrite => clipboard.writeText(textToWrite),
+      write: clip => clipboard.writeText(clip.textData),
       writeId: id => clipboard.writeText(id)
     }
   ]

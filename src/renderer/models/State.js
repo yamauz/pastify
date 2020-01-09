@@ -813,6 +813,21 @@ class State extends StateRecord {
     return this;
   }
 
+  importClips(importPath) {
+    const _args = { importPath };
+    new Message("pastify", "importClips", _args).dispatch();
+    return this;
+  }
+
+  addImportClips(clips) {
+    console.log(clips);
+    const allClipsRec = clips.map(clip => [clip.id, new ItemValue(clip)]);
+    const itemsTimeLine = this.get("itemsTimeLine");
+    console.log(itemsTimeLine.merge(allClipsRec));
+    return this.set("itemsTimeLine", itemsTimeLine.merge(allClipsRec));
+    // return this;
+  }
+
   _getModifierKeys() {
     return new Message("key", "getModifierKey", {}).dispatch();
   }

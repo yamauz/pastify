@@ -9,7 +9,8 @@ import {
   setDetailType,
   deleteUserFilter,
   setPrevFocusedElm,
-  exportClips
+  exportClips,
+  importClips
 } from "../actions";
 import Select, { components } from "react-select";
 import Cog from "../../icon/listheader/cog.svg";
@@ -85,7 +86,8 @@ const Component = props => {
     deleteUserFilter,
     prevFocusedElm,
     setPrevFocusedElm,
-    exportClips
+    exportClips,
+    importClips
   } = props;
 
   const DropdownIndicator = props => {
@@ -194,7 +196,7 @@ const Component = props => {
             case "setUserFilter":
               setIdsFromDatastore();
               break;
-            case "exportClips":
+            case "exportClips": {
               const path = dialog.showSaveDialog(
                 null,
                 userDialog.get("EXPORT_CLIPS")
@@ -203,6 +205,17 @@ const Component = props => {
                 exportClips(path);
               }
               break;
+            }
+            case "importClips": {
+              const path = dialog.showOpenDialog(
+                null,
+                userDialog.get("IMPORT_CLIPS")
+              );
+              if (path !== undefined) {
+                importClips(path[0]);
+              }
+              break;
+            }
             default:
               break;
           }
@@ -411,5 +424,6 @@ export default connect(mapStateToProps, {
   setDetailType,
   deleteUserFilter,
   setPrevFocusedElm,
-  exportClips
+  exportClips,
+  importClips
 })(Component);

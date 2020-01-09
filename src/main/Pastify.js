@@ -3,6 +3,7 @@ const robot = require("robotjs");
 const fs = require("fs");
 const path = require("path");
 const archiver = require("archiver");
+const unzipper = require("unzipper");
 
 module.exports = class Pastify {
   constructor() {
@@ -53,13 +54,11 @@ module.exports = class Pastify {
     const { idsTimeLine, exportPath } = props;
     const clipsExport = dataStore.readClipsById(idsTimeLine);
     const imageClips = clipsExport.filter(clip => clip.mainFormat === "IMAGE");
-    console.log(imageClips);
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const imageClipsPath = imageClips.map(
       clip =>
         `${path.resolve(distDir, "resource", "temp", "images")}\\${clip.id}`
     );
-    console.log(imageClipsPath);
     const exportJSONPath = `${path.resolve(
       distDir,
       "resource",
@@ -75,13 +74,35 @@ module.exports = class Pastify {
     archive.pipe(output);
     archive.file(exportJSONPath, { name: path.basename(exportJSONPath) });
     imageClipsPath.forEach(imgPath => {
-      archive.file(imgPath, { name: path.basename(imgPath) });
+      archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
     });
     archive.finalize();
     output.on("close", function() {
       const archive_size = archive.pointer();
       console.log(`complete! total size : ${archive_size} bytes`);
     });
+
+    return null;
+  }
+
+  importClips(props, { dataStore, win }) {
+    const { importPath } = props;
+    const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
+
+    const unzipPath = `${path.resolve(distDir, "resource", "temp", "import")}`;
+    fs.createReadStream(importPath)
+      .pipe(unzipper.Extract({ path: unzipPath }))
+      .promise()
+      .then(() => {
+        const importJSONPath = `${path.resolve(
+          distDir,
+          "resource",
+          "temp",
+          "import"
+        )}\\export.json`;
+        const importJSON = JSON.parse(fs.readFileSync(importJSONPath));
+        dataStore.createByImport(importJSON, win);
+      });
 
     return null;
   }
