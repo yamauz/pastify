@@ -35,15 +35,16 @@ module.exports = class Pastify {
     const _copyAs = copyAs === "_ORIGINAL_" ? clip.mainFormat : copyAs;
     this.isCopiedBySelf = true;
 
+    let textExpanded = undefined;
     if (_copyAs === "TEXT") {
-      clip.textData = CF.get(_copyAs).createTextToWrite(
+      textExpanded = CF.get(_copyAs).createTextToWrite(
         clip,
         surround,
         dataStore
       );
     }
 
-    CF.get(_copyAs).write(clip);
+    CF.get(_copyAs).write(clip, textExpanded);
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }

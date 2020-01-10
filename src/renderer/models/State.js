@@ -39,7 +39,7 @@ const StateRecord = Record({
   modalVisibility: false,
   filterSaveModalVisibility: false,
   // prevFocusedElm: document.activeElement,
-  prevFocusedElm: null,
+  prevFocusedElm: "searchbar",
   actionSelected: "",
   // Filter Shortcut Key -------------------------------------------------
   // CurrentFilter Settings -------------------------------------------------
@@ -692,7 +692,6 @@ class State extends StateRecord {
     return this;
   }
   setSearchInputValue(value) {
-    // console.log(`value :${value}`);
     const { shiftKey, ctrlKey } = this._getModifierKeys();
     const _searchOpt = this.get("searchOpt");
     const inputOpt = searchInputOptionsAll.has(value)
@@ -705,13 +704,23 @@ class State extends StateRecord {
         inputOpt.type,
         Map([[inputOpt.subType, _labels.get(inputOpt.subType)]])
       );
-      return this.set("searchOpt", _newSearchOpt);
+      // return this.set("searchOpt", _newSearchOpt);
+      return this.withMutations(state => {
+        state.set("searchInputValue", "").set("searchOpt", _newSearchOpt);
+      });
     }
 
-    const searchOpt = this.get("searchOpt");
-    const _optLabel = searchOpt.map(opt => opt.value);
-    if (searchOpt.get("LABEL").has("HOTKEY")) {
-      const clips = new Message("dataStore", "readHasHotKey").dispatch();
+    const conditions = ["LABEL", "STATUS", "DATATYPE"];
+    const condSelect = new Map();
+    conditions.forEach(cond => {
+      const opt = _searchOpt.get(cond).first();
+      const type = opt !== undefined ? opt.label : null;
+      condSelect.set(cond, type);
+    });
+    if (_searchOpt.get("LABEL").has("HOTKEY")) {
+      const clips = new Message("dataStore", "readHasHotKey", {
+        condSelect: Array.from(condSelect)
+      }).dispatch();
       const clipsHasInputValue = clips.filter(
         clip => clip.key.toLowerCase() === value.toLowerCase()
       );
@@ -723,7 +732,12 @@ class State extends StateRecord {
           const isReturn = shiftKey;
           const copyOnly = ctrlKey;
           const copyAs = clipsHasInputValue[0].mainFormat;
-          const _args = { id, isReturn, copyOnly, copyAs };
+          const surround =
+            _searchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
+              ? _searchOpt.get("SURROUND").first()
+              : undefined;
+
+          const _args = { id, isReturn, copyOnly, copyAs, surround };
           new Message("pastify", "copyClip", _args).dispatch();
           return this.withMutations(state => {
             state
@@ -733,7 +747,7 @@ class State extends StateRecord {
         default:
           return this.set("searchInputValue", value);
       }
-    } else if (searchOpt.get("LABEL").has("LISTKEY")) {
+    } else if (_searchOpt.get("LABEL").has("LISTKEY")) {
       const { startIndex, stopIndex } = this.get("itemDisplayRange");
       const popupIndex = popupKeyValue.indexOf(value.toUpperCase());
       if (popupIndex !== -1) {
@@ -744,7 +758,11 @@ class State extends StateRecord {
           const isReturn = shiftKey;
           const copyOnly = ctrlKey;
           const copyAs = clip.mainFormat;
-          const _args = { id, isReturn, copyOnly, copyAs };
+          const surround =
+            _searchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
+              ? _searchOpt.get("SURROUND").first()
+              : undefined;
+          const _args = { id, isReturn, copyOnly, copyAs, surround };
           new Message("pastify", "copyClip", _args).dispatch();
         }
       }
@@ -780,6 +798,7 @@ class State extends StateRecord {
       );
       return this.set("searchOpt", _newSearchOpt);
     } else {
+      //onChange スペースキー/ブラー/クリア時
       const _opt = args;
       const _newSearchOpt = this._optionsToMap(_opt);
       const selectClip = _opt.filter(opt => opt.hasOwnProperty("id"));
@@ -803,6 +822,25 @@ class State extends StateRecord {
       }
       return this.set("searchOpt", _newSearchOpt);
     }
+  }
+
+  selectClipToPaste(id, modifier) {
+    const { mainFormat } = this._getClipStateById(id);
+    const searchOpt = this.get("searchOpt");
+    const isReturn = modifier.shiftKey;
+    const copyOnly = modifier.ctrlKey;
+    const copyAs = mainFormat;
+    const surround =
+      searchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
+        ? searchOpt.get("SURROUND").first()
+        : undefined;
+    const _args = { id, isReturn, copyOnly, copyAs, surround };
+    new Message("pastify", "copyClip", _args).dispatch();
+    return this.withMutations(state => {
+      state
+        .set("searchInputValue", "")
+        .set("searchOpt", this._getEmptySearchOpt());
+    });
   }
 
   exportClips(exportPath) {

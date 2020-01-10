@@ -242,6 +242,9 @@ export default handleActions(
     SET_SEARCH_INPUT_VALUE: (state, { payload: value }) => {
       return state.setSearchInputValue(value);
     },
+    SELECT_CLIP_TO_PASTE: (state, { payload: { id, modifier } }) => {
+      return state.selectClipToPaste(id, modifier);
+    },
     SET_SEARCH_OPT: (state, { payload: { handle, args } }) => {
       return state.setSearchOpt(handle, args);
     },

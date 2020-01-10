@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import path from "path";
 import { connect } from "react-redux";
-import { setSearchInputValue, setSearchOpt, favItem } from "../actions";
+import {
+  selectClipToPaste,
+  setSearchInputValue,
+  setSearchOpt,
+  favItem
+} from "../actions";
 import debounce from "debounce-promise";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import reactStringReplace from "react-string-replace";
@@ -582,7 +587,8 @@ const SearchBar = props => {
     setSearchInputValue,
     searchOpt,
     setSearchOpt,
-    favItem
+    favItem,
+    selectClipToPaste
   } = props;
   const _searchOpt = createSearchOptions(searchOpt);
   return (
@@ -607,8 +613,11 @@ const SearchBar = props => {
         }}
         value={_searchOpt}
         onChange={value => {
-          const _value = value === null ? [] : value;
-          setSearchOpt("onChange", _value);
+          // const _value = value === null ? [] : value;
+          // setSearchOpt("onChange", _value);
+          if (value === null) {
+            setSearchOpt("onChange", []);
+          }
         }}
         inputValue={searchInputValue}
         styles={customStyles}
@@ -648,7 +657,15 @@ const SearchBar = props => {
                 break;
               case "enter":
                 e.preventDefault();
-                console.log("enterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+                const {
+                  focusedOption
+                } = selectRef.current.select.select.select.state;
+                const modifiers = {
+                  ctrlKey: e.ctrlKey,
+                  shiftKey: e.shiftKey,
+                  altKey: e.altKey
+                };
+                selectClipToPaste(focusedOption.id, modifiers);
                 break;
               default:
                 break;
@@ -669,5 +686,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   setSearchInputValue,
   setSearchOpt,
-  favItem
+  favItem,
+  selectClipToPaste
 })(SearchBar);

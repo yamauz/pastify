@@ -195,39 +195,11 @@ const Main = props => {
         default:
           break;
       }
-
-      // if (ctrlKey && !shiftKey) {
-      //   if (pressKey === O) {
-      //     if (document.activeElement === document.getElementById("list-menu")) {
-      //       document.getElementById(prevFocusedElm).focus();
-      //     } else {
-      //       setPrevFocusedElm(document.activeElement);
-      //       document.getElementById("list-menu").focus();
-      //     }
-      //   }
-      // }
     },
     [prevFocusedElm, isFold, isCompact]
   );
 
   useEffect(() => {
-    // const handleKeyDown = e => {
-    //   const { shiftKey, ctrlKey } = e;
-    //   const pressKey = e.keyCode;
-    //   const { O } = keyCode;
-
-    //   if (ctrlKey && !shiftKey) {
-    //     if (pressKey === O) {
-    //       if (document.activeElement === document.getElementById("list-menu")) {
-    //         document.getElementById(prevFocusedElm).focus();
-    //       } else {
-    //         setPrevFocusedElm(document.activeElement);
-    //         document.getElementById("list-menu").focus();
-    //       }
-    //     }
-    //   }
-    // };
-
     window.addEventListener("keydown", handleKeyDown, true);
     return () => {
       window.removeEventListener("keydown", handleKeyDown, true);

@@ -159,5 +159,12 @@ module.exports = new Map([
       type: "SURROUND",
       subType: "LENTICULAR_BRACKET_FW"
     }
+  ],
+  [
+    "【】",
+    {
+      type: "SURROUND",
+      subType: "LENTICULAR_BRACKET_FW"
+    }
   ]
 ]);

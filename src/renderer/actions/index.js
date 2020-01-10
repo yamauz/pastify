@@ -90,6 +90,7 @@ export const {
   setToolTipArrowPos,
   toggleClipToolTip,
   setSearchInputValue,
+  selectClipToPaste,
   setSearchOpt,
   exportClips,
   importClips,
@@ -193,6 +194,7 @@ export const {
   TOGGLE_CLIP_TOOL_TIP: () => {},
   SET_SEARCH_INPUT_VALUE: value => value,
   SET_SEARCH_OPT: (handle, args) => ({ handle, args }),
+  SELECT_CLIP_TO_PASTE: (id, modifier) => ({ id, modifier }),
   EXPORT_CLIPS: exportPath => exportPath,
   IMPORT_CLIPS: importPath => importPath,
   ADD_IMPORT_CLIPS: clips => clips

@@ -25,8 +25,8 @@ const logger = createLogger({
   }
 });
 
-// const store = createStore(reducers, applyMiddleware(logger));
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(logger));
+// const store = createStore(reducers);
 
 store.subscribe(() => {
   ReactTooltip.rebuild();

@@ -166,11 +166,19 @@ const Component = props => {
             }
           }
         }}
-        onMenuOpen={() => {
-          // setPrevFocusedElm(document.activeElement);
+        onFocus={e => {
+          // console.log(document.activeElement);
+          // console.log(e.target);
+          // console.log("onFocusliistmenu");
+          // console.log(document.activeElement);
+        }}
+        onMenuOpen={e => {
+          // const prevElm = document.getElementById(prevFocusedElm);
+          // setPrevFocusedElm(prevElm);
+          // console.log(document.activeElement);
         }}
         onMenuClose={() => {
-          document.getElementById(prevFocusedElm).focus();
+          // document.getElementById(prevFocusedElm).focus();
         }}
         onChange={opt => {
           const { type, command, id } = opt;
@@ -218,6 +226,9 @@ const Component = props => {
             }
             default:
               break;
+          }
+          if (command !== "showFilterSortSettings") {
+            document.getElementById(prevFocusedElm).focus();
           }
         }}
         styles={customStyles}
