@@ -227,7 +227,10 @@ const Component = props => {
             default:
               break;
           }
-          if (command !== "showFilterSortSettings") {
+          if (
+            command !== "showFilterSortSettings" ||
+            command !== "showPreferences"
+          ) {
             document.getElementById(prevFocusedElm).focus();
           }
         }}
@@ -347,11 +350,12 @@ const createGroupedOptions = filtersList => {
     };
     groupedOptions[2] = userFilterOptions;
     groupedOptions[3] = { label: "Other", options: OTHER };
+    // groupedOptions.splice(4, 1);
   } else {
     groupedOptions[2] = { label: "Other", options: OTHER };
-    groupedOptions.splice(2, 1);
+    groupedOptions.splice(3, 1);
   }
-  // console.log(groupedOptions);
+  console.log(groupedOptions);
   // console.log(OTHER);
   return groupedOptions;
 };
@@ -406,9 +410,9 @@ const OTHER = [
     key: "Alt+E"
   },
   {
-    type: "other",
-    label: "Prefference",
-    command: "showPrefference",
+    type: "system",
+    label: "Preferences",
+    command: "showPreferences",
     key: "Alt+P"
   }
 ];

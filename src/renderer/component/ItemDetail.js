@@ -35,6 +35,8 @@ const ItemDetail = props => {
   switch (detailType) {
     case "filter-sort-settings":
       return <FilterSettings></FilterSettings>;
+    case "preferences":
+      return <div>preferences</div>
     case "ITEM":
       return idsDisplay.map(id => {
         const data = itemsTimeLine.get(id);

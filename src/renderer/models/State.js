@@ -383,6 +383,20 @@ class State extends StateRecord {
         .set("itemIdAddedManually", "_UNSET_");
     });
   }
+  showPreferences() {
+    const isFold = this.get("isFold");
+    if (isFold) {
+      new Message("win", "updateWinState", "unfoldWindow").dispatch();
+      // setTimeout(() => {
+      //   document.getElementById("keyword-input").focus();
+      // }, 200);
+    }
+    return this.withMutations(state => {
+      state
+        .set("detailType", "preferences")
+        .set("itemIdAddedManually", "_UNSET_");
+    });
+  }
   saveFilterSortSettings() {
     return this.set(
       "filterSaveModalVisibility",
