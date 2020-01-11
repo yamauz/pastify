@@ -256,6 +256,9 @@ export default handleActions(
     },
     ADD_IMPORT_CLIPS: (state, { payload: clips }) => {
       return state.addImportClips(clips);
+    },
+    SET_USER_FILTER_BY_KEY: (state, { payload: { keycode, modifier } }) => {
+      return state.setUserFilterByKey(keycode, modifier);
     }
   },
   new State()

@@ -124,9 +124,10 @@ const handleAction = props => {
 };
 
 const handleKeyDown = e => {
+  e.preventDefault();
   switch (keycode(e)) {
     case "esc":
-    case "o":
+    case "space":
       ReactTooltip.rebuild();
       ReactTooltip.hide();
       break;

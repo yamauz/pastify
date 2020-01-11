@@ -438,6 +438,80 @@ class State extends StateRecord {
         .set("languageFilterOpt", userFilter.get("languageFilterOpt"));
     });
   }
+  setUserFilterByKey(keyCode, modifier) {
+    let _id;
+    this.get("filtersList").forEach(filter => {
+      const _key = filter.get("filterShortcutKeyOpt");
+      if (!Array.isArray(_key)) {
+        const _keySplit = _key.value.split("+");
+        const _keyCode = _keySplit[_keySplit.length - 1];
+        const _shiftKey = _keySplit.includes("shift") ? true : false;
+        const _ctrlKey = _keySplit.includes("ctrl") ? true : false;
+        const _altKey = _keySplit.includes("alt") ? true : false;
+        console.log(_keyCode);
+        if (
+          keyCode === _keyCode &&
+          modifier.shiftKey === _shiftKey &&
+          modifier.ctrlKey === _ctrlKey &&
+          modifier.altKey === _altKey
+        ) {
+          _id = filter.get("id");
+        }
+      }
+    });
+    if (_id !== undefined) {
+      const userFilter = this.get("filtersList").get(_id);
+
+      const sortOpt = userFilter.get("sortOpt");
+      const filterName = userFilter.get("filterName");
+      const filterShortcutKeyOpt = userFilter.get("filterShortcutKeyOpt");
+      const keywordFilterOpt = userFilter.get("keywordFilterOpt");
+      const idFilterOpt = userFilter.get("idFilterOpt");
+      const dataTypeFilterOpt = userFilter.get("dataTypeFilterOpt");
+      const statusFilterOpt = userFilter.get("statusFilterOpt");
+      const hotKeyFilterOpt = userFilter.get("hotKeyFilterOpt");
+      const hashTagFilterOpt = userFilter.get("hashTagFilterOpt");
+      const languageFilterOpt = userFilter.get("languageFilterOpt");
+      const options = {
+        sortOpt,
+        filterName,
+        filterShortcutKeyOpt,
+        keywordFilterOpt,
+        idFilterOpt,
+        dataTypeFilterOpt,
+        statusFilterOpt,
+        hotKeyFilterOpt,
+        hashTagFilterOpt,
+        languageFilterOpt
+      };
+
+      new Message("settings", "updateFilter", options).dispatch();
+
+      const idsFiltered = new Message(
+        "dataStore",
+        "getIdsByFilter",
+        options
+      ).dispatch();
+
+      return this.withMutations(state => {
+        state
+          .set("filterName", filterName)
+          .set("filterShortcutKeyOpt", filterShortcutKeyOpt)
+          .set("sortOpt", sortOpt)
+          .set("keywordFilterOpt", keywordFilterOpt)
+          .set("idFilterOpt", idFilterOpt)
+          .set("dataTypeFilterOpt", dataTypeFilterOpt)
+          .set("statusFilterOpt", statusFilterOpt)
+          .set("hotKeyFilterOpt", hotKeyFilterOpt)
+          .set("hashTagFilterOpt", hashTagFilterOpt)
+          .set("languageFilterOpt", languageFilterOpt)
+          .set("idsTimeLine", List(idsFiltered))
+          .set("scrollToRow", 0);
+      });
+    } else {
+      return this;
+    }
+  }
   storeItemOnModalOpen() {
     const listName = "itemsTimeLine";
     const id = this.get("idSelected");
@@ -475,7 +549,9 @@ class State extends StateRecord {
       "getIdsByFilter",
       options
     ).dispatch();
-    return this.set("idsTimeLine", List(idsFiltered));
+    return this.withMutations(state => {
+      state.set("idsTimeLine", List(idsFiltered)).set("scrollToRow", 0);
+    });
   }
   saveFilter() {
     const filterName = this.get("filterName");

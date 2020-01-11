@@ -257,9 +257,12 @@ const handleKeyDown = props => {
   const idSelected = ids.get(scrollToRow);
 
   return e => {
-    if (e.altKey) return;
     e.preventDefault();
     e.stopPropagation();
+    const regx = /^[0-9A-Za-z]$/;
+    if (regx.test(keycode(e)) && (e.shiftKey || e.ctrlKey || e.altKey)) {
+      return;
+    }
     switch (keycode(e)) {
       case "delete":
       case "x":
@@ -298,7 +301,7 @@ const handleKeyDown = props => {
       case "enter":
         copyClip(e);
         break;
-      case "o":
+      case "space":
         document.getElementById(`${idSelected}-option`).click();
         break;
       case "j":

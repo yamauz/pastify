@@ -94,7 +94,8 @@ export const {
   setSearchOpt,
   exportClips,
   importClips,
-  addImportClips
+  addImportClips,
+  setUserFilterByKey
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -197,6 +198,7 @@ export const {
   SELECT_CLIP_TO_PASTE: (id, modifier) => ({ id, modifier }),
   EXPORT_CLIPS: exportPath => exportPath,
   IMPORT_CLIPS: importPath => importPath,
-  ADD_IMPORT_CLIPS: clips => clips
+  ADD_IMPORT_CLIPS: clips => clips,
+  SET_USER_FILTER_BY_KEY: (keycode, modifier) => ({ keycode, modifier })
   // SET_SEARCH_OPT: keycode => keycode
 });

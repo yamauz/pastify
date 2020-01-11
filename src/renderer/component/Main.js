@@ -18,7 +18,9 @@ import {
   toggleListMode,
   importClips,
   addImportClips,
-  setIdsFromDatastore
+  setIdsFromDatastore,
+  callActionOnItemList,
+  setUserFilterByKey
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -99,7 +101,9 @@ const Main = props => {
     isCompact,
     addImportClips,
     importClips,
-    setIdsFromDatastore
+    setIdsFromDatastore,
+    callActionOnItemList,
+    setUserFilterByKey
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -163,10 +167,9 @@ const Main = props => {
     e => {
       const { shiftKey, ctrlKey, altKey } = e;
 
-      if (!altKey) return;
-
       switch (keycode(e)) {
-        case "o": {
+        case "=": {
+          if (!ctrlKey) return;
           if (document.activeElement === document.getElementById("list-menu")) {
             document.getElementById(prevFocusedElm).focus();
           } else {
@@ -175,24 +178,39 @@ const Main = props => {
           }
           break;
         }
-        case "w": {
+        case ".": {
+          if (!ctrlKey) return;
           toggleMainFold();
           break;
         }
-        case "q": {
+        case ",": {
+          if (!ctrlKey) return;
           toggleListMode();
           break;
         }
-        case "j": {
-          document.getElementById("item-list").focus();
+        case "f5": {
+          const action = "reloadFilterSortSettings";
+          callActionOnItemList(action);
+          setIdsFromDatastore();
           break;
         }
-        case "k": {
-          document.getElementById("searchbar").focus();
+        case "space": {
+          const action = "clearFilterSortSettings";
+          callActionOnItemList(action);
+          setIdsFromDatastore();
           break;
         }
-
+        case ";": {
+          const action = "showFilterSortSettings";
+          callActionOnItemList(action);
+          setIdsFromDatastore();
+          break;
+        }
         default:
+          const regx = /^[0-9A-Za-z]$/;
+          if (regx.test(keycode(e)) && (shiftKey || ctrlKey || altKey)) {
+            setUserFilterByKey(keycode(e), { shiftKey, ctrlKey, altKey });
+          }
           break;
       }
     },
@@ -205,30 +223,6 @@ const Main = props => {
       window.removeEventListener("keydown", handleKeyDown, true);
     };
   }, [handleKeyDown]);
-
-  useEffect(() => {
-    console.log("isFold");
-    // window.addEventListener("keydown", handleKeyDown, true);
-    // return () => {
-    //   window.removeEventListener("keydown", handleKeyDown, true);
-    // };
-  }, [isFold]);
-
-  // useEffect(() => {
-  //   const toggleClipToolTipByClick = () => {
-  //     const currentElmId = document.activeElement.id;
-  //     const regex = /^clip-tooltip/;
-  //     console.log(regex.test(currentElmId));
-  //     if (isOpenClipToolTip && !regex.test(currentElmId)) {
-  //       toggleClipToolTip();
-  //     }
-  //   };
-  //   window.addEventListener("click", toggleClipToolTipByClick, true);
-  //   return () => {
-  //     console.log("unmount");
-  //     window.removeEventListener("click", toggleClipToolTipByClick, true);
-  //   };
-  // }, [isOpenClipToolTip]);
 
   return (
     <Wrapper tabIndex="0">
@@ -346,5 +340,7 @@ export default connect(mapStateToProps, {
   toggleListMode,
   addImportClips,
   importClips,
-  setIdsFromDatastore
+  setIdsFromDatastore,
+  callActionOnItemList,
+  setUserFilterByKey
 })(Main);

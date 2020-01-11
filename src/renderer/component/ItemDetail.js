@@ -36,7 +36,9 @@ const ItemDetail = props => {
     case "filter-sort-settings":
       return <FilterSettings></FilterSettings>;
     case "preferences":
-      return <div>preferences</div>
+      return <div>preferences</div>;
+    case "DEFAULT":
+      return <div>default</div>;
     case "ITEM":
       return idsDisplay.map(id => {
         const data = itemsTimeLine.get(id);
@@ -47,8 +49,6 @@ const ItemDetail = props => {
           </DetailWrapper>
         );
       });
-    case "DEFAULT":
-      return <div>default</div>;
   }
 };
 

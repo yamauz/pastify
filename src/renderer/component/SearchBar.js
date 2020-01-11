@@ -613,11 +613,11 @@ const SearchBar = props => {
         }}
         value={_searchOpt}
         onChange={value => {
-          // const _value = value === null ? [] : value;
-          // setSearchOpt("onChange", _value);
-          if (value === null) {
-            setSearchOpt("onChange", []);
-          }
+          const _value = value === null ? [] : value;
+          setSearchOpt("onChange", _value);
+          // if (value === null) {
+          //   setSearchOpt("onChange", []);
+          // }
         }}
         inputValue={searchInputValue}
         styles={customStyles}
@@ -631,6 +631,7 @@ const SearchBar = props => {
           if (searchInputValue === "") {
             switch (keycode(e)) {
               case "space":
+                if (e.ctrlKey) return;
                 setSearchOpt("onKeyDown", keycode(e));
                 break;
               // case "f":
@@ -647,6 +648,10 @@ const SearchBar = props => {
             }
           } else {
             switch (keycode(e)) {
+              case "tab":
+                e.preventDefault();
+                document.getElementById("item-list").focus();
+                break;
               case "f":
                 if (e.ctrlKey) {
                   const {

@@ -228,7 +228,7 @@ const Component = props => {
               break;
           }
           if (
-            command !== "showFilterSortSettings" ||
+            command !== "showFilterSortSettings" &&
             command !== "showPreferences"
           ) {
             document.getElementById(prevFocusedElm).focus();
@@ -350,13 +350,10 @@ const createGroupedOptions = filtersList => {
     };
     groupedOptions[2] = userFilterOptions;
     groupedOptions[3] = { label: "Other", options: OTHER };
-    // groupedOptions.splice(4, 1);
   } else {
     groupedOptions[2] = { label: "Other", options: OTHER };
     groupedOptions.splice(3, 1);
   }
-  console.log(groupedOptions);
-  // console.log(OTHER);
   return groupedOptions;
 };
 
