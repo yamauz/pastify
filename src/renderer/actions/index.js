@@ -95,7 +95,11 @@ export const {
   exportClips,
   importClips,
   addImportClips,
-  setUserFilterByKey
+  setUserFilterByKey,
+  changeBlockKeywordsInputValue,
+  addBlockKeywordsOptions,
+  removeBlockKeywordsOptions,
+  addNewItemByInputValue
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -199,6 +203,11 @@ export const {
   EXPORT_CLIPS: exportPath => exportPath,
   IMPORT_CLIPS: importPath => importPath,
   ADD_IMPORT_CLIPS: clips => clips,
-  SET_USER_FILTER_BY_KEY: (keycode, modifier) => ({ keycode, modifier })
+  SET_USER_FILTER_BY_KEY: (keycode, modifier) => ({ keycode, modifier }),
+  // Block by keyword --------------------------------------------
+  ADD_BLOCK_KEYWORDS_OPTIONS: value => value,
+  REMOVE_BLOCK_KEYWORDS_OPTIONS: value => value,
+  CHANGE_BLOCK_KEYWORDS_INPUT_VALUE: value => value,
+  ADD_NEW_ITEM_BY_INPUT_VALUE: (value, modifier) => ({ value, modifier })
   // SET_SEARCH_OPT: keycode => keycode
 });

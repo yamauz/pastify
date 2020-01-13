@@ -47,6 +47,12 @@ app.on("ready", () => {
       format: validFormats[0],
       extracts: clipboardExtractor.extractDataList
     };
+    const blocking = pastify.checkBlockCopying(copiedData, settings);
+
+    if (blocking) {
+      console.log("blocking by user filter");
+      return;
+    }
     dataStore.createByCopy(copiedData, win);
   });
 });

@@ -5,7 +5,8 @@ import {
   selectClipToPaste,
   setSearchInputValue,
   setSearchOpt,
-  favItem
+  favItem,
+  addNewItemByInputValue
 } from "../actions";
 import debounce from "debounce-promise";
 import AsyncCreatableSelect from "react-select/async-creatable";
@@ -588,7 +589,8 @@ const SearchBar = props => {
     searchOpt,
     setSearchOpt,
     favItem,
-    selectClipToPaste
+    selectClipToPaste,
+    addNewItemByInputValue
   } = props;
   const _searchOpt = createSearchOptions(searchOpt);
   return (
@@ -670,7 +672,11 @@ const SearchBar = props => {
                   shiftKey: e.shiftKey,
                   altKey: e.altKey
                 };
-                selectClipToPaste(focusedOption.id, modifiers);
+                if (focusedOption.label === "Add New Item By Input Value") {
+                  addNewItemByInputValue(focusedOption.value, modifiers);
+                } else {
+                  selectClipToPaste(focusedOption.id, modifiers);
+                }
                 break;
               default:
                 break;
@@ -692,5 +698,6 @@ export default connect(mapStateToProps, {
   setSearchInputValue,
   setSearchOpt,
   favItem,
-  selectClipToPaste
+  selectClipToPaste,
+  addNewItemByInputValue
 })(SearchBar);

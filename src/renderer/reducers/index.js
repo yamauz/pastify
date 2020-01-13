@@ -259,6 +259,19 @@ export default handleActions(
     },
     SET_USER_FILTER_BY_KEY: (state, { payload: { keycode, modifier } }) => {
       return state.setUserFilterByKey(keycode, modifier);
+    },
+    //  by keyword --------------------------------------------
+    ADD_BLOCK_KEYWORDS_OPTIONS: (state, { payload: value }) => {
+      return state.addBlockKeywordsOptions(value);
+    },
+    REMOVE_BLOCK_KEYWORDS_OPTIONS: (state, { payload: value }) => {
+      return state.removeBlockKeywordsOptions(value);
+    },
+    CHANGE_BLOCK_KEYWORDS_INPUT_VALUE: (state, { payload: value }) => {
+      return state.set("blockKeywordsInputValue", value);
+    },
+    ADD_NEW_ITEM_BY_INPUT_VALUE: (state, { payload: { value, modifier } }) => {
+      return state.addNewItemByInputValue(value, modifier);
     }
   },
   new State()

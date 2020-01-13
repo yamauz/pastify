@@ -10,18 +10,6 @@ module.exports = class Pastify {
     this.isCopiedBySelf = false;
   }
 
-  // pasteClip(props, { dataStore, settings, win }) {
-  //   const { id, mode } = props;
-  //   this.isCopiedBySelf = true;
-  //   const text = dataStore.getTextById(id);
-  //   CF.get("TEXT").write(text);
-  //   win.showLastActiveWindow(settings);
-  //   robot.keyTap("v", "control");
-
-  //   if (mode === "RETURN") win.focus();
-
-  //   return null;
-  // }
   copyClipId(props) {
     const { id } = props;
     this.isCopiedBySelf = true;
@@ -106,6 +94,52 @@ module.exports = class Pastify {
       });
 
     return null;
+  }
+
+  checkBlockCopying(clip, settings) {
+    if (this._checkBlockDataType(clip.format, settings)) {
+      return true;
+    }
+
+    switch (clip.format) {
+      case "TEXT":
+        if (this._checkBlockKeywords(clip.extracts.get("TEXT"), settings)) {
+          return true;
+        }
+      default:
+        break;
+    }
+
+    return false;
+  }
+
+  _checkBlockDataType(format, settings) {
+    let blocking = false;
+    const { blockDataTypeOpt } = settings.readPreferences();
+    const blockType = blockDataTypeOpt.map(opt => opt.value);
+    if (blockType.some(word => format.includes(word))) {
+      return true;
+    }
+    return blocking;
+  }
+
+  _checkBlockKeywords(textData, settings) {
+    const {
+      blockKeywordsOpt,
+      blockMaxTextLength,
+      blockMinTextLength
+    } = settings.readPreferences();
+    if (
+      textData.length < blockMinTextLength ||
+      textData.length > blockMaxTextLength
+    ) {
+      return true;
+    }
+    const blockwords = blockKeywordsOpt.map(opt => opt.value);
+    if (blockwords.some(word => textData.includes(word))) {
+      return true;
+    }
+    return false;
   }
 
   _pasteClip(settings, win, isReturn) {

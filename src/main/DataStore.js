@@ -25,12 +25,25 @@ module.exports = class DataStore {
   }
 
   createByUser(props, { win }) {
-    const clip = new Clip("TEXT", new Map([["TEXT", ""]]));
+    const { textValue } = props;
+    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]));
+    // const clip = new Clip("TEXT", new Map([["TEXT", ""]]));
     this.DB.get(this.storeName)
       .push(clip)
       .write();
     const args = { clip: [clip], mode: "MANUAL" };
     win.sendToRenderer("useIpc", "COPY", args);
+    // return clip.id;
+  }
+  createBySearchInputValue(props, { win }) {
+    const { textValue } = props;
+    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]));
+    this.DB.get(this.storeName)
+      .push(clip)
+      .write();
+    const args = { clip: [clip], mode: "AUTO" };
+    win.sendToRenderer("useIpc", "COPY", args);
+    return clip;
   }
   createByCopy(copiedData, win) {
     const { format, extracts } = copiedData;

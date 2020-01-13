@@ -15,8 +15,7 @@ module.exports = class Settings {
         height: 600,
         minWidth: 301,
         isMaximized: false,
-        isFold: false,
-        isCompact: false
+        isFold: false
       },
       FILTER: {
         filterName: "",
@@ -29,6 +28,19 @@ module.exports = class Settings {
         hotKeyFilterOpt: [],
         hashTagFilterOpt: [],
         languageFilterOpt: []
+      },
+      PREFERENCES: {
+        blockKeywordsOpt: [],
+        blockDataTypeOpt: [],
+        blockMinTextLength: 2,
+        blockMaxTextLength: 10,
+        blockWordLength: "",
+        launchKey: "shift",
+        maxTextLength: 1000,
+        maxImageHeight: 2048,
+        maxImageWidth: 2048,
+        disableClipListener: false,
+        isCompact: false
       }
     };
     this.adapter = new FileSync(this.store);
@@ -122,19 +134,26 @@ module.exports = class Settings {
     return this.DB.get("FILTER").value();
   }
 
+  readWin() {
+    return this.DB.get("WIN").value();
+  }
+  readPreferences() {
+    return this.DB.get("PREFERENCES").value();
+  }
+
   updateFilter(filterOpt) {
     this.DB.get("FILTER")
       .assign({ ...filterOpt })
       .write();
   }
 
-  // Windows
-  readWin() {
-    return this.DB.get("WIN").value();
-  }
-
   updateWin(props) {
     this.DB.get("WIN")
+      .assign({ ...props })
+      .write();
+  }
+  updatePreferences(props) {
+    this.DB.get("PREFERENCES")
       .assign({ ...props })
       .write();
   }

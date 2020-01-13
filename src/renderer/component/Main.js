@@ -166,6 +166,7 @@ const Main = props => {
   const handleKeyDown = useCallback(
     e => {
       const { shiftKey, ctrlKey, altKey } = e;
+      console.log(keycode(e));
 
       switch (keycode(e)) {
         case "=": {
@@ -195,13 +196,22 @@ const Main = props => {
           break;
         }
         case "space": {
+          if (!ctrlKey) return;
           const action = "clearFilterSortSettings";
           callActionOnItemList(action);
           setIdsFromDatastore();
           break;
         }
         case ";": {
+          if (!ctrlKey) return;
           const action = "showFilterSortSettings";
+          callActionOnItemList(action);
+          setIdsFromDatastore();
+          break;
+        }
+        case "/": {
+          if (!ctrlKey) return;
+          const action = "showPreferences";
           callActionOnItemList(action);
           setIdsFromDatastore();
           break;

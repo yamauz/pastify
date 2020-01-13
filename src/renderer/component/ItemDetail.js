@@ -8,6 +8,7 @@ import ImageDetail from "./ImageDetail";
 import SheetDetail from "./SheetDetail";
 import FileDetail from "./FileDetail";
 import FilterSettings from "./MainPanel/FilterSettings/FilterSettings";
+import Preferences from "./MainPanel/Preferences/Preferences";
 import _ from "lodash";
 
 const DetailWrapper = styled.div`
@@ -36,7 +37,7 @@ const ItemDetail = props => {
     case "filter-sort-settings":
       return <FilterSettings></FilterSettings>;
     case "preferences":
-      return <div>preferences</div>;
+      return <Preferences></Preferences>;
     case "DEFAULT":
       return <div>default</div>;
     case "ITEM":

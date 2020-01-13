@@ -14,8 +14,8 @@ const StateRecord = Record({
   winMaximize: false,
   isCompact: true,
   isFold: false,
-  detailType: "DEFAULT",
-  // detailType: "filter-sort-settings",
+  // detailType: "DEFAULT",
+  detailType: "preferences",
   moment: new Date().getTime(),
   addMode: "",
   itemsTimeLine: OrderedMap(),
@@ -69,7 +69,9 @@ const StateRecord = Record({
     ["STATUS", Map()],
     ["DATATYPE", Map()],
     ["SURROUND", Map()]
-  ])
+  ]),
+  blockKeywordsInputValue: "",
+  blockKeywordsOpt: []
 });
 
 class State extends StateRecord {
@@ -332,7 +334,8 @@ class State extends StateRecord {
     return this[command](filterId);
   }
   addNewItem() {
-    new Message("dataStore", "createByUser").dispatch();
+    const args = { textValue: "" };
+    new Message("dataStore", "createByUser", args).dispatch();
     return this;
   }
   trashAllItems() {
@@ -769,7 +772,7 @@ class State extends StateRecord {
   toggleListMode() {
     const isCompact = this.get("isCompact");
     const args = { isCompact: !isCompact };
-    new Message("settings", "updateWin", args).dispatch();
+    new Message("settings", "updatePreferences", args).dispatch();
     return this.set("isCompact", !isCompact);
   }
   updateWinState(props) {
@@ -888,6 +891,7 @@ class State extends StateRecord {
       );
       return this.set("searchOpt", _newSearchOpt);
     } else {
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       //onChange スペースキー/ブラー/クリア時
       const _opt = args;
       const _newSearchOpt = this._optionsToMap(_opt);
@@ -933,6 +937,31 @@ class State extends StateRecord {
     });
   }
 
+  addNewItemByInputValue(textValue, modifier) {
+    const args = { textValue };
+    const clip = new Message(
+      "dataStore",
+      "createBySearchInputValue",
+      args
+    ).dispatch();
+    const searchOpt = this.get("searchOpt");
+    const id = clip.id;
+    const isReturn = modifier.shiftKey;
+    const copyOnly = modifier.ctrlKey;
+    const copyAs = clip.mainFormat;
+    const surround =
+      searchOpt.get("SURROUND").size !== 0 && copyAs === "TEXT"
+        ? searchOpt.get("SURROUND").first()
+        : undefined;
+    const _args = { id, isReturn, copyOnly, copyAs, surround };
+    new Message("pastify", "copyClip", _args).dispatch();
+    return this.withMutations(state => {
+      state
+        .set("searchInputValue", "")
+        .set("searchOpt", this._getEmptySearchOpt());
+    });
+  }
+
   exportClips(exportPath) {
     const idsTimeLine = this.get("idsTimeLine").toArray();
     const _args = { idsTimeLine, exportPath };
@@ -954,6 +983,31 @@ class State extends StateRecord {
     console.log(itemsTimeLine.merge(allClipsRec));
     return this.set("itemsTimeLine", itemsTimeLine.merge(allClipsRec));
     // return this;
+  }
+
+  addBlockKeywordsOptions(keywords) {
+    const prevKeywords = this.get("blockKeywordsOpt");
+    const wordList = prevKeywords.map(keyword => keyword.value);
+    const blockKeywordsOpt = wordList.includes(keywords.value)
+      ? prevKeywords
+      : [...prevKeywords, keywords];
+    const args = { blockKeywordsOpt };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.withMutations(state => {
+      state
+        .set("blockKeywordsOpt", blockKeywordsOpt)
+        .set("blockKeywordsInputValue", "");
+    });
+  }
+  removeBlockKeywordsOptions(keywords) {
+    const blockKeywordsOpt = keywords === null ? [] : keywords;
+    const args = { blockKeywordsOpt };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.withMutations(state => {
+      state
+        .set("blockKeywordsOpt", blockKeywordsOpt)
+        .set("blockKeywordsInputValue", "");
+    });
   }
 
   _getModifierKeys() {
