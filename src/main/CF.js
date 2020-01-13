@@ -88,7 +88,17 @@ const CF = new Map([
     "TEXT",
     {
       fNum: 1,
-      extract: () => clipboard.readText(),
+      extract: settings => {
+        const { maxTextLength } = settings.readPreferences();
+        const clipText = clipboard.readText();
+        const textToExtract =
+          clipText.length > maxTextLength
+            ? clipText.slice(0, maxTextLength)
+            : clipText;
+
+        return textToExtract;
+        // return clipboard.readText();
+      },
       createTextToWrite: (clip, surround = undefined, dataStore) => {
         const _textTemp = expandTextMacro(clip.textData, dataStore);
         const _textToWrite =

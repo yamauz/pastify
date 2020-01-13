@@ -41,7 +41,7 @@ app.on("ready", () => {
     if (!validFormats || !validFormats.length) return;
 
     const clipboardExtractor = new ClipboardExtractor();
-    clipboardExtractor.extract(validFormats);
+    clipboardExtractor.extract(validFormats, settings);
 
     const copiedData = {
       format: validFormats[0],

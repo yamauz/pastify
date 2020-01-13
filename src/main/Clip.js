@@ -63,7 +63,6 @@ module.exports = class Clip {
     const { height } = this.extractDataList.get("IMAGE").getSize();
     const imageHeight =
       height <= DEFAULT_ITEM_HEIGHT ? height : DEFAULT_ITEM_HEIGHT;
-    console.log(imageHeight);
     this.itemHeight = imageHeight + DEFAULT_ITEM_HEIGHT;
   }
 

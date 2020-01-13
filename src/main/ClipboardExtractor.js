@@ -6,9 +6,9 @@ module.exports = class ClipboardExtractor {
   constructor() {
     this.extractDataList = new Map();
   }
-  extract(validFormats) {
+  extract(validFormats, settings) {
     for (const fmt of validFormats) {
-      const extractData = CF.get(fmt).extract();
+      const extractData = CF.get(fmt).extract(settings);
       this.extractDataList.set(fmt, extractData);
     }
   }
