@@ -41,6 +41,7 @@ module.exports = class Window {
 
     this.window = new BrowserWindow({
       title: "Pastify",
+      skipTaskbar: true,
       x,
       y,
       width,

@@ -1,30 +1,18 @@
-const { app, Menu, Tray, nativeImage } = require("electron");
+const { app } = require("electron");
 const Window = require("./Window");
 const Key = require("./Key");
 const ClipboardListener = require("./ClipboardListener");
 const ClipboardFormatFinder = require("./ClipboardFormatFinder");
 const ClipboardExtractor = require("./ClipboardExtractor");
 const Pastify = require("./Pastify");
+const PastifyTray = require("./PastifyTray");
 //DB
 const DataStore = require("./DataStore");
 const Filters = require("./Filters");
 const Settings = require("./Settings");
-const path = require("path");
-const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
+let tray;
 
 app.on("ready", () => {
-  const trayPath = path.join(distDir, "src/icon/icon.png");
-  const icon = nativeImage.createFromPath(trayPath);
-  tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate([
-    { label: "Item1", type: "normal" },
-    { label: "Item2", type: "normal" },
-    { label: "Item3", type: "normal" },
-    { label: "Item4", type: "normal" }
-  ]);
-  tray.setToolTip("This is my application.");
-  tray.setContextMenu(contextMenu);
-
   const clipboardListener = new ClipboardListener();
   const clipboardFormatFinder = new ClipboardFormatFinder();
   const dataStore = new DataStore();
@@ -32,6 +20,7 @@ app.on("ready", () => {
   const settings = new Settings();
   const pastify = new Pastify();
   const win = new Window(settings);
+  tray = new PastifyTray(settings);
   const key = new Key(win);
   key.register("shift", "");
   key.register("alt", "F11");
@@ -49,6 +38,11 @@ app.on("ready", () => {
       pastify.isCopiedBySelf = false;
       return;
     }
+    // const { disableClipListener } = settings.readPreferences();
+    // if (disableClipListener) {
+    //   console.log("disable listener");
+    //   return;
+    // }
 
     const validFormats = clipboardFormatFinder.getFormat();
     // check if array of clipboard format is not empty

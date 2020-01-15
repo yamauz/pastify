@@ -31,7 +31,7 @@ const CF = new Map([
     {
       fNum: 2,
       extract: () => {
-        console.log(clipboard.readImage().getBitmap().byteLength);
+        // console.log(clipboard.readImage().getBitmap().byteLength);
         return clipboard.readImage();
       },
       addText: (_, id) => {

@@ -97,10 +97,12 @@ module.exports = class Pastify {
   }
 
   checkBlockCopying(clip, settings) {
+    if (this._checkClipListener(settings)) {
+      return true;
+    }
     if (this._checkBlockDataType(clip.format, settings)) {
       return true;
     }
-
     switch (clip.format) {
       case "TEXT":
         if (this._checkBlockKeywords(clip.extracts.get("TEXT"), settings)) {
@@ -111,6 +113,11 @@ module.exports = class Pastify {
     }
 
     return false;
+  }
+
+  _checkClipListener(settings) {
+    const { disableClipListener } = settings.readPreferences();
+    return disableClipListener;
   }
 
   _checkBlockDataType(format, settings) {
