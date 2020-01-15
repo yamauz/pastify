@@ -27,7 +27,7 @@ app.on("ready", () => {
   // key.register("ctrl", "a");
   const instances = { dataStore, filters, settings, pastify, win, key };
   win.setIpcListener(instances);
-  win.setEventListener(settings);
+  win.setEventListener(settings, key);
   win.open(settings);
 
   clipboardListener.subscribe((hwnd, uMsg, wParam, lParam) => {
@@ -68,6 +68,7 @@ app.on("ready", () => {
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
+    console.log("");
     app.quit();
   }
 });

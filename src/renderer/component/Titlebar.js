@@ -64,13 +64,19 @@ const TitleBar = props => {
         <ControlWrapper onClick={() => updateWinState("alwaysOnTop")}>
           {setIcon("Stick", props)}
         </ControlWrapper>
-        <ControlWrapper onClick={() => updateWinState("minimize")}>
+        {/* <ControlWrapper onClick={() => updateWinState("hide")}>
           {setIcon("Minimize", props)}
-        </ControlWrapper>
+        </ControlWrapper> */}
         <ControlWrapper onClick={() => updateWinState("maximize")}>
           {setIcon("Maximize", props)}
         </ControlWrapper>
-        <ControlWrapperClose>{setIcon("Close", props)}</ControlWrapperClose>
+        <ControlWrapperClose
+          onClick={() => {
+            updateWinState("hide");
+          }}
+        >
+          {setIcon("Close", props)}
+        </ControlWrapperClose>
       </RightBlock>
     </Wrapper>
   );

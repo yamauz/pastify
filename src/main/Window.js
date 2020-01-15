@@ -37,7 +37,6 @@ module.exports = class Window {
       y,
       isMaximized
     } = settings.readWin();
-    console.log(settings.readWin());
 
     this.window = new BrowserWindow({
       title: "Pastify",
@@ -87,12 +86,16 @@ module.exports = class Window {
     });
   }
 
-  setEventListener(settings) {
-    this.window.on("blur", () => {
-      this.sendToRenderer("useIpc", "BLUR");
-    });
+  setEventListener(settings, key) {
     this.window.on("focus", () => {
       this.sendToRenderer("useIpc", "FOCUS");
+    });
+    this.window.on("blur", () => {
+      this.sendToRenderer("useIpc", "BLUR");
+      const { alwaysOnTop } = settings.readWin();
+      if (!alwaysOnTop && !key.shiftKey) {
+        this.hide();
+      }
     });
     this.window.on("always-on-top-changed", () => {
       settings.updateWin({ alwaysOnTop: !this.window.isAlwaysOnTop() });
@@ -163,6 +166,9 @@ module.exports = class Window {
         this.window.setSize(widthUnfold, height);
         break;
       }
+      case "hide":
+        this.window.hide();
+        break;
       case "alwaysOnTop":
         this.window.setAlwaysOnTop(!this.window.isAlwaysOnTop());
         break;
@@ -197,6 +203,9 @@ module.exports = class Window {
 
   show() {
     this.window.show();
+  }
+  hide() {
+    this.window.hide();
   }
 
   focus() {

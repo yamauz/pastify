@@ -43,8 +43,8 @@ module.exports = class Key {
               this.pressed = false;
             }, DURATION);
           } else {
+            this.win.show();
             robot.keyTap("f11", "alt");
-            // this.win.show();
             // this.win.focus();
             // this.win.foreground();
           }
