@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import styled from "@emotion/styled";
 import SortInput from "./SortInput";
 import BlockKeywordsInput from "./BlockKeywordsInput";
-import DataTypesInput from "./DataTypesInput";
+import BlockDataTypesInput from "./BlockDataTypesInput";
 import StatusInput from "./StatusInput";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
@@ -60,9 +60,9 @@ const Preferences = props => {
       <ContainerRight>
         <Title>Preferences</Title>
         <BlockKeywordsInput />
+        <BlockDataTypesInput />
         {/* <IdInput /> */}
         {/* <StatusInput /> */}
-        {/* <DataTypesInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}
         {/* <HotKeyInput /> */}

@@ -1,4 +1,4 @@
-const { app } = require("electron");
+const { app, Menu, Tray, nativeImage } = require("electron");
 const Window = require("./Window");
 const Key = require("./Key");
 const ClipboardListener = require("./ClipboardListener");
@@ -9,8 +9,22 @@ const Pastify = require("./Pastify");
 const DataStore = require("./DataStore");
 const Filters = require("./Filters");
 const Settings = require("./Settings");
+const path = require("path");
+const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
 
 app.on("ready", () => {
+  const trayPath = path.join(distDir, "src/icon/icon.png");
+  const icon = nativeImage.createFromPath(trayPath);
+  tray = new Tray(icon);
+  const contextMenu = Menu.buildFromTemplate([
+    { label: "Item1", type: "normal" },
+    { label: "Item2", type: "normal" },
+    { label: "Item3", type: "normal" },
+    { label: "Item4", type: "normal" }
+  ]);
+  tray.setToolTip("This is my application.");
+  tray.setContextMenu(contextMenu);
+
   const clipboardListener = new ClipboardListener();
   const clipboardFormatFinder = new ClipboardFormatFinder();
   const dataStore = new DataStore();

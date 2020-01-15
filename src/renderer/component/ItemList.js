@@ -302,6 +302,7 @@ const handleKeyDown = props => {
         copyClip(e);
         break;
       case "space":
+        if (e.ctrlKey) return;
         document.getElementById(`${idSelected}-option`).click();
         break;
       case "j":

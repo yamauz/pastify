@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 // import Select from "react-select";
-import {
-  setDataTypeFilterOptions,
-  setIdsFromDatastore
-} from "../../../actions";
+import { setBlockDatatypeOptions } from "../../../actions";
 import Select from "react-select";
 import defaultDataTypeOptions from "../../../../common/dataTypeOptions";
 
@@ -39,12 +36,8 @@ const FilterDescription = styled.div`
   margin-bottom: 5px;
 `;
 
-const DataTypesInput = props => {
-  const {
-    dataTypeFilterOpt,
-    setDataTypeFilterOptions,
-    setIdsFromDatastore
-  } = props;
+const BlockDatatypesInput = props => {
+  const { blockDatatypeOpt, setBlockDatatypeOptions } = props;
   return (
     <Wrapper>
       <FilterHeader>
@@ -59,13 +52,12 @@ const DataTypesInput = props => {
         placeholder={null}
         isMulti
         options={defaultDataTypeOptions}
-        // defaultValue={dataTypeFilterOpt}
-        value={dataTypeFilterOpt}
+        // defaultValue={blockDatatypeOpt}
+        value={blockDatatypeOpt}
         styles={customStyles}
         onChange={opt => {
           const options = opt === null ? [] : opt;
-          setDataTypeFilterOptions(options);
-          setIdsFromDatastore();
+          setBlockDatatypeOptions(options);
         }}
       />
     </Wrapper>
@@ -176,10 +168,9 @@ const customStyles = {
 };
 
 const mapStateToProps = state => ({
-  dataTypeFilterOpt: state.get("dataTypeFilterOpt")
+  blockDatatypeOpt: state.get("blockDatatypeOpt")
 });
 
 export default connect(mapStateToProps, {
-  setDataTypeFilterOptions,
-  setIdsFromDatastore
-})(DataTypesInput);
+  setBlockDatatypeOptions
+})(BlockDatatypesInput);

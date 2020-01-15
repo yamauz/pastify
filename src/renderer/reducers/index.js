@@ -272,6 +272,10 @@ export default handleActions(
     },
     ADD_NEW_ITEM_BY_INPUT_VALUE: (state, { payload: { value, modifier } }) => {
       return state.addNewItemByInputValue(value, modifier);
+    },
+    // Filter by data type ------------------------------------------
+    SET_BLOCK_DATATYPE_OPTIONS: (state, { payload: options }) => {
+      return state.setBlockDatatypeOptions(options);
     }
   },
   new State()

@@ -31,7 +31,7 @@ module.exports = class Settings {
       },
       PREFERENCES: {
         blockKeywordsOpt: [],
-        blockDataTypeOpt: [],
+        blockDatatypeOpt: [],
         blockMinTextLength: 2,
         blockMaxTextLength: 10,
         blockWordLength: "",

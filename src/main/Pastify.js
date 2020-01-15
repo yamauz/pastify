@@ -115,8 +115,8 @@ module.exports = class Pastify {
 
   _checkBlockDataType(format, settings) {
     let blocking = false;
-    const { blockDataTypeOpt } = settings.readPreferences();
-    const blockType = blockDataTypeOpt.map(opt => opt.value);
+    const { blockDatatypeOpt } = settings.readPreferences();
+    const blockType = blockDatatypeOpt.map(opt => opt.value);
     if (blockType.some(word => format.includes(word))) {
       return true;
     }

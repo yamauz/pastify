@@ -6,7 +6,6 @@ import popupKeyValue from "./../../common/popupKeyValue";
 import searchLabelOptionsAll from "./../../common/searchLabelOptionsAll";
 import searchInputOptionsAll from "./../../common/searchInputOptionsAll";
 import _ from "lodash";
-const dialog = window.require("electron").remote.dialog;
 
 const StateRecord = Record({
   alwaysOnTop: false,
@@ -71,7 +70,8 @@ const StateRecord = Record({
     ["SURROUND", Map()]
   ]),
   blockKeywordsInputValue: "",
-  blockKeywordsOpt: []
+  blockKeywordsOpt: [],
+  blockDatatypeOpt: []
 });
 
 class State extends StateRecord {
@@ -101,6 +101,10 @@ class State extends StateRecord {
     ).dispatch();
     const idsTimeLine = List(clipIdsFiltered);
     const filterOptSelected = new Message("settings", "readFilter").dispatch();
+    const preferencesOptSelected = new Message(
+      "settings",
+      "readPreferences"
+    ).dispatch();
     const { alwaysOnTop, isFold, isCompact } = new Message(
       "settings",
       "readWin"
@@ -114,6 +118,7 @@ class State extends StateRecord {
       idsTimeLine,
       filtersList,
       ...filterOptSelected,
+      ...preferencesOptSelected,
       hashTagOptions,
       keyOptions
     });
@@ -891,7 +896,6 @@ class State extends StateRecord {
       );
       return this.set("searchOpt", _newSearchOpt);
     } else {
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       //onChange スペースキー/ブラー/クリア時
       const _opt = args;
       const _newSearchOpt = this._optionsToMap(_opt);
@@ -1008,6 +1012,12 @@ class State extends StateRecord {
         .set("blockKeywordsOpt", blockKeywordsOpt)
         .set("blockKeywordsInputValue", "");
     });
+  }
+
+  setBlockDatatypeOptions(blockDatatypeOpt) {
+    const args = { blockDatatypeOpt };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockDatatypeOpt", blockDatatypeOpt);
   }
 
   _getModifierKeys() {
