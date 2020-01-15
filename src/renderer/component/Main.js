@@ -107,6 +107,7 @@ const Main = props => {
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
+      console.log(triger);
       switch (triger) {
         case "SHOW":
           document.getElementById("searchbar").focus();

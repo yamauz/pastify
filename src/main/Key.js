@@ -43,10 +43,7 @@ module.exports = class Key {
               this.pressed = false;
             }, DURATION);
           } else {
-            this.win.show();
             robot.keyTap("f11", "alt");
-            // this.win.focus();
-            // this.win.foreground();
           }
           break;
         case this.key.CTRL:
@@ -78,7 +75,7 @@ module.exports = class Key {
 
   _on_altF11() {
     globalShortcut.register("alt+F11", () => {
-      // this.win.show();
+      this.win.show();
       this.win.foreground();
       // this.win.focus();
     });

@@ -38,11 +38,6 @@ app.on("ready", () => {
       pastify.isCopiedBySelf = false;
       return;
     }
-    // const { disableClipListener } = settings.readPreferences();
-    // if (disableClipListener) {
-    //   console.log("disable listener");
-    //   return;
-    // }
 
     const validFormats = clipboardFormatFinder.getFormat();
     // check if array of clipboard format is not empty

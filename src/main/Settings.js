@@ -43,6 +43,7 @@ module.exports = class Settings {
         isCompact: false
       }
     };
+    this.disableClipListener = false;
     this.adapter = new FileSync(this.store);
     this.DB = low(this.adapter);
     this.DB.defaults(this.storeCategory).write();

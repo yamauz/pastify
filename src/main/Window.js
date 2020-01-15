@@ -76,6 +76,7 @@ module.exports = class Window {
     }
     console.log(`running on ${MODE} mode...`);
 
+    this.hide();
     this._openDevTools();
   }
 
@@ -91,10 +92,11 @@ module.exports = class Window {
       this.sendToRenderer("useIpc", "FOCUS");
     });
     this.window.on("blur", () => {
-      this.sendToRenderer("useIpc", "BLUR");
       const { alwaysOnTop } = settings.readWin();
       if (!alwaysOnTop && !key.shiftKey) {
         this.hide();
+      } else {
+        this.sendToRenderer("useIpc", "BLUR");
       }
     });
     this.window.on("always-on-top-changed", () => {

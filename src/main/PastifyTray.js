@@ -27,8 +27,7 @@ module.exports = class PastifyTray {
         label: "Pause",
         type: "checkbox",
         click: menu => {
-          const disableClipListener = menu.checked;
-          this.settings.updatePreferences({ disableClipListener });
+          this.settings.disableClipListener = menu.checked;
         }
       },
       {
