@@ -17,16 +17,16 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const FilterHeader = styled.div`
+const BlockHeader = styled.div`
   color: #bbbbbb;
 `;
 
-const FilterBy = styled.span`
+const BlockBy = styled.span`
   font-size: 12px;
   color: #dddddd;
 `;
 
-const FilterDescription = styled.div`
+const BlockDescription = styled.div`
   font-size: 10px;
   color: #bbbbbb;
   margin-bottom: 5px;
@@ -44,13 +44,13 @@ const BlockKeywordsInput = props => {
 
   return (
     <Wrapper>
-      <FilterHeader>
-        Filter : <FilterBy>Keywords</FilterBy>
-      </FilterHeader>
-      <FilterDescription>
+      <BlockHeader>
+        Block : <BlockBy>Keywords</BlockBy>
+      </BlockHeader>
+      <BlockDescription>
         Type a search word. A word with '-' in prefix, removes from search
         results. Allows multi-registration.
-      </FilterDescription>
+      </BlockDescription>
       <CreatableSelect
         inputId={"keyword-input"}
         autoFocus={true}

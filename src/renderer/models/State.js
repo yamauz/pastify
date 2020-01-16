@@ -71,7 +71,11 @@ const StateRecord = Record({
   ]),
   blockKeywordsInputValue: "",
   blockKeywordsOpt: [],
-  blockDatatypeOpt: []
+  blockDatatypeOpt: [],
+  blockMaxTextLength: "",
+  blockMinTextLength: "",
+  blockMaxImageWidth: "",
+  blockMaxImageHeight: ""
 });
 
 class State extends StateRecord {
@@ -456,7 +460,6 @@ class State extends StateRecord {
         const _shiftKey = _keySplit.includes("shift") ? true : false;
         const _ctrlKey = _keySplit.includes("ctrl") ? true : false;
         const _altKey = _keySplit.includes("alt") ? true : false;
-        console.log(_keyCode);
         if (
           keyCode === _keyCode &&
           modifier.shiftKey === _shiftKey &&
@@ -981,10 +984,8 @@ class State extends StateRecord {
   }
 
   addImportClips(clips) {
-    console.log(clips);
     const allClipsRec = clips.map(clip => [clip.id, new ItemValue(clip)]);
     const itemsTimeLine = this.get("itemsTimeLine");
-    console.log(itemsTimeLine.merge(allClipsRec));
     return this.set("itemsTimeLine", itemsTimeLine.merge(allClipsRec));
     // return this;
   }
@@ -1018,6 +1019,28 @@ class State extends StateRecord {
     const args = { blockDatatypeOpt };
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("blockDatatypeOpt", blockDatatypeOpt);
+  }
+
+  setBlockMaxTextLength(blockMaxTextLength) {
+    const args = { blockMaxTextLength };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockMaxTextLength", blockMaxTextLength);
+  }
+  setBlockMinTextLength(blockMinTextLength) {
+    const args = { blockMinTextLength };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockMinTextLength", blockMinTextLength);
+  }
+
+  setBlockMaxImageWidth(blockMaxImageWidth) {
+    const args = { blockMaxImageWidth };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockMaxImageWidth", blockMaxImageWidth);
+  }
+  setBlockMaxImageHeight(blockMaxImageHeight) {
+    const args = { blockMaxImageHeight };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockMaxImageHeight", blockMaxImageHeight);
   }
 
   _getModifierKeys() {

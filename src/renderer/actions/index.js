@@ -100,7 +100,11 @@ export const {
   addBlockKeywordsOptions,
   removeBlockKeywordsOptions,
   addNewItemByInputValue,
-  setBlockDatatypeOptions
+  setBlockDatatypeOptions,
+  setBlockMaxTextLength,
+  setBlockMinTextLength,
+  setBlockMaxImageWidth,
+  setBlockMaxImageHeight
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -211,6 +215,10 @@ export const {
   CHANGE_BLOCK_KEYWORDS_INPUT_VALUE: value => value,
   ADD_NEW_ITEM_BY_INPUT_VALUE: (value, modifier) => ({ value, modifier }),
   // Block by data type -----------------------------------------
-  SET_BLOCK_DATATYPE_OPTIONS: options => options
-  // SET_SEARCH_OPT: keycode => keycode
+  SET_BLOCK_DATATYPE_OPTIONS: options => options,
+  // Block by text length -----------------------------------------
+  SET_BLOCK_MAX_TEXT_LENGTH: value => value,
+  SET_BLOCK_MIN_TEXT_LENGTH: value => value,
+  SET_BLOCK_MAX_IMAGE_WIDTH: value => value,
+  SET_BLOCK_MAX_IMAGE_HEIGHT: value => value
 });

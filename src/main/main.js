@@ -51,11 +51,8 @@ app.on("ready", () => {
       extracts: clipboardExtractor.extractDataList
     };
     const blocking = pastify.checkBlockCopying(copiedData, settings);
+    if (blocking) return;
 
-    if (blocking) {
-      console.log("blocking by user filter");
-      return;
-    }
     dataStore.createByCopy(copiedData, win);
   });
 });
@@ -63,7 +60,7 @@ app.on("ready", () => {
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    console.log("");
+    console.log("quit");
     app.quit();
   }
 });

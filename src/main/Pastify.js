@@ -105,10 +105,23 @@ module.exports = class Pastify {
       return true;
     }
     switch (clip.format) {
-      case "TEXT":
-        if (this._checkBlockKeywords(clip.extracts.get("TEXT"), settings)) {
+      case "TEXT": {
+        const _textData = clip.extracts.get("TEXT");
+        if (this._checkBlockTextLength(_textData, settings)) {
           return true;
         }
+        if (this._checkBlockKeywords(_textData, settings)) {
+          return true;
+        }
+        break;
+      }
+      case "IMAGE": {
+        const _imageSize = clip.extracts.get("IMAGE").getSize();
+        if (this._checkBlockImageSize(_imageSize, settings)) {
+          return true;
+        }
+        break;
+      }
       default:
         break;
     }
@@ -116,30 +129,71 @@ module.exports = class Pastify {
     return false;
   }
 
+  _checkBlockImageSize(imageSize, settings) {
+    let blocking = false;
+    const { width, height } = imageSize;
+    const {
+      blockMaxImageWidth,
+      blockMaxImageHeight
+    } = settings.readPreferences();
+    console.log(width);
+    console.log(height);
+    if (blockMaxImageWidth !== "" && width > blockMaxImageWidth) {
+      console.log("blocked by max-image-width", blockMaxImageWidth);
+      blocking = true;
+      return blocking;
+    }
+    if (blockMaxImageHeight !== "" && height > blockMaxImageHeight) {
+      console.log("blocked by max-image-height", blockMaxImageHeight);
+      blocking = true;
+      return blocking;
+    }
+    return blocking;
+  }
+
   _checkBlockDataType(format, settings) {
     let blocking = false;
     const { blockDatatypeOpt } = settings.readPreferences();
     const blockType = blockDatatypeOpt.map(opt => opt.value);
     if (blockType.some(word => format.includes(word))) {
+      console.log("blocked by data type");
       return true;
+    }
+    return blocking;
+  }
+  _checkBlockTextLength(textData, settings) {
+    let blocking = false;
+    const {
+      blockMaxTextLength,
+      blockMinTextLength
+    } = settings.readPreferences();
+    if (
+      blockMaxTextLength !== "" &&
+      blockMinTextLength !== "" &&
+      blockMaxTextLength - blockMinTextLength <= 0
+    ) {
+      console.log("incorrect range", blockMaxTextLength - blockMinTextLength);
+      blocking = true;
+      return blocking;
+    }
+    if (blockMaxTextLength !== "" && textData.length > blockMaxTextLength) {
+      console.log("blocked by max-text-length", blockMaxTextLength);
+      blocking = true;
+      return blocking;
+    }
+    if (blockMinTextLength !== "" && textData.length < blockMinTextLength) {
+      console.log("blocked by min-text-length", blockMaxTextLength);
+      blocking = true;
+      return blocking;
     }
     return blocking;
   }
 
   _checkBlockKeywords(textData, settings) {
-    const {
-      blockKeywordsOpt,
-      blockMaxTextLength,
-      blockMinTextLength
-    } = settings.readPreferences();
-    if (
-      textData.length < blockMinTextLength ||
-      textData.length > blockMaxTextLength
-    ) {
-      return true;
-    }
+    const { blockKeywordsOpt } = settings.readPreferences();
     const blockwords = blockKeywordsOpt.map(opt => opt.value);
     if (blockwords.some(word => textData.includes(word))) {
+      console.log("blocked by text-keywords", blockwords);
       return true;
     }
     return false;

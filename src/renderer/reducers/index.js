@@ -276,6 +276,18 @@ export default handleActions(
     // Filter by data type ------------------------------------------
     SET_BLOCK_DATATYPE_OPTIONS: (state, { payload: options }) => {
       return state.setBlockDatatypeOptions(options);
+    },
+    SET_BLOCK_MAX_TEXT_LENGTH: (state, { payload: value }) => {
+      return state.setBlockMaxTextLength(value);
+    },
+    SET_BLOCK_MIN_TEXT_LENGTH: (state, { payload: value }) => {
+      return state.setBlockMinTextLength(value);
+    },
+    SET_BLOCK_MAX_IMAGE_WIDTH: (state, { payload: value }) => {
+      return state.setBlockMaxImageWidth(value);
+    },
+    SET_BLOCK_MAX_IMAGE_HEIGHT: (state, { payload: value }) => {
+      return state.setBlockMaxImageHeight(value);
     }
   },
   new State()

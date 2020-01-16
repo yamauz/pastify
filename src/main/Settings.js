@@ -32,8 +32,10 @@ module.exports = class Settings {
       PREFERENCES: {
         blockKeywordsOpt: [],
         blockDatatypeOpt: [],
-        blockMinTextLength: 2,
-        blockMaxTextLength: 10,
+        blockMinTextLength: "",
+        blockMaxTextLength: "",
+        blockMaxImageWidth: "",
+        blockMaxImageHeight: "",
         blockWordLength: "",
         launchKey: "shift",
         maxTextLength: 1000,

@@ -21,16 +21,16 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const FilterHeader = styled.div`
+const BlockHeader = styled.div`
   color: #bbbbbb;
 `;
 
-const FilterBy = styled.span`
+const BlockBy = styled.span`
   font-size: 12px;
   color: #dddddd;
 `;
 
-const FilterDescription = styled.div`
+const BlockDescription = styled.div`
   font-size: 10px;
   color: #bbbbbb;
   margin-bottom: 5px;
@@ -40,12 +40,12 @@ const BlockDatatypesInput = props => {
   const { blockDatatypeOpt, setBlockDatatypeOptions } = props;
   return (
     <Wrapper>
-      <FilterHeader>
-        Filter : <FilterBy>Datatype</FilterBy>
-      </FilterHeader>
-      <FilterDescription>
+      <BlockHeader>
+        Block : <BlockBy>Datatype</BlockBy>
+      </BlockHeader>
+      <BlockDescription>
         Select Datatype. Allows multi-registration.
-      </FilterDescription>
+      </BlockDescription>
       <Select
         noOptionsMessage={() => null}
         menuPosition={"fixed"}

@@ -5,12 +5,13 @@ import styled from "@emotion/styled";
 import SortInput from "./SortInput";
 import BlockKeywordsInput from "./BlockKeywordsInput";
 import BlockDataTypesInput from "./BlockDataTypesInput";
+import BlockTextLengthRangeInput from "./BlockTextLengthRangeInput";
+import BlockImageSizeRangeInput from "./BlockImageSizeRangeInput";
 import StatusInput from "./StatusInput";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
 import IdInput from "./IdInput";
-import FilterNameInput from "./FilterNameInput";
 import KeybindingsInput from "./KeybindingsInput";
 import SaveButton from "./SaveButton";
 
@@ -52,6 +53,11 @@ const Title = styled.div`
   font-size: 20px;
   margin-bottom: 20px;
 `;
+const SubTitle = styled.div`
+  color: #dddddd;
+  font-size: 16px;
+  margin-bottom: 20px;
+`;
 
 const Preferences = props => {
   return (
@@ -59,9 +65,11 @@ const Preferences = props => {
       <ContainerLeft></ContainerLeft>
       <ContainerRight>
         <Title>Preferences</Title>
+        <SubTitle>Block Clips</SubTitle>
         <BlockKeywordsInput />
         <BlockDataTypesInput />
-        {/* <IdInput /> */}
+        <BlockTextLengthRangeInput />
+        <BlockImageSizeRangeInput />
         {/* <StatusInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}
