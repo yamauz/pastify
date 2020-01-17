@@ -122,11 +122,29 @@ module.exports = class Pastify {
         }
         break;
       }
+      case "FILE": {
+        const _fileNames = clip.extracts.get(clip.format);
+        if (this._checkBlockFileNames(_fileNames, settings)) {
+          return true;
+        }
+        break;
+      }
       default:
         break;
     }
 
     return false;
+  }
+
+  _checkBlockFileNames(fileNames, settings) {
+    let blocking = false;
+    const { blockMaxFileCount } = settings.readPreferences();
+    if (blockMaxFileCount !== "" && fileNames.length > blockMaxFileCount) {
+      console.log("blocked by max-file-count", blockMaxFileCount);
+      blocking = true;
+      return blocking;
+    }
+    return blocking;
   }
 
   _checkBlockImageSize(imageSize, settings) {

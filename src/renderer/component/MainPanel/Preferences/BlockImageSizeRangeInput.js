@@ -88,7 +88,6 @@ const Component = props => {
               if (_inputVal !== "" && !_regex.test(_inputVal)) {
                 return;
               }
-              console.log("vcccccccccc");
               setBlockMaxImageHeight(_inputVal);
             }}
           ></NameInput>

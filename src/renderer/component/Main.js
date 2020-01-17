@@ -107,9 +107,10 @@ const Main = props => {
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
-      console.log(triger);
       switch (triger) {
         case "SHOW":
+          const { command } = args;
+          console.log(command);
           document.getElementById("searchbar").focus();
           break;
         case "COPY": {
@@ -145,8 +146,6 @@ const Main = props => {
         default:
           break;
       }
-      console.log("rebuild_useIpc");
-      // console.log(new Date().getTime());
       ReactTooltip.rebuild();
     });
 
@@ -167,7 +166,6 @@ const Main = props => {
   const handleKeyDown = useCallback(
     e => {
       const { shiftKey, ctrlKey, altKey } = e;
-      console.log(keycode(e));
 
       switch (keycode(e)) {
         case "=": {

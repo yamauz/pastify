@@ -20,7 +20,7 @@ module.exports = class PastifyTray {
         label: "Open",
         type: "normal",
         click: menu => {
-          robot.keyTap("f11", "alt");
+          robot.keyTap("f12", "command");
         }
       },
       {

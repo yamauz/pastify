@@ -21,9 +21,9 @@ app.on("ready", () => {
   const pastify = new Pastify();
   const win = new Window(settings);
   tray = new PastifyTray(settings);
-  const key = new Key(win);
-  key.register("shift", "");
-  key.register("alt", "F11");
+  const key = new Key(win, settings);
+  key.register("shift", "", settings);
+  key.register("super", "F12"); // win + f12
   // key.register("ctrl", "a");
   const instances = { dataStore, filters, settings, pastify, win, key };
   win.setIpcListener(instances);

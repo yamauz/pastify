@@ -7,7 +7,8 @@ import BlockKeywordsInput from "./BlockKeywordsInput";
 import BlockDataTypesInput from "./BlockDataTypesInput";
 import BlockTextLengthRangeInput from "./BlockTextLengthRangeInput";
 import BlockImageSizeRangeInput from "./BlockImageSizeRangeInput";
-import StatusInput from "./StatusInput";
+import BlockFileCountInput from "./BlockFileCountInput";
+import LaunchKeyInput from "./LaunchKeyInput";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
@@ -51,7 +52,7 @@ const ContainerRight = styled.div`
 const Title = styled.div`
   color: #dddddd;
   font-size: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 `;
 const SubTitle = styled.div`
   color: #dddddd;
@@ -65,11 +66,14 @@ const Preferences = props => {
       <ContainerLeft></ContainerLeft>
       <ContainerRight>
         <Title>Preferences</Title>
-        <SubTitle>Block Clips</SubTitle>
+        <SubTitle>Launch Options</SubTitle>
+        <LaunchKeyInput />
+        <SubTitle>Block Options</SubTitle>
         <BlockKeywordsInput />
         <BlockDataTypesInput />
         <BlockTextLengthRangeInput />
         <BlockImageSizeRangeInput />
+        <BlockFileCountInput />
         {/* <StatusInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}

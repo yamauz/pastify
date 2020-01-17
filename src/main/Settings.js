@@ -32,17 +32,23 @@ module.exports = class Settings {
       PREFERENCES: {
         blockKeywordsOpt: [],
         blockDatatypeOpt: [],
-        blockMinTextLength: "",
-        blockMaxTextLength: "",
+        blockMinTextLength: 2,
+        blockMaxTextLength: 10000,
         blockMaxImageWidth: "",
         blockMaxImageHeight: "",
+        blockMaxFileCount: 5,
         blockWordLength: "",
         launchKey: "shift",
         maxTextLength: 1000,
         maxImageHeight: 2048,
         maxImageWidth: 2048,
         disableClipListener: false,
-        isCompact: false
+        isCompact: false,
+        launchKeyDuration: 200,
+        launchKeyOpt: {
+          label: "Shift *2",
+          value: "shift-double"
+        }
       }
     };
     this.disableClipListener = false;

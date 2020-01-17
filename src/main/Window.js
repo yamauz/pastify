@@ -202,6 +202,10 @@ module.exports = class Window {
   sendToRenderer(event, useIpc, triger, arg) {
     this.window.webContents.send(event, useIpc, triger, arg);
   }
+  showPastify(command) {
+    this.show();
+    this.foreground(command);
+  }
 
   show() {
     this.window.show();
@@ -214,7 +218,7 @@ module.exports = class Window {
     this.window.focus();
   }
 
-  foreground() {
+  foreground(command) {
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
     this.window.setSkipTaskbar(false);
     const foregroundHWnd = user32.GetForegroundWindow();
@@ -227,9 +231,9 @@ module.exports = class Window {
     user32.AttachThreadInput(windowThreadProcessId, currentThreadId, 0);
     this.window.setSkipTaskbar(true);
 
-    // robot.keyTap("f11", "alt");
     this.window.focus();
-    this.sendToRenderer("useIpc", "SHOW");
+    const args = { command };
+    this.sendToRenderer("useIpc", "SHOW", args);
   }
 
   showLastActiveWindow(settings) {

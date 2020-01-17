@@ -75,7 +75,10 @@ const StateRecord = Record({
   blockMaxTextLength: "",
   blockMinTextLength: "",
   blockMaxImageWidth: "",
-  blockMaxImageHeight: ""
+  blockMaxImageHeight: "",
+  blockMaxFileCount: "",
+  launchKeyOpt: [],
+  launchKeyDuration: ""
 });
 
 class State extends StateRecord {
@@ -1020,6 +1023,16 @@ class State extends StateRecord {
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("blockDatatypeOpt", blockDatatypeOpt);
   }
+  setLaunchKeyOptions(launchKeyOpt) {
+    const args = { launchKeyOpt };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("launchKeyOpt", launchKeyOpt);
+  }
+  setLaunchKeyDuration(launchKeyDuration) {
+    const args = { launchKeyDuration };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("launchKeyDuration", launchKeyDuration);
+  }
 
   setBlockMaxTextLength(blockMaxTextLength) {
     const args = { blockMaxTextLength };
@@ -1041,6 +1054,11 @@ class State extends StateRecord {
     const args = { blockMaxImageHeight };
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("blockMaxImageHeight", blockMaxImageHeight);
+  }
+  setBlockMaxFileCount(blockMaxFileCount) {
+    const args = { blockMaxFileCount };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("blockMaxFileCount", blockMaxFileCount);
   }
 
   _getModifierKeys() {

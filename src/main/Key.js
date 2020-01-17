@@ -1,12 +1,17 @@
 const { globalShortcut } = require("electron");
 const ioHook = require("../util/iohook");
 const robot = require("robotjs");
+const { LAUNCH_KEY_DURATION } = require("../common/settings");
 
 module.exports = class Key {
-  constructor(win) {
+  constructor(win, settings) {
     ioHook.start();
     this.win = win;
+    this.settings = settings;
     this.pressed = false;
+    this.shiftFirstPressed = false;
+    this.ctrlFirstPressed = false;
+    this.altFirstPressed = false;
     this.key = {
       SHIFT: 42,
       CTRL: 29,
@@ -15,11 +20,12 @@ module.exports = class Key {
     this.shiftKey = false;
     this.ctrlKey = false;
     this.altKey = false;
+    this.launchCommand = "";
   }
 
-  register(modifier, key) {
+  register(modifier, key, settings) {
     const keyEvent = `_on_${modifier}${key}`;
-    this[keyEvent]();
+    this[keyEvent](settings);
   }
 
   getModifierKey() {
@@ -31,26 +37,50 @@ module.exports = class Key {
     return keys;
   }
 
-  _on_shift() {
-    const DURATION = 300;
+  _on_shift(settings) {
+    let DURATION;
     ioHook.on("keyup", e => {
       switch (e.keycode) {
         case this.key.SHIFT:
+          DURATION = this._setDuration(settings);
           this.shiftKey = false;
-          if (!this.pressed) {
-            this.pressed = true;
+          if (!this.shiftFirstPressed) {
+            this.shiftFirstPressed = true;
             setTimeout(() => {
-              this.pressed = false;
+              this.shiftFirstPressed = false;
             }, DURATION);
           } else {
-            robot.keyTap("f11", "alt");
+            setTimeout(() => {
+              this._setLaunchCommand("shift");
+              robot.keyTap("f12", "command");
+            }, 10);
           }
           break;
         case this.key.CTRL:
           this.ctrlKey = false;
+          DURATION = this._setDuration(settings);
+          if (!this.ctrlFirstPressed) {
+            this.ctrlFirstPressed = true;
+            setTimeout(() => {
+              this.ctrlFirstPressed = false;
+            }, DURATION);
+          } else {
+            this._setLaunchCommand("ctrl");
+            robot.keyTap("f12", "command");
+          }
           break;
         case this.key.ALT:
           this.altKey = false;
+          DURATION = this._setDuration(settings);
+          if (!this.altFirstPressed) {
+            this.altFirstPressed = true;
+            setTimeout(() => {
+              this.altFirstPressed = false;
+            }, DURATION);
+          } else {
+            this._setLaunchCommand("alt");
+            robot.keyTap("f12", "command");
+          }
           break;
         default:
           break;
@@ -73,11 +103,21 @@ module.exports = class Key {
     });
   }
 
-  _on_altF11() {
-    globalShortcut.register("alt+F11", () => {
-      this.win.show();
-      this.win.foreground();
-      // this.win.focus();
+  _on_superF12() {
+    const launchKeys = [
+      "Super+F12",
+      "Shift+Super+F12",
+      "Ctrl+Super+F12",
+      "Alt+Super+F12"
+    ];
+    // win + f12
+    launchKeys.forEach(key => {
+      globalShortcut.register(key, () => {
+        const { launchKeyOpt } = this.settings.readPreferences();
+        if (this.launchCommand === launchKeyOpt.value) {
+          this.win.showPastify(this.launchCommand);
+        }
+      });
     });
   }
 
@@ -85,5 +125,36 @@ module.exports = class Key {
     globalShortcut.register("ctrl+a", () => {
       this.win.showLastActiveWindow();
     });
+  }
+
+  _setDuration(settings) {
+    const { launchKeyDuration } = settings.readPreferences();
+    const duration =
+      launchKeyDuration === "" ? LAUNCH_KEY_DURATION : launchKeyDuration;
+    return duration;
+  }
+
+  _setLaunchCommand(baseKey) {
+    let _modKeys;
+    switch (baseKey) {
+      case "shift":
+        _modKeys = ["ctrlKey", "altKey"];
+        break;
+      case "ctrl":
+        _modKeys = ["shiftKey", "altKey"];
+        break;
+      case "alt":
+        _modKeys = ["shiftKey", "ctrlKey"];
+        break;
+      default:
+        break;
+    }
+    if (!this[_modKeys[0]] && this[_modKeys[1]]) {
+      this.launchCommand = `${baseKey}-double-with-${_modKeys[1]}`;
+    } else if (this[_modKeys[0]] && !this[_modKeys[1]]) {
+      this.launchCommand = `${baseKey}-double-with-${_modKeys[0]}`;
+    } else {
+      this.launchCommand = `${baseKey}-double`;
+    }
   }
 };

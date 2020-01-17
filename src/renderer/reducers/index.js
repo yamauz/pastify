@@ -260,6 +260,13 @@ export default handleActions(
     SET_USER_FILTER_BY_KEY: (state, { payload: { keycode, modifier } }) => {
       return state.setUserFilterByKey(keycode, modifier);
     },
+    // [Preferences] Launch Key-------------------------------------
+    SET_LAUNCH_KEY_OPTIONS: (state, { payload: options }) => {
+      return state.setLaunchKeyOptions(options);
+    },
+    SET_LAUNCH_KEY_DURATION: (state, { payload: value }) => {
+      return state.setLaunchKeyDuration(value);
+    },
     //  by keyword --------------------------------------------
     ADD_BLOCK_KEYWORDS_OPTIONS: (state, { payload: value }) => {
       return state.addBlockKeywordsOptions(value);
@@ -288,6 +295,9 @@ export default handleActions(
     },
     SET_BLOCK_MAX_IMAGE_HEIGHT: (state, { payload: value }) => {
       return state.setBlockMaxImageHeight(value);
+    },
+    SET_BLOCK_MAX_FILE_COUNT: (state, { payload: value }) => {
+      return state.setBlockMaxFileCount(value);
     }
   },
   new State()
