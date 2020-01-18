@@ -103,11 +103,11 @@ export const {
   setBlockDatatypeOptions,
   setBlockMaxTextLength,
   setBlockMinTextLength,
-  setBlockMaxImageWidth,
-  setBlockMaxImageHeight,
+  setBlockMaxImageSize,
   setLaunchKeyOptions,
   setLaunchKeyDuration,
-  setBlockMaxFileCount
+  setBlockMaxFileCount,
+  setMaxTextLength
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -215,17 +215,18 @@ export const {
   // [Preferences] Launch Key-------------------------------------
   SET_LAUNCH_KEY_OPTIONS: options => options,
   SET_LAUNCH_KEY_DURATION: value => value,
-  // Block by keyword --------------------------------------------
+  // [Preferences] Block by keyword --------------------------------------------
   ADD_BLOCK_KEYWORDS_OPTIONS: value => value,
   REMOVE_BLOCK_KEYWORDS_OPTIONS: value => value,
   CHANGE_BLOCK_KEYWORDS_INPUT_VALUE: value => value,
   ADD_NEW_ITEM_BY_INPUT_VALUE: (value, modifier) => ({ value, modifier }),
-  // Block by data type -----------------------------------------
+  // [Preferences] Block by data type -----------------------------------------
   SET_BLOCK_DATATYPE_OPTIONS: options => options,
-  // Block by text length -----------------------------------------
+  // [Preferences]Block by text length -----------------------------------------
   SET_BLOCK_MAX_TEXT_LENGTH: value => value,
   SET_BLOCK_MIN_TEXT_LENGTH: value => value,
-  SET_BLOCK_MAX_IMAGE_WIDTH: value => value,
-  SET_BLOCK_MAX_IMAGE_HEIGHT: value => value,
-  SET_BLOCK_MAX_FILE_COUNT: value => value
+  SET_BLOCK_MAX_IMAGE_SIZE: value => value,
+  SET_BLOCK_MAX_FILE_COUNT: value => value,
+  // [Preferences] Launch Key-------------------------------------
+  SET_MAX_TEXT_LENGTH: value => value
 });

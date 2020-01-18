@@ -150,19 +150,14 @@ module.exports = class Pastify {
   _checkBlockImageSize(imageSize, settings) {
     let blocking = false;
     const { width, height } = imageSize;
-    const {
-      blockMaxImageWidth,
-      blockMaxImageHeight
-    } = settings.readPreferences();
-    console.log(width);
-    console.log(height);
-    if (blockMaxImageWidth !== "" && width > blockMaxImageWidth) {
-      console.log("blocked by max-image-width", blockMaxImageWidth);
+    const { blockMaxImageSize } = settings.readPreferences();
+    if (blockMaxImageSize !== "" && width > blockMaxImageSize) {
+      console.log("blocked by max-image-size", blockMaxImageSize);
       blocking = true;
       return blocking;
     }
-    if (blockMaxImageHeight !== "" && height > blockMaxImageHeight) {
-      console.log("blocked by max-image-height", blockMaxImageHeight);
+    if (blockMaxImageSize !== "" && height > blockMaxImageSize) {
+      console.log("blocked by max-image-size", blockMaxImageSize);
       blocking = true;
       return blocking;
     }

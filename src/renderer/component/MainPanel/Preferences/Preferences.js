@@ -9,6 +9,7 @@ import BlockTextLengthRangeInput from "./BlockTextLengthRangeInput";
 import BlockImageSizeRangeInput from "./BlockImageSizeRangeInput";
 import BlockFileCountInput from "./BlockFileCountInput";
 import LaunchKeyInput from "./LaunchKeyInput";
+import MaxTextLengthInput from "./MaxTextLengthInput";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
@@ -74,6 +75,8 @@ const Preferences = props => {
         <BlockTextLengthRangeInput />
         <BlockImageSizeRangeInput />
         <BlockFileCountInput />
+        <SubTitle>Resize Options</SubTitle>
+        <MaxTextLengthInput />
         {/* <StatusInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}

@@ -64,7 +64,7 @@ const Component = props => {
             maxLength={6}
             onChange={e => {
               const _inputVal = e.target.value;
-              const _regex = /[0-9]+$/;
+              const _regex = /^[0-9]+$/;
               if (_inputVal !== "" && !_regex.test(_inputVal)) {
                 return;
               }
@@ -79,7 +79,7 @@ const Component = props => {
             maxLength={6}
             onChange={e => {
               const _inputVal = e.target.value;
-              const _regex = /[0-9]+$/;
+              const _regex = /^[0-9]+$/;
               if (_inputVal !== "" && !_regex.test(_inputVal)) {
                 return;
               }

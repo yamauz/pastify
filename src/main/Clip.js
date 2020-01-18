@@ -6,10 +6,12 @@ const mapToObject = require("../util/mapToObject");
 const { DEFAULT_ITEM_HEIGHT } = require("../common/settings");
 
 module.exports = class Clip {
-  constructor(mainFormat, extractDataList) {
+  constructor(mainFormat, extractDataList, settings) {
+    this.settings = settings;
     this.id = `@${shortid.generate()}`;
     this.date = new Date().getTime();
     this.mainFormat = mainFormat;
+    this.textData = "";
     this.lang = "";
     this.tag = [];
     this.key = "";
@@ -27,10 +29,24 @@ module.exports = class Clip {
     if (!this.extractDataList.has("TEXT")) this._addText();
     if (this.extractDataList.has("IMAGE")) {
       this._getItemHeight();
+      this._resizeImage();
       this._saveImageAsFile();
     }
 
-    const textData = this.extractDataList.get("TEXT");
+    const textExtract = this.extractDataList.get("TEXT");
+    this.textData = textExtract;
+
+    switch (this.mainFormat) {
+      case "TEXT":
+        this._resizeText();
+        break;
+      case "IMAGE":
+        break;
+
+      default:
+        break;
+    }
+
     this.extractDataList.delete("TEXT");
     const contents = mapToObject(this.extractDataList);
 
@@ -45,11 +61,22 @@ module.exports = class Clip {
       itemTagHeight: this.itemTagHeight,
       isFaved: this.isFaved,
       isTrashed: this.isTrashed,
-      textData,
+      textData: this.textData,
       contents
     };
 
     return pastifyData;
+  }
+
+  _resizeImage() {}
+
+  _resizeText() {
+    const { maxTextLength } = this.settings.readPreferences();
+    if (maxTextLength !== "" && this.textData.length > maxTextLength) {
+      console.log("Clip text data is resized.");
+      console.log(`${this.textData.length} =>${maxTextLength}`);
+      this.textData = this.textData.slice(0, maxTextLength);
+    }
   }
 
   _addText() {
@@ -67,7 +94,27 @@ module.exports = class Clip {
   }
 
   _saveImageAsFile() {
-    const imageBuf = this.extractDataList.get("IMAGE").toPNG();
+    const clipImage = this.extractDataList.get("IMAGE");
+    const { maxImageSize } = this.settings.readPreferences();
+
+    const { width, height } = clipImage.getSize();
+    const compareTarget = width > height ? "width" : "height";
+    const compareSize = width > height ? width : height;
+
+    let resize = false;
+    if (maxImageSize !== "" && compareSize > maxImageSize) {
+      resize = true;
+    }
+
+    let imageBuf;
+    if (resize) {
+      console.log("Clip image size is resized.");
+      console.log(`${compareTarget} : ${compareSize} =>${maxImageSize}`);
+      imageBuf = clipImage.resize({ [compareTarget]: maxImageSize }).toPNG();
+    } else {
+      imageBuf = clipImage.toPNG();
+    }
+
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     fs.writeFileSync(
       `${path.resolve(distDir, "resource", "temp", "images")}\\${this.id}`,

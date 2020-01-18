@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
-import { setBlockMaxImageSize } from "../../../actions";
+import { setMaxTextLength } from "../../../actions";
 
 import styled from "@emotion/styled";
 
@@ -23,7 +23,7 @@ const Description = styled.div`
   margin-bottom: 5px;
 `;
 
-const NameInput = styled.input`
+const FileCountInput = styled.input`
   margin-right: 10px;
   background-color: #333335;
   border: none;
@@ -37,41 +37,35 @@ const NameInput = styled.input`
   }
 `;
 
-const InputWrapper = styled.div`
-  display: flex;
-`;
-
-const MaxWrapper = styled.div``;
-
 const Component = props => {
-  const { setBlockMaxImageSize, blockMaxImageSize } = props;
+  const { setMaxTextLength, maxTextLength } = props;
 
   return (
     <Wrapper>
       <BlockHeader>
-        Block : <BlockBy>Max Image Size</BlockBy>
+        Resize : <BlockBy>Text Length</BlockBy>
       </BlockHeader>
-      <Description>Width (px)</Description>
-      <NameInput
-        value={blockMaxImageSize}
-        maxLength={4}
+      <Description>Max Text Length</Description>
+      <FileCountInput
+        value={maxTextLength}
+        maxLength={6}
         onChange={e => {
           const _inputVal = e.target.value;
           const _regex = /^[0-9]+$/;
           if (_inputVal !== "" && !_regex.test(_inputVal)) {
             return;
           }
-          setBlockMaxImageSize(_inputVal);
+          setMaxTextLength(_inputVal);
         }}
-      ></NameInput>
+      ></FileCountInput>
     </Wrapper>
   );
 };
 
 const mapStateToProps = state => ({
-  blockMaxImageSize: state.get("blockMaxImageSize")
+  maxTextLength: state.get("maxTextLength")
 });
 
 export default connect(mapStateToProps, {
-  setBlockMaxImageSize
+  setMaxTextLength
 })(Component);

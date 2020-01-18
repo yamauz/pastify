@@ -50,10 +50,8 @@ module.exports = class Key {
               this.shiftFirstPressed = false;
             }, DURATION);
           } else {
-            setTimeout(() => {
-              this._setLaunchCommand("shift");
-              robot.keyTap("f12", "command");
-            }, 10);
+            this._setLaunchCommand("shift");
+            robot.keyTap("f12", "command");
           }
           break;
         case this.key.CTRL:

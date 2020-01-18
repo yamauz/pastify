@@ -10,8 +10,9 @@ const TRASH_LIMIT_DAY = 24;
 const DELETE_LIMIT_DAY = 24;
 
 module.exports = class DataStore {
-  constructor() {
-    this.resourcePath = this._createResoucePath();
+  constructor(settings) {
+    this.settings = settings;
+    this.resourcePath = this._getResoucePath();
     this.storeName = "CLIPS";
     this.store = `${this.resourcePath}//${this.storeName}`;
     this.storeCategory = {
@@ -26,7 +27,8 @@ module.exports = class DataStore {
 
   createByUser(props, { win }) {
     const { textValue } = props;
-    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]));
+    const settings = this.settings;
+    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]), settings);
     // const clip = new Clip("TEXT", new Map([["TEXT", ""]]));
     this.DB.get(this.storeName)
       .push(clip)
@@ -37,7 +39,8 @@ module.exports = class DataStore {
   }
   createBySearchInputValue(props, { win }) {
     const { textValue } = props;
-    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]));
+    const settings = this.settings;
+    const clip = new Clip("TEXT", new Map([["TEXT", textValue]]), settings);
     this.DB.get(this.storeName)
       .push(clip)
       .write();
@@ -47,7 +50,8 @@ module.exports = class DataStore {
   }
   createByCopy(copiedData, win) {
     const { format, extracts } = copiedData;
-    const clip = new Clip(format, extracts);
+    const settings = this.settings;
+    const clip = new Clip(format, extracts, settings);
     this.DB.get(this.storeName)
       .push(clip)
       .write();
@@ -336,36 +340,9 @@ module.exports = class DataStore {
       .value();
   }
 
-  _createResoucePath() {
+  _getResoucePath() {
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     const resourcePath = path.resolve(distDir, "resource");
-    const tempPath = path.resolve(resourcePath, "temp");
-    const imagesPath = path.resolve(tempPath, "images");
-    const filesPath = path.resolve(tempPath, "files");
-    const exportPath = path.resolve(tempPath, "export");
-    const importPath = path.resolve(tempPath, "import");
-    const exportImagePath = path.resolve(exportPath, "images");
-    if (!fs.existsSync(resourcePath)) {
-      fs.mkdirSync(resourcePath);
-    }
-    if (!fs.existsSync(tempPath)) {
-      fs.mkdirSync(tempPath);
-    }
-    if (!fs.existsSync(imagesPath)) {
-      fs.mkdirSync(imagesPath);
-    }
-    if (!fs.existsSync(filesPath)) {
-      fs.mkdirSync(filesPath);
-    }
-    if (!fs.existsSync(exportPath)) {
-      fs.mkdirSync(exportPath);
-      if (!fs.existsSync(exportImagePath)) {
-        fs.mkdirSync(exportImagePath);
-      }
-    }
-    if (!fs.existsSync(importPath)) {
-      fs.mkdirSync(importPath);
-    }
     return resourcePath;
   }
 
