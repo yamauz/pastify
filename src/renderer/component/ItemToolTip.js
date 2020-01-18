@@ -24,6 +24,9 @@ const Wrapper = styled.div`
   position: relative;
   background-color: #111514;
   height: 100%;
+  /* overflow: overlay; */
+  /* border: solid 1px red; */
+  /* height: 230px; */
   width: 140px;
   font-style: sans-serif;
   color: #dcdcdc;
@@ -162,23 +165,19 @@ const Component = props => {
           id={"item-tooltip"}
           activeKey={"Fav"}
         >
-          <MenuItemGroup title="Edit Status" key="editclip">
-            {EDITCLIP.map(action => {
-              const labelShow = getClipLabelShow(clip, action);
-              return createMenuItem(action, labelShow);
-            })}
-          </MenuItemGroup>
-          <MenuItemGroup title="Paste as" key="pasteas">
-            {PASTEAS.map(action => {
-              const disabled = getClipDisabled(clip, action);
-              return createMenuItem(action, action.label, disabled);
-            })}
-          </MenuItemGroup>
-          <MenuItemGroup title="Other" key="other">
-            {OTHER.map(action => {
-              return createMenuItem(action, action.label);
-            })}
-          </MenuItemGroup>
+          {EDITCLIP.map(action => {
+            const labelShow = getClipLabelShow(clip, action);
+            return createMenuItem(action, labelShow);
+          })}
+          <Divider></Divider>
+          {PASTEAS.map(action => {
+            const disabled = getClipDisabled(clip, action);
+            return createMenuItem(action, action.label, disabled);
+          })}
+          <Divider></Divider>
+          {OTHER.map(action => {
+            return createMenuItem(action, action.label);
+          })}
         </Menu>
       )}
     </Wrapper>

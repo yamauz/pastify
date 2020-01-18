@@ -13,6 +13,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   height: 100%;
   background-color: #404040;
+  cursor: default;
+  pointer-events: none;
 `;
 
 const Left = styled.div`

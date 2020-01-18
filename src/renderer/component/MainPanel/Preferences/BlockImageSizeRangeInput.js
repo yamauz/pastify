@@ -9,10 +9,10 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const BlockHeader = styled.div`
+const Header = styled.div`
   color: #bbbbbb;
 `;
-const BlockBy = styled.span`
+const By = styled.span`
   font-size: 12px;
   color: #dddddd;
 `;
@@ -37,20 +37,14 @@ const NameInput = styled.input`
   }
 `;
 
-const InputWrapper = styled.div`
-  display: flex;
-`;
-
-const MaxWrapper = styled.div``;
-
 const Component = props => {
   const { setBlockMaxImageSize, blockMaxImageSize } = props;
 
   return (
     <Wrapper>
-      <BlockHeader>
-        Block : <BlockBy>Max Image Size</BlockBy>
-      </BlockHeader>
+      <Header>
+        Block : <By>Max Image Size</By>
+      </Header>
       <Description>Width (px)</Description>
       <NameInput
         value={blockMaxImageSize}

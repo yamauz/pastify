@@ -298,7 +298,7 @@ const Main = props => {
                 left = left + 22;
                 setToolTipArrowPos("up");
               } else {
-                top = top - 245;
+                top = top - 168;
                 left = left + 22;
                 setToolTipArrowPos("down");
               }
