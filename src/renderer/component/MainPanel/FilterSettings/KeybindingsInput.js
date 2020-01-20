@@ -37,7 +37,7 @@ const Component = props => {
     <Wrapper>
       <FilterHeader>Keybindings</FilterHeader>
       <FilterDescription>
-        Type a key from<HighLight> A-Z,0-9</HighLight> with modifier key from
+        Type a key from<HighLight> A-Z</HighLight> with modifier key
         <HighLight> Shift,Ctrl,Alt</HighLight>
         <br />
         CAUTION : This setting will overrides if same keybinding already exists.
@@ -63,7 +63,7 @@ const Component = props => {
           const ALT = altKey ? "Alt+" : "";
           if (shiftKey || ctrlKey || altKey) {
             const keyPressed = keycode(e).toUpperCase();
-            const regx = /^[0-9A-Z]$/;
+            const regx = /^[A-Z]$/;
             if (
               regx.test(keyPressed) &&
               keyPressed !== "SHIFT" &&

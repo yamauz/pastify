@@ -143,6 +143,14 @@ const Main = props => {
         case "RESIZE":
           const { isFold } = args;
           setMainFold(isFold);
+          const focusElmId = document.activeElement.id;
+          if (
+            isFold &&
+            focusElmId !== "item-list" &&
+            focusElmId !== "searchbar"
+          ) {
+            document.getElementById("searchbar").focus();
+          }
           break;
         default:
           break;
