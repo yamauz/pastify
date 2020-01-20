@@ -36,11 +36,13 @@ module.exports = class Clip {
     const textExtract = this.extractDataList.get("TEXT");
     this.textData = textExtract;
 
+    console.log(this.mainFormat);
     switch (this.mainFormat) {
       case "TEXT":
         this._resizeText();
         break;
-      case "IMAGE":
+      case "FILE":
+        this._resizeFile();
         break;
 
       default:
@@ -68,7 +70,17 @@ module.exports = class Clip {
     return pastifyData;
   }
 
-  _resizeImage() {}
+  _resizeFile() {
+    const { maxFileLength } = this.settings.readPreferences();
+    const files = this.extractDataList.get("FILE");
+    if (maxFileLength !== "" && files.length > maxFileLength) {
+      console.log("Clip file length is resized.");
+      console.log(`${files.length} =>${maxFileLength}`);
+      const filesResized = files.slice(0, maxFileLength);
+      this.extractDataList.set("FILE", filesResized);
+      this.textData = filesResized.join("\n");
+    }
+  }
 
   _resizeText() {
     const { maxTextLength } = this.settings.readPreferences();
@@ -110,15 +122,15 @@ module.exports = class Clip {
     if (resize) {
       console.log("Clip image size is resized.");
       console.log(`${compareTarget} : ${compareSize} =>${maxImageSize}`);
-      imageBuf = clipImage.resize({ [compareTarget]: maxImageSize }).toPNG();
+      imageBuf = clipImage.resize({ [compareTarget]: Number(maxImageSize) });
     } else {
-      imageBuf = clipImage.toPNG();
+      imageBuf = clipImage;
     }
 
     const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
     fs.writeFileSync(
       `${path.resolve(distDir, "resource", "temp", "images")}\\${this.id}`,
-      imageBuf
+      imageBuf.toPNG()
     );
     this.extractDataList.delete("IMAGE");
   }

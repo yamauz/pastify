@@ -298,6 +298,18 @@ export default handleActions(
     },
     SET_MAX_TEXT_LENGTH: (state, { payload: value }) => {
       return state.setMaxTextLength(value);
+    },
+    SET_MAX_IMAGE_SIZE: (state, { payload: value }) => {
+      return state.setMaxImageSize(value);
+    },
+    SET_MAX_FILE_LENGTH: (state, { payload: value }) => {
+      return state.setMaxFileLength(value);
+    },
+    SAVE_CLIP_FOR_APPLY_LABEL: (state, { payload: id }) => {
+      return state.saveClipForApplyLabel(id);
+    },
+    APPLY_CLIP_LABEL: (state, { payload: id }) => {
+      return state.applyClipLabel(id);
     }
   },
   new State()

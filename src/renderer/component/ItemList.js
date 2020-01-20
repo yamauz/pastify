@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactTooltip from "react-tooltip";
 import styled from "@emotion/styled";
 import keycode from "keycode";
-import shortid from "shortid";
-import keyCode from "../../common/keycode";
 import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
-import { Tab } from "../../util/react-web-tabs-item/lib";
 // Components
 import Item from "./Item";
 import ItemCompact from "./ItemCompact";
@@ -23,7 +20,9 @@ import {
   favItem,
   copyClip,
   toggleModalVisibility,
-  storeItemOnModalOpen
+  storeItemOnModalOpen,
+  saveClipForApplyLabel,
+  applyClipLabel
 } from "../actions";
 import _ from "lodash";
 import { ArrowKeyStepper, AutoSizer, List } from "react-virtualized";
@@ -250,7 +249,9 @@ const handleKeyDown = props => {
     isCompact,
     copyClip,
     toggleModalVisibility,
-    storeItemOnModalOpen
+    storeItemOnModalOpen,
+    saveClipForApplyLabel,
+    applyClipLabel
   } = props;
   // no action when no item on list
   if (ids.size === 0) return;
@@ -319,6 +320,12 @@ const handleKeyDown = props => {
       case "l":
         toggleModalVisibility(idSelected);
         storeItemOnModalOpen(idSelected);
+        break;
+      case "s":
+        saveClipForApplyLabel(idSelected);
+        break;
+      case "a":
+        applyClipLabel(idSelected);
         break;
       case "tab":
         document.getElementById("searchbar").focus();
@@ -518,5 +525,7 @@ export default connect(mapStateToProps, {
   copyClip,
   deleteClipCompletely,
   toggleModalVisibility,
-  storeItemOnModalOpen
+  storeItemOnModalOpen,
+  saveClipForApplyLabel,
+  applyClipLabel
 })(ItemList);

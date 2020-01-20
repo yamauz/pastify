@@ -40,6 +40,7 @@ module.exports = class Settings {
         launchKey: "shift",
         maxTextLength: 5,
         maxImageSize: 640,
+        maxFileLength: 5,
         disableClipListener: false,
         isCompact: false,
         launchKeyDuration: 200,

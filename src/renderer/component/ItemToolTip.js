@@ -7,7 +7,9 @@ import {
   deleteIds,
   deleteClipCompletely,
   copyClipId,
-  copyClip
+  copyClip,
+  saveClipForApplyLabel,
+  applyClipLabel
 } from "../actions";
 import ReactTooltip from "react-tooltip";
 import keycode from "keycode";
@@ -85,7 +87,9 @@ const handleAction = props => {
     deleteIds,
     deleteClipCompletely,
     copyClipId,
-    copyClip
+    copyClip,
+    saveClipForApplyLabel,
+    applyClipLabel
   } = props;
   return info => {
     info.domEvent.stopPropagation();
@@ -118,6 +122,12 @@ const handleAction = props => {
         break;
       case "Sheet":
         copyClip(info.domEvent, "SHEET");
+        break;
+      case "Save Label":
+        saveClipForApplyLabel(id);
+        break;
+      case "Apply Label":
+        applyClipLabel(id);
         break;
       default:
         break;
@@ -173,6 +183,10 @@ const Component = props => {
           {PASTEAS.map(action => {
             const disabled = getClipDisabled(clip, action);
             return createMenuItem(action, action.label, disabled);
+          })}
+          <Divider></Divider>
+          {LABEL.map(action => {
+            return createMenuItem(action, action.label);
           })}
           <Divider></Divider>
           {OTHER.map(action => {
@@ -240,6 +254,10 @@ const PASTEAS = [
   { label: "Sheet", shortcutKey: "3" }
 ];
 const OTHER = [{ label: "Copy Clip ID", shortcutKey: "@" }];
+const LABEL = [
+  { label: "Save Label", shortcutKey: "S" },
+  { label: "Apply Label", shortcutKey: "A" }
+];
 
 const mapStateToProps = state => ({
   idsTimeLine: state.get("idsTimeLine"),
@@ -254,5 +272,7 @@ export default connect(mapStateToProps, {
   deleteIds,
   deleteClipCompletely,
   copyClipId,
-  copyClip
+  copyClip,
+  saveClipForApplyLabel,
+  applyClipLabel
 })(Component);

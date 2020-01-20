@@ -10,6 +10,8 @@ import BlockImageSizeRangeInput from "./BlockImageSizeRangeInput";
 import BlockFileCountInput from "./BlockFileCountInput";
 import LaunchKeyInput from "./LaunchKeyInput";
 import MaxTextLengthInput from "./MaxTextLengthInput";
+import MaxImageSize from "./MaxImageSize";
+import MaxFileLength from "./MaxFileLength";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
@@ -77,6 +79,8 @@ const Preferences = props => {
         <BlockFileCountInput />
         <SubTitle>Resize Options</SubTitle>
         <MaxTextLengthInput />
+        <MaxImageSize />
+        <MaxFileLength />
         {/* <StatusInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}

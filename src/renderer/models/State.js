@@ -6,6 +6,8 @@ import popupKeyValue from "./../../common/popupKeyValue";
 import searchLabelOptionsAll from "./../../common/searchLabelOptionsAll";
 import searchInputOptionsAll from "./../../common/searchInputOptionsAll";
 import _ from "lodash";
+import * as React from "react";
+import toast from "toasted-notes";
 
 const StateRecord = Record({
   alwaysOnTop: false,
@@ -13,6 +15,7 @@ const StateRecord = Record({
   winMaximize: false,
   isCompact: true,
   isFold: false,
+  notify: true,
   // detailType: "DEFAULT",
   detailType: "preferences",
   moment: new Date().getTime(),
@@ -78,7 +81,9 @@ const StateRecord = Record({
   blockMaxFileCount: "",
   launchKeyOpt: [],
   launchKeyDuration: "",
-  maxTextLength: ""
+  maxTextLength: "",
+  maxImageSize: "",
+  clipForApplyLabel: undefined
 });
 
 class State extends StateRecord {
@@ -272,7 +277,7 @@ class State extends StateRecord {
   favItem(id) {
     const keyPath = ["itemsTimeLine", id, "isFaved"];
     const isFaved = !this.getIn(keyPath);
-    // this._updateItems(id, { isFaved });
+    isFaved ? this._toast("fav item") : this._toast("unfav item");
     const value = { isFaved };
     new Message("dataStore", "update", { id, value }).dispatch();
     return this.setIn(keyPath, isFaved);
@@ -1061,6 +1066,50 @@ class State extends StateRecord {
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("maxTextLength", maxTextLength);
   }
+  setMaxImageSize(maxImageSize) {
+    const args = { maxImageSize };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("maxImageSize", maxImageSize);
+  }
+  setMaxFileLength(maxFileLength) {
+    const args = { maxFileLength };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("maxFileLength", maxFileLength);
+  }
+  saveClipForApplyLabel(id) {
+    const clip = this._getClipStateById(id);
+    this._toast("Saved Clip Label");
+    return this.set("clipForApplyLabel", clip);
+  }
+  applyClipLabel(idSelected) {
+    if (this.get("clipForApplyLabel") === undefined) {
+      return this;
+    } else {
+      this._toast("Apply Clip Label");
+      const { id, lang, tag, key } = this.get("clipForApplyLabel");
+      const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
+        "itemsTimeLine",
+        id,
+        prop
+      ]);
+      console.log(keyPath);
+
+      const value = keyPath.reduce((acc, path) => {
+        const prop = path[2];
+        acc[prop] = this.getIn(path);
+        return acc;
+      }, {});
+      console.log(value);
+      new Message("dataStore", "update", { id: idSelected, value }).dispatch();
+
+      return this.withMutations(state => {
+        state
+          .setIn(["itemsTimeLine", idSelected, "key"], key)
+          .setIn(["itemsTimeLine", idSelected, "tag"], tag)
+          .setIn(["itemsTimeLine", idSelected, "lang"], lang);
+      });
+    }
+  }
 
   _getModifierKeys() {
     return new Message("key", "getModifierKey", {}).dispatch();
@@ -1120,6 +1169,16 @@ class State extends StateRecord {
   }
 
   _deleteClip(clip) {}
+
+  _toast(message) {
+    const notify = this.get("notify");
+    if (notify) {
+      toast.notify(message, {
+        position: "bottom-right",
+        duration: 1000
+      });
+    }
+  }
 }
 
 export default State;

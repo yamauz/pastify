@@ -38,6 +38,7 @@ import "rodal/lib/rodal.css";
 import "electron-react-titlebar/assets/style.css";
 import styled from "@emotion/styled";
 import "../styles/rc-menu.css";
+import "../styles/toasted-notes.css";
 
 const Wrapper = styled.div`
   display: grid;

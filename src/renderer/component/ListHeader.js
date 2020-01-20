@@ -19,7 +19,6 @@ const Wrapper = styled.div`
   color: #b5b5b5;
   width: 301px;
   cursor: default;
-  pointer-events: none;
 `;
 
 const Left = styled.div`

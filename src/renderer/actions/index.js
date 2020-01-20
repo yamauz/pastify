@@ -107,7 +107,11 @@ export const {
   setLaunchKeyOptions,
   setLaunchKeyDuration,
   setBlockMaxFileCount,
-  setMaxTextLength
+  setMaxTextLength,
+  setMaxImageSize,
+  setMaxFileLength,
+  saveClipForApplyLabel,
+  applyClipLabel
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -227,6 +231,10 @@ export const {
   SET_BLOCK_MIN_TEXT_LENGTH: value => value,
   SET_BLOCK_MAX_IMAGE_SIZE: value => value,
   SET_BLOCK_MAX_FILE_COUNT: value => value,
-  // [Preferences] Launch Key-------------------------------------
-  SET_MAX_TEXT_LENGTH: value => value
+  // [Preferences] Resize-------------------------------------
+  SET_MAX_TEXT_LENGTH: value => value,
+  SET_MAX_IMAGE_SIZE: value => value,
+  SET_MAX_FILE_LENGTH: value => value,
+  SAVE_CLIP_FOR_APPLY_LABEL: id => id,
+  APPLY_CLIP_LABEL: id => id
 });
