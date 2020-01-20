@@ -39,9 +39,12 @@ app.on("ready", () => {
     if (uMsg !== 797) return;
     if (wParam === 0) return;
     if (pastify.isCopiedBySelf) {
+      console.log("Blocked because saved clipboard self");
       pastify.isCopiedBySelf = false;
       return;
     }
+    if (win.checkCopiedSelf()) return;
+    console.log("pass");
 
     const validFormats = clipboardFormatFinder.getFormat();
     // check if array of clipboard format is not empty

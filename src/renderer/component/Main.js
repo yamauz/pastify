@@ -109,6 +109,10 @@ const Main = props => {
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
       switch (triger) {
+        case "TEST":
+          const { appName } = args;
+          console.log(appName);
+          break;
         case "SHOW":
           const { command } = args;
           console.log(command);

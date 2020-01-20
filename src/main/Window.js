@@ -4,6 +4,7 @@ const { ipcMain } = require("electron");
 const { WIDTH_UNFOLD } = require("../common/settings");
 const _ = require("lodash");
 const { BrowserWindow } = require("electron");
+const MODE = process.env.NODE_ENV;
 const user32 = new ffi.Library("user32", {
   GetActiveWindow: ["pointer", []],
   GetWindow: ["pointer", ["pointer", "int32"]],
@@ -23,7 +24,12 @@ const user32 = new ffi.Library("user32", {
   SetForegroundWindow: ["bool", ["pointer"]]
 });
 const kernel32 = new ffi.Library("kernel32", {
-  GetCurrentThreadId: ["uint32", []]
+  GetCurrentThreadId: ["uint32", []],
+  OpenProcess: ["pointer", ["uint32", "int", "uint32"]]
+});
+
+const psapi = new ffi.Library("psapi", {
+  GetModuleBaseNameW: ["uint32", ["pointer", "pointer", "pointer", "uint32"]]
 });
 
 module.exports = class Window {
@@ -67,7 +73,6 @@ module.exports = class Window {
     this.isResizedByFolding = false;
   }
   open() {
-    const MODE = process.env.NODE_ENV;
     // Check running mode by NODE_ENV
     if (MODE === "development") {
       this.window.loadURL("http://localhost:8080");
@@ -286,5 +291,36 @@ module.exports = class Window {
     const bl = user32.GetClassNameW(foregroundHWnd, pnameBuf, pnameLength);
     const className = ref.reinterpretUntilZeros(pnameBuf, bl).toString("ucs2");
     return className;
+  }
+
+  checkCopiedSelf() {
+    const curerntWindowHandle = user32.GetForegroundWindow();
+    const lpdwProcessId = ref.refType(ref.types.ulong);
+    const pidAddress = ref.alloc(lpdwProcessId);
+    const tid = user32.GetWindowThreadProcessId(
+      curerntWindowHandle,
+      pidAddress
+    );
+    const pid = pidAddress.readInt32LE(0);
+
+    const curerntProcessHandle = kernel32.OpenProcess(2097151, false, pid);
+
+    const pnameLength = 1024;
+    const pnameBuf = Buffer.alloc(pnameLength);
+    pnameBuf.type = ref.types.CString;
+    const bl = psapi.GetModuleBaseNameW(
+      curerntProcessHandle,
+      null,
+      pnameBuf,
+      1024
+    );
+    const appName = ref.reinterpretUntilZeros(pnameBuf, bl).toString("ucs2");
+    console.log(appName);
+    if (appName === "Pastify.exe" || appName === "electron.exe") {
+      console.log("Blocked because copied on self");
+      return true;
+    } else {
+      return false;
+    }
   }
 };
