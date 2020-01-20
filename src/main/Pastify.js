@@ -61,9 +61,13 @@ module.exports = class Pastify {
       zlib: { level: 9 } // Sets the compression level.
     });
     archive.pipe(output);
-    archive.file(exportJSONPath, { name: path.basename(exportJSONPath) });
+    archive.file(exportJSONPath, {
+      name: `__PASTIFY__/${path.basename(exportJSONPath)}`
+    });
     imageClipsPath.forEach(imgPath => {
-      archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
+      archive.file(imgPath, {
+        name: `__PASTIFY__/images/${path.basename(imgPath)}`
+      });
     });
     archive.finalize();
     output.on("close", function() {
@@ -80,7 +84,36 @@ module.exports = class Pastify {
 
     const unzipPath = `${path.resolve(distDir, "resource", "temp", "import")}`;
     fs.createReadStream(importPath)
-      .pipe(unzipper.Extract({ path: unzipPath }))
+      .pipe(unzipper.Parse())
+      .on("entry", function(entry) {
+        const fileName = entry.path;
+        const rootDir = fileName.split("/")[0];
+        const imageDir = fileName.split("/")[1];
+        if (rootDir === "__PASTIFY__") {
+          let unzipFileName;
+          if (imageDir === "images") {
+            unzipFileName = `${path.resolve(
+              distDir,
+              unzipPath,
+              "images",
+              path.basename(fileName)
+            )}`;
+          } else {
+            unzipFileName = `${path.resolve(
+              distDir,
+              unzipPath,
+              path.basename(fileName)
+            )}`;
+          }
+          entry.pipe(fs.createWriteStream(unzipFileName));
+        } else {
+          console.log("invalid export file");
+          entry.autodrain();
+        }
+      })
+      .on("error", () => {
+        console.log("error!!!");
+      })
       .promise()
       .then(() => {
         const importJSONPath = `${path.resolve(

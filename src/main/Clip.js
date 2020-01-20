@@ -29,7 +29,6 @@ module.exports = class Clip {
     if (!this.extractDataList.has("TEXT")) this._addText();
     if (this.extractDataList.has("IMAGE")) {
       this._getItemHeight();
-      this._resizeImage();
       this._saveImageAsFile();
     }
 

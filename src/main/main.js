@@ -44,9 +44,9 @@ app.on("ready", () => {
       return;
     }
     if (win.checkCopiedSelf()) return;
-    console.log("pass");
 
     const validFormats = clipboardFormatFinder.getFormat();
+    console.log(validFormats);
     // check if array of clipboard format is not empty
     if (!validFormats || !validFormats.length) return;
 
@@ -80,8 +80,9 @@ const createResoucePath = () => {
   const imagesPath = path.resolve(tempPath, "images");
   const filesPath = path.resolve(tempPath, "files");
   const exportPath = path.resolve(tempPath, "export");
-  const importPath = path.resolve(tempPath, "import");
   const exportImagePath = path.resolve(exportPath, "images");
+  const importPath = path.resolve(tempPath, "import");
+  const importImagePath = path.resolve(importPath, "images");
   if (!fs.existsSync(resourcePath)) {
     fs.mkdirSync(resourcePath);
   }
@@ -102,6 +103,9 @@ const createResoucePath = () => {
   }
   if (!fs.existsSync(importPath)) {
     fs.mkdirSync(importPath);
+    if (!fs.existsSync(importImagePath)) {
+      fs.mkdirSync(importImagePath);
+    }
   }
   return resourcePath;
 };

@@ -315,7 +315,6 @@ module.exports = class Window {
       1024
     );
     const appName = ref.reinterpretUntilZeros(pnameBuf, bl).toString("ucs2");
-    console.log(appName);
     if (appName === "Pastify.exe" || appName === "electron.exe") {
       console.log("Blocked because copied on self");
       return true;

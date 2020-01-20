@@ -199,6 +199,11 @@ class State extends StateRecord {
       statusFilterOpt[0].value.hasOwnProperty("isTrashed") &&
       statusFilterOpt[0].value.isTrashed
     ) {
+      if (clip.isTrashed) {
+        this._toast(`Recover : ${clip.id}`);
+      } else {
+        this._toast(`Trash : ${clip.id}`);
+      }
       return this._setClipState(clip.id, "isTrashed", !clip.isTrashed);
     }
 
@@ -214,6 +219,7 @@ class State extends StateRecord {
     // console.log(`nextRow : ${nextRow}`);
     // console.log(`nextId : ${nextId}`);
 
+    this._toast(`Trash : ${clip.id}`);
     return this.withMutations(state => {
       state
         .setIn(["itemsTimeLine", clip.id, "isTrashed"], !clip.isTrashed)
@@ -1051,7 +1057,6 @@ class State extends StateRecord {
   }
 
   setBlockMaxImageSize(blockMaxImageSize) {
-    console.log("aaaaaaaaaaaaaaaaaa");
     const args = { blockMaxImageSize };
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("blockMaxImageSize", blockMaxImageSize);
