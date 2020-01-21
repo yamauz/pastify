@@ -241,7 +241,7 @@ const Container = props => {
 const checkTags = (key, tag, lang) => {
   const hasKey = key === "" ? false : true;
   const hasHashTags = tag.length === 0 ? false : true;
-  const hasLang = lang === "" ? false : true;
+  const hasLang = lang.length === 0 ? false : true;
   let hasTag;
   if (hasKey || hasHashTags || hasLang) {
     hasTag = true;

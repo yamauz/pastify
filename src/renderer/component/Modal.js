@@ -24,7 +24,7 @@ const Modal = props => {
   } = props;
   const items = props[`items${menuTabSelected}`];
   const itemProps = items.get(idSelected) || {
-    lang: "",
+    lang: [],
     key: [],
     tag: []
   };
@@ -43,9 +43,9 @@ const Modal = props => {
         }}
         duration={50}
         showCloseButton={false}
-        // closeOnEsc={true}
+        closeOnEsc={true}
         customStyles={{
-          backgroundColor: "rgb(34, 39, 41)",
+          backgroundColor: "#111514",
           borderRadius: 0
         }}
       >

@@ -111,7 +111,9 @@ export const {
   setMaxImageSize,
   setMaxFileLength,
   saveClipForApplyLabel,
-  applyClipLabel
+  applyClipLabel,
+  applyLabelFilter,
+  applyLangFilter
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -236,5 +238,7 @@ export const {
   SET_MAX_IMAGE_SIZE: value => value,
   SET_MAX_FILE_LENGTH: value => value,
   SAVE_CLIP_FOR_APPLY_LABEL: id => id,
-  APPLY_CLIP_LABEL: id => id
+  APPLY_CLIP_LABEL: id => id,
+  APPLY_LABEL_FILTER: option => option,
+  APPLY_LANG_FILTER: option => option
 });

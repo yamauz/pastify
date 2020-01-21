@@ -238,13 +238,16 @@ module.exports = class DataStore {
           if (language[0] === "__DEFAULT__") {
             return item;
           } else if (language[0] === "__SET__") {
-            return item.lang !== "";
+            // return item.lang !== "";
+            return item.lang.length !== 0;
           } else if (language[0] === "__UNSET__") {
-            return item.lang === "";
+            // return item.lang === "";
+            return item.lang.length === 0;
           } else {
-            return language.some(ln => {
-              return item.lang === ln;
-            });
+            // return language.some(ln => {
+            //   return item.lang === ln;
+            // });
+            return item.lang.some(lang => language.includes(lang.value));
           }
         })
         // sort

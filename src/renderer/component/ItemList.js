@@ -136,7 +136,7 @@ const ItemList = props => {
                       id
                     );
                     let rowHeight;
-                    if (lang !== "" || key !== "" || tag.length !== 0) {
+                    if (lang.length !== 0 || key !== "" || tag.length !== 0) {
                       rowHeight = itemHeight + 29; //label height
                     } else {
                       rowHeight = itemHeight;

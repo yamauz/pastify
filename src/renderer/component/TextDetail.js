@@ -92,7 +92,7 @@ const TextDetail = props => {
 };
 
 const setModeByLang = lang => {
-  const mode = lang === "" ? "plain_text" : lang;
+  const mode = lang.length === 0 ? "plain_text" : lang[0].value;
   return mode;
 };
 

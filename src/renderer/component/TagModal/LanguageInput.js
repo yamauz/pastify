@@ -49,15 +49,15 @@ const LanguageInput = props => {
         isMulti
         placeholder={null}
         name="colors"
-        options={setLangOptions(lang)}
-        defaultValue={createLangValue(lang)}
+        options={lang.length > 0 ? [] : langOptions}
+        defaultValue={lang}
         className="basic-multi-select"
         classNamePrefix="select"
         styles={customStyles}
+        onInputChange={value => (lang.length > 0 ? "" : value)}
         onChange={opt => {
-          console.log(opt);
-          const options = opt === null || opt.length === 0 ? "" : opt[0].value;
-          setLangOptionsSelected(options);
+          const _option = opt === null ? [] : opt;
+          setLangOptionsSelected(_option);
         }}
       />
     </Wrapper>

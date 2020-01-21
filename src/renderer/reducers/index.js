@@ -310,6 +310,12 @@ export default handleActions(
     },
     APPLY_CLIP_LABEL: (state, { payload: id }) => {
       return state.applyClipLabel(id);
+    },
+    APPLY_LABEL_FILTER: (state, { payload: option }) => {
+      return state.applyLabelFilter(option);
+    },
+    APPLY_LANG_FILTER: (state, { payload: option }) => {
+      return state.applyLangFilter(option);
     }
   },
   new State()

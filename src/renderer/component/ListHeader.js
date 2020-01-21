@@ -8,6 +8,7 @@ import AngleDoubleRight from "../../icon/listheader/angle-double-right.svg";
 import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
 import Bars from "../../icon/listheader/bars.svg";
 import ThList from "../../icon/listheader/th-list.svg";
+import Filter from "../../icon/listheader/filter.svg";
 
 import { toggleMainFold, toggleListMode } from "../actions";
 
@@ -15,7 +16,9 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0c0f1f;
+  /* background-color: #0c0f1f; */
+  transition: background-color 0.3s;
+  background-color: ${props => (props.isFilter ? "#241f3e" : "#0c0f1f")};
   color: #b5b5b5;
   width: 301px;
   cursor: default;
@@ -62,12 +65,21 @@ const ItemCount = styled.span`
 `;
 
 const ListHeader = props => {
-  const { ids, isCompact, isFold, toggleListMode, toggleMainFold } = props;
+  const {
+    ids,
+    isCompact,
+    isFold,
+    toggleListMode,
+    toggleMainFold,
+    filterName
+  } = props;
+  const isFilter = _detectFilter(props);
 
   return (
-    <Wrapper>
+    <Wrapper isFilter={isFilter}>
       <Left>
-        <ItemText>{_setFiltersName(props)}</ItemText>
+        {isFilter && _setFilterIcon()}
+        <ItemText>{_setFilterName(isFilter, filterName)}</ItemText>
         <ItemCount>{`(${ids.size})`}</ItemCount>
       </Left>
       <Right id="tooltip" tabIndex="0">
@@ -93,9 +105,33 @@ const ListHeader = props => {
   );
 };
 
-const _setFiltersName = props => {
+const _setFilterIcon = () => {
+  const style = {
+    width: "12px",
+    fill: "#dddddd",
+    marginRight: 5
+  };
+  return (
+    <IconWrapper
+      onMouseOver={() => {
+        return <Filter style={style}></Filter>;
+      }}
+    >
+      <Filter style={style}></Filter>
+    </IconWrapper>
+  );
+};
+
+const _setFilterName = (isFilter, filterName) => {
+  if (filterName !== "") {
+    return filterName;
+  } else {
+    return isFilter ? "Untitled" : "All Clips";
+  }
+};
+
+const _detectFilter = props => {
   const {
-    filterName,
     sortOpt,
     filterShortcutKeyOpt,
     keywordFilterOpt,
@@ -106,8 +142,6 @@ const _setFiltersName = props => {
     hashTagFilterOpt,
     languageFilterOpt
   } = props;
-
-  let headerTitle;
 
   if (
     sortOpt.length !== 0 ||
@@ -120,20 +154,10 @@ const _setFiltersName = props => {
     hashTagFilterOpt.length !== 0 ||
     languageFilterOpt.length !== 0
   ) {
-    if (filterName !== "") {
-      headerTitle = filterName;
-    } else {
-      headerTitle = "Untitled";
-    }
+    return true;
   } else {
-    if (filterName !== "") {
-      headerTitle = filterName;
-    } else {
-      headerTitle = "All Clips";
-    }
+    return false;
   }
-
-  return headerTitle;
 };
 
 const _toggleMainFold = isFold => {

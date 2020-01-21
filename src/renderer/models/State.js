@@ -251,6 +251,7 @@ class State extends StateRecord {
     // console.log(`idsTimeLine.size : ${idsTimeLine.size}`);
     // console.log(`nextRow : ${nextRow}`);
     // console.log(`nextId : ${nextId}`);
+    this._toast(`Delete : ${clip.id}`);
 
     return this.withMutations(state => {
       state
@@ -283,13 +284,14 @@ class State extends StateRecord {
   favItem(id) {
     const keyPath = ["itemsTimeLine", id, "isFaved"];
     const isFaved = !this.getIn(keyPath);
-    isFaved ? this._toast("fav item") : this._toast("unfav item");
+    isFaved ? this._toast(`Fav : ${id}`) : this._toast(`UnFav : ${id}`);
     const value = { isFaved };
     new Message("dataStore", "update", { id, value }).dispatch();
     return this.setIn(keyPath, isFaved);
   }
   saveTag() {
     const id = this.get("idSelected");
+    this._toast(`Change Label : ${id}`);
     const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
       "itemsTimeLine",
       id,
@@ -550,6 +552,7 @@ class State extends StateRecord {
     return this.setIn(keyPath, this.get("itemStore"));
   }
   setLangOptionsSelected(langOpt) {
+    console.log(langOpt);
     const id = this.get("idSelected");
     const keyPath = ["itemsTimeLine", id, "lang"];
     return this.setIn(keyPath, langOpt);
@@ -1083,28 +1086,25 @@ class State extends StateRecord {
   }
   saveClipForApplyLabel(id) {
     const clip = this._getClipStateById(id);
-    this._toast("Saved Clip Label");
+    this._toast(`Store Label : ${id}`);
     return this.set("clipForApplyLabel", clip);
   }
   applyClipLabel(idSelected) {
     if (this.get("clipForApplyLabel") === undefined) {
       return this;
     } else {
-      this._toast("Apply Clip Label");
+      this._toast(`Apply Label : ${id}`);
       const { id, lang, tag, key } = this.get("clipForApplyLabel");
       const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
         "itemsTimeLine",
         id,
         prop
       ]);
-      console.log(keyPath);
-
       const value = keyPath.reduce((acc, path) => {
         const prop = path[2];
         acc[prop] = this.getIn(path);
         return acc;
       }, {});
-      console.log(value);
       new Message("dataStore", "update", { id: idSelected, value }).dispatch();
 
       return this.withMutations(state => {
@@ -1114,6 +1114,37 @@ class State extends StateRecord {
           .setIn(["itemsTimeLine", idSelected, "lang"], lang);
       });
     }
+  }
+
+  applyLabelFilter(option) {
+    return this.withMutations(state => {
+      state
+        .set("sortOpt", [])
+        .set("keywordFilterOpt", [])
+        .set("idFilterOpt", [])
+        .set("dataTypeFilterOpt", [])
+        .set("statusFilterOpt", [])
+        .set("hotKeyFilterOpt", [])
+        .set("hashTagFilterOpt", [option])
+        .set("languageFilterOpt", [])
+        .set("filterShortcutKeyOpt", [])
+        .set("filterName", option.label);
+    });
+  }
+  applyLangFilter(option) {
+    return this.withMutations(state => {
+      state
+        .set("sortOpt", [])
+        .set("keywordFilterOpt", [])
+        .set("idFilterOpt", [])
+        .set("dataTypeFilterOpt", [])
+        .set("statusFilterOpt", [])
+        .set("hotKeyFilterOpt", [])
+        .set("hashTagFilterOpt", [])
+        .set("languageFilterOpt", [option])
+        .set("filterShortcutKeyOpt", [])
+        .set("filterName", option.label);
+    });
   }
 
   _getModifierKeys() {
@@ -1180,7 +1211,7 @@ class State extends StateRecord {
     if (notify) {
       toast.notify(message, {
         position: "bottom-right",
-        duration: 1000
+        duration: 2000
       });
     }
   }
