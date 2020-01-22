@@ -8,9 +8,13 @@ import AngleDoubleRight from "../../icon/listheader/angle-double-right.svg";
 import AngleDoubleLeft from "../../icon/listheader/angle-double-left.svg";
 import Bars from "../../icon/listheader/bars.svg";
 import ThList from "../../icon/listheader/th-list.svg";
-import Filter from "../../icon/listheader/filter.svg";
 
-import { toggleMainFold, toggleListMode } from "../actions";
+import {
+  toggleMainFold,
+  toggleListMode,
+  clearFilterSortSettings,
+  setIdsFromDatastore
+} from "../actions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,6 +59,7 @@ const ItemText = styled.span`
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
+  pointer-events: none;
 `;
 
 const ItemCount = styled.span`
@@ -62,6 +67,27 @@ const ItemCount = styled.span`
   color: #cccccc;
   font-family: sans-serif;
   font-size: 12px;
+  pointer-events: none;
+`;
+
+const FilterIcon = styled.div`
+  overflow: hidden;
+  text-align: center;
+  display: inline-block;
+  content: " ";
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20fill%3D%22%23dcdcdc%22%3E%3Cpath%20d%3D%22M487.976%200H24.028C2.71%200-8.047%2025.866%207.058%2040.971L192%20225.941V432c0%207.831%203.821%2015.17%2010.237%2019.662l80%2055.98C298.02%20518.69%20320%20507.493%20320%20487.98V225.941l184.947-184.97C520.021%2025.896%20509.338%200%20487.976%200z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  vertical-align: top;
+  margin-right: 4px;
+  width: 13px;
+  height: 13px;
+  &:hover {
+    margin-right: 0px;
+    margin-left: 2px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20352%20512%22%20fill%3D%22%23dcdcdc%22%3E%3Cpath%20d%3D%22M242.72%20256l100.07-100.07c12.28-12.28%2012.28-32.19%200-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48%200L176%20189.28%2075.93%2089.21c-12.28-12.28-32.19-12.28-44.48%200L9.21%20111.45c-12.28%2012.28-12.28%2032.19%200%2044.48L109.28%20256%209.21%20356.07c-12.28%2012.28-12.28%2032.19%200%2044.48l22.24%2022.24c12.28%2012.28%2032.2%2012.28%2044.48%200L176%20322.72l100.07%20100.07c12.28%2012.28%2032.2%2012.28%2044.48%200l22.24-22.24c12.28-12.28%2012.28-32.19%200-44.48L242.72%20256z%22%2F%3E%3C%2Fsvg%3E");
+    width: 15px;
+    height: 15px;
+  }
 `;
 
 const ListHeader = props => {
@@ -71,14 +97,24 @@ const ListHeader = props => {
     isFold,
     toggleListMode,
     toggleMainFold,
-    filterName
+    filterName,
+    clearFilterSortSettings,
+    setIdsFromDatastore
   } = props;
   const isFilter = _detectFilter(props);
 
   return (
     <Wrapper isFilter={isFilter}>
       <Left>
-        {isFilter && _setFilterIcon()}
+        {isFilter && (
+          <FilterIcon
+            onClick={e => {
+              clearFilterSortSettings();
+              setIdsFromDatastore();
+            }}
+          />
+        )}
+
         <ItemText>{_setFilterName(isFilter, filterName)}</ItemText>
         <ItemCount>{`(${ids.size})`}</ItemCount>
       </Left>
@@ -102,23 +138,6 @@ const ListHeader = props => {
         </IconWrapper>
       </Right>
     </Wrapper>
-  );
-};
-
-const _setFilterIcon = () => {
-  const style = {
-    width: "12px",
-    fill: "#dddddd",
-    marginRight: 5
-  };
-  return (
-    <IconWrapper
-      onMouseOver={() => {
-        return <Filter style={style}></Filter>;
-      }}
-    >
-      <Filter style={style}></Filter>
-    </IconWrapper>
   );
 };
 
@@ -205,5 +224,7 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   toggleListMode,
-  toggleMainFold
+  toggleMainFold,
+  clearFilterSortSettings,
+  setIdsFromDatastore
 })(ListHeader);

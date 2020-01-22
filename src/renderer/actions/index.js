@@ -113,7 +113,9 @@ export const {
   saveClipForApplyLabel,
   applyClipLabel,
   applyLabelFilter,
-  applyLangFilter
+  applyLangFilter,
+  applyIdFilter,
+  clearFilterSortSettings
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -240,5 +242,7 @@ export const {
   SAVE_CLIP_FOR_APPLY_LABEL: id => id,
   APPLY_CLIP_LABEL: id => id,
   APPLY_LABEL_FILTER: option => option,
-  APPLY_LANG_FILTER: option => option
+  APPLY_LANG_FILTER: option => option,
+  APPLY_ID_FILTER: id => id,
+  CLEAR_FILTER_SORT_SETTINGS: () => {}
 });

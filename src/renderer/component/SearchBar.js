@@ -6,7 +6,9 @@ import {
   setSearchInputValue,
   setSearchOpt,
   favItem,
-  addNewItemByInputValue
+  addNewItemByInputValue,
+  applyIdFilter,
+  setIdsFromDatastore
 } from "../actions";
 import debounce from "debounce-promise";
 import AsyncCreatableSelect from "react-select/async-creatable";
@@ -595,7 +597,9 @@ const SearchBar = props => {
     setSearchOpt,
     favItem,
     selectClipToPaste,
-    addNewItemByInputValue
+    addNewItemByInputValue,
+    applyIdFilter,
+    setIdsFromDatastore
   } = props;
   const _searchOpt = createSearchOptions(searchOpt);
   return (
@@ -672,6 +676,15 @@ const SearchBar = props => {
                 const {
                   focusedOption
                 } = selectRef.current.select.select.select.state;
+                if (
+                  e.altKey &&
+                  focusedOption.label !== "Add New Item By Input Value"
+                ) {
+                  applyIdFilter(focusedOption.id);
+                  setIdsFromDatastore();
+                  document.getElementById("item-list").focus();
+                  break;
+                }
                 const modifiers = {
                   ctrlKey: e.ctrlKey,
                   shiftKey: e.shiftKey,
@@ -704,5 +717,7 @@ export default connect(mapStateToProps, {
   setSearchOpt,
   favItem,
   selectClipToPaste,
-  addNewItemByInputValue
+  addNewItemByInputValue,
+  applyIdFilter,
+  setIdsFromDatastore
 })(SearchBar);

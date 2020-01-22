@@ -316,6 +316,12 @@ export default handleActions(
     },
     APPLY_LANG_FILTER: (state, { payload: option }) => {
       return state.applyLangFilter(option);
+    },
+    APPLY_ID_FILTER: (state, { payload: id }) => {
+      return state.applyIdFilter(id);
+    },
+    CLEAR_FILTER_SORT_SETTINGS: state => {
+      return state.clearFilterSortSettings();
     }
   },
   new State()

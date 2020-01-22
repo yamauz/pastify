@@ -20,12 +20,10 @@ const Wrapper = styled.div`
 
 const ImageWrapper = styled.div`
   max-width: 250px;
-  /* max-height: 100px; */
   text-align: left;
 `;
 
 const Image = styled.img`
-  /* width: 100%; */
   max-width: 100%;
   max-height: 90px;
   height: 100%;

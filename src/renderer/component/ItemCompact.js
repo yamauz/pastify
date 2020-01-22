@@ -8,6 +8,7 @@ import Key from "./Key";
 import Hash from "./Hash";
 import path from "path";
 import popupKeyValue from "../../common/popupKeyValue";
+const APP_PATH = window.require("electron").remote.app.getAppPath();
 
 const Wrapper = styled.div`
   font-family: sans-serif;
@@ -108,6 +109,22 @@ const PopupKey = styled.span`
   line-height: 1.3;
 `;
 
+const ImageWrapper = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+  max-height: 15px;
+  max-height: 20px;
+`;
+
+const Image = styled.img`
+  text-align: center;
+  max-width: 100%;
+  max-height: 15px;
+  height: 100%;
+  border-radius: 2px;
+  display: block;
+`;
+
 const ItemCompact = props => {
   const { style, item, index, searchOpt, itemDisplayRange } = props;
   const { id, mainFormat, textData, isFaved, isTrashed, key, lang, tag } = item;
@@ -128,7 +145,7 @@ const ItemCompact = props => {
       <DetectPosBlockTop id="detect-pos-block" />
       <DetectPosBlockBottom id="detect-pos-block" />
       {renderPopupKeys(searchOpt, itemDisplayRange, index)}
-      {renderTitle(textData, mainFormat, isTrashed, key, lang, tag)}
+      {renderTitle(id, textData, mainFormat, isTrashed, key, lang, tag)}
     </Wrapper>
   );
 };
@@ -143,7 +160,7 @@ const renderPopupKeys = (searchOpt, itemDisplayRange, index) => {
   }
 };
 
-const renderTitle = (text, format, isTrashed, key, lang, tag) => {
+const renderTitle = (id, text, format, isTrashed, key, lang, tag) => {
   return (
     <TextWrapper format={format}>
       <Key keyTag={key} />
@@ -152,8 +169,25 @@ const renderTitle = (text, format, isTrashed, key, lang, tag) => {
       <Text format={format} isTrashed={isTrashed}>
         {createTextData(format, text)}
       </Text>
+      {format === "IMAGE" && renderImage(id, format)}
     </TextWrapper>
   );
+};
+
+const renderImage = (id, format) => {
+  const distDir = process.env.PORTABLE_EXECUTABLE_DIR || APP_PATH;
+  const imagePath = `file:///${distDir}/resource/temp/images/${id}`;
+  switch (format) {
+    case "IMAGE":
+    case "SHEET":
+      return (
+        <ImageWrapper>
+          <Image src={imagePath} />
+        </ImageWrapper>
+      );
+    default:
+      return <></>;
+  }
 };
 
 const createTextData = (format, text) => {

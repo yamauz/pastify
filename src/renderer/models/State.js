@@ -1147,6 +1147,25 @@ class State extends StateRecord {
     });
   }
 
+  applyIdFilter(id) {
+    const _option = { label: id, value: id };
+    return this.withMutations(state => {
+      state
+        .set("sortOpt", [])
+        .set("keywordFilterOpt", [])
+        .set("idFilterOpt", [_option])
+        .set("dataTypeFilterOpt", [])
+        .set("statusFilterOpt", [])
+        .set("hotKeyFilterOpt", [])
+        .set("hashTagFilterOpt", [])
+        .set("languageFilterOpt", [])
+        .set("filterShortcutKeyOpt", [])
+        .set("filterName", id)
+        .set("searchInputValue", "")
+        .set("searchOpt", this._getEmptySearchOpt());
+    });
+  }
+
   _getModifierKeys() {
     return new Message("key", "getModifierKey", {}).dispatch();
   }
