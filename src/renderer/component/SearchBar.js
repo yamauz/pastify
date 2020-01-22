@@ -306,8 +306,12 @@ const filterOptions = (inputValue, searchOpt) => {
         });
         break;
       case "lang":
+        // _options = options.filter(i => {
+        //   return inputKeys.every(key => i.lang.toLowerCase().includes(key));
+        // });
         _options = options.filter(i => {
-          return inputKeys.every(key => i.lang.toLowerCase().includes(key));
+          const langJoined = i.lang.map(l => l.value).join("");
+          return inputKeys.every(key => langJoined.toLowerCase().includes(key));
         });
         break;
       case "tag":
@@ -446,20 +450,21 @@ const createOptionComponent = (props, _searchOpt) => {
                   )}
                 </KeyTag>
               )}
-              {!!lang && (
-                <LangName langName={lang}>
+              {/* {!!lang && ( */}
+              {lang.map((ln, index) => (
+                <LangName langName={ln.value} key={index}>
                   {_optLabel.includes("_LANG_") ? (
                     <Highlighter
                       highlightClassName="highlighter-lang"
                       searchWords={createInputKeys(searchInputValue)}
                       autoEscape={true}
-                      textToHighlight={lang}
+                      textToHighlight={ln.value}
                     />
                   ) : (
-                    lang
+                    ln.value
                   )}
                 </LangName>
-              )}
+              ))}
               {tag.map((tg, index) => (
                 <HashTag key={index}>
                   {_optLabel.includes("_HASH_") ? (

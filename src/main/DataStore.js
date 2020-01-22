@@ -111,7 +111,8 @@ module.exports = class DataStore {
         data = data.filter(clip => clip.key !== "");
         break;
       case "LANGUAGE":
-        data = data.filter(clip => clip.lang !== "");
+        // data = data.filter(clip => clip.lang !== "");
+        data = data.filter(clip => clip.lang.length !== 0);
         break;
       case "HASHTAG":
         data = data.filter(clip => clip.tag.length !== 0);
