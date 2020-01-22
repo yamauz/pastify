@@ -4,14 +4,22 @@ const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
 const path = require("path");
 
 module.exports = class PastifyTray {
-  constructor(settings) {
+  constructor(settings, win) {
     this.settings = settings;
+    this.win = win;
     this.trayPath = path.join(distDir, "src/icon/icon.png");
     this.icon = nativeImage.createFromPath(this.trayPath);
     this.tray = new Tray(this.icon);
     this.tray.setToolTip("Pastify");
     this.contextMenu = this._createContextMenu();
     this.tray.setContextMenu(this.contextMenu);
+    this._setEvents();
+  }
+
+  _setEvents() {
+    this.tray.on("double-click", () => {
+      this.win.showPastify();
+    });
   }
 
   _createContextMenu() {

@@ -115,7 +115,6 @@ const Main = props => {
           break;
         case "SHOW":
           const { command } = args;
-          console.log(command);
           document.getElementById("searchbar").focus();
           break;
         case "COPY": {

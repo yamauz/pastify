@@ -32,6 +32,7 @@ const Left = styled.div`
   display: flex;
   align-items: center;
   padding-left: 5px;
+  pointer-events: none;
 `;
 const Right = styled.div`
   display: flex;
@@ -59,7 +60,6 @@ const ItemText = styled.span`
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
-  pointer-events: none;
 `;
 
 const ItemCount = styled.span`
@@ -67,10 +67,10 @@ const ItemCount = styled.span`
   color: #cccccc;
   font-family: sans-serif;
   font-size: 12px;
-  pointer-events: none;
 `;
 
 const FilterIcon = styled.div`
+  pointer-events: auto;
   overflow: hidden;
   text-align: center;
   display: inline-block;

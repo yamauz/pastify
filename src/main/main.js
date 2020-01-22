@@ -24,7 +24,7 @@ app.on("ready", () => {
   const filters = new Filters();
   const pastify = new Pastify();
   const win = new Window(settings);
-  tray = new PastifyTray(settings);
+  tray = new PastifyTray(settings, win);
   const key = new Key(win, settings);
   key.register("shift", "", settings);
   key.register("super", "F12"); // win + f12
