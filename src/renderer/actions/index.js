@@ -115,7 +115,8 @@ export const {
   applyLabelFilter,
   applyLangFilter,
   applyIdFilter,
-  clearFilterSortSettings
+  clearFilterSortSettings,
+  setClipListenerState
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -244,5 +245,6 @@ export const {
   APPLY_LABEL_FILTER: option => option,
   APPLY_LANG_FILTER: option => option,
   APPLY_ID_FILTER: id => id,
-  CLEAR_FILTER_SORT_SETTINGS: () => {}
+  CLEAR_FILTER_SORT_SETTINGS: () => {},
+  SET_CLIP_LISTENER_STATE: disableClipListener => disableClipListener
 });

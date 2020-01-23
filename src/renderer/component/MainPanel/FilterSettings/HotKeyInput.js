@@ -55,6 +55,8 @@ const HotKeyInput = props => {
         Select or Type Hotkey. Allows multi-selection.
       </FilterDescription>
       <CreatableSelect
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
         placeholder={null}

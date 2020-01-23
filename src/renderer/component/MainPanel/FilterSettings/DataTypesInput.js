@@ -54,6 +54,8 @@ const DataTypesInput = props => {
         Select Datatype. Allows multi-registration.
       </FilterDescription>
       <Select
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
         placeholder={null}

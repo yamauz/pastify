@@ -63,7 +63,7 @@ const Component = props => {
           const ALT = altKey ? "Alt+" : "";
           if (shiftKey || ctrlKey || altKey) {
             const keyPressed = keycode(e).toUpperCase();
-            const regx = /^[A-Z]$/;
+            const regx = /^[0-9A-Z]$/;
             if (
               regx.test(keyPressed) &&
               keyPressed !== "SHIFT" &&

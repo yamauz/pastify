@@ -25,9 +25,10 @@ app.on("ready", () => {
   const pastify = new Pastify();
   const win = new Window(settings);
   tray = new PastifyTray(settings, win);
-  const key = new Key(win, settings);
+  const key = new Key(win, settings, tray);
   key.register("shift", "", settings);
   key.register("super", "F12"); // win + f12
+  key.register("alt", "F1"); //
   // key.register("ctrl", "a");
   const instances = { dataStore, filters, settings, pastify, win, key };
   win.setIpcListener(instances);
@@ -46,7 +47,6 @@ app.on("ready", () => {
     if (win.checkCopiedSelf()) return;
 
     const validFormats = clipboardFormatFinder.getFormat();
-    console.log(validFormats);
     // check if array of clipboard format is not empty
     if (!validFormats || !validFormats.length) return;
 

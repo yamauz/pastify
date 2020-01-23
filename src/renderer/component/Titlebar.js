@@ -9,8 +9,8 @@ import Minimize from "../../icon/titlebar/minimize.svg";
 import UnMaximize from "../../icon/titlebar/unMaximize.svg";
 import StickOff from "../../icon/titlebar/stickoff.svg";
 import StickOn from "../../icon/titlebar/stickon.svg";
-
-const { ipcRenderer } = window.require("electron");
+import { APP_DIR, TRAY_ICON_PATH } from "../../common/settings";
+import path from "path";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -54,12 +54,49 @@ const ControlWrapperClose = styled.div`
   }
 `;
 
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+`;
+
+const ImageWrapper = styled.div`
+  vertical-align: middle;
+  max-height: 15px;
+  max-height: 20px;
+`;
+
+const Image = styled.img`
+  text-align: center;
+  max-width: 100%;
+  max-height: 15px;
+  height: 100%;
+  border-radius: 2px;
+  display: block;
+`;
+
 const TitleBar = props => {
-  const { updateWinState, winFocus } = props;
+  const {
+    updateWinState,
+    winFocus,
+    disableClipListener,
+    onIconDataURL,
+    offIconDataURL
+  } = props;
+
+  const imagePath = disableClipListener ? offIconDataURL : onIconDataURL;
 
   return (
     <Wrapper winFocus={winFocus}>
-      <LeftBlock>left</LeftBlock>
+      <LeftBlock>
+        <IconWrapper>
+          <ImageWrapper>
+            <Image src={imagePath} />
+          </ImageWrapper>
+        </IconWrapper>
+      </LeftBlock>
       <RightBlock>
         <ControlWrapper onClick={() => updateWinState("alwaysOnTop")}>
           {setIcon("Stick", props)}
@@ -115,7 +152,10 @@ const setIcon = (type, props) => {
 const mapStateToProps = state => ({
   alwaysOnTop: state.get("alwaysOnTop"),
   winFocus: state.get("winFocus"),
-  winMaximize: state.get("winMaximize")
+  winMaximize: state.get("winMaximize"),
+  disableClipListener: state.get("disableClipListener"),
+  onIconDataURL: state.get("onIconDataURL"),
+  offIconDataURL: state.get("offIconDataURL")
 });
 
 export default connect(mapStateToProps, { updateWinState })(TitleBar);

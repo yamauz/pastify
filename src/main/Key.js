@@ -4,10 +4,11 @@ const robot = require("robotjs");
 const { LAUNCH_KEY_DURATION } = require("../common/settings");
 
 module.exports = class Key {
-  constructor(win, settings) {
+  constructor(win, settings, tray) {
     ioHook.start();
     this.win = win;
     this.settings = settings;
+    this.tray = tray;
     this.pressed = false;
     this.shiftFirstPressed = false;
     this.ctrlFirstPressed = false;
@@ -121,7 +122,13 @@ module.exports = class Key {
 
   _on_ctrla() {
     globalShortcut.register("ctrl+a", () => {
-      this.win.showLastActiveWindow();
+      // this.win.showLastActiveWindow();
+      console.log("test");
+    });
+  }
+  _on_altF1() {
+    globalShortcut.register("Alt+F1", () => {
+      this.tray.togglePause();
     });
   }
 

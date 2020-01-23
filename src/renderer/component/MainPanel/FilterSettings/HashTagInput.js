@@ -54,6 +54,8 @@ const HashTagInput = props => {
         Select or Type Hashtag. Allows multi-selection.
       </FilterDescription>
       <CreatableSelect
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
         placeholder={null}

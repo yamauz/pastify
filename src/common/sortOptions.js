@@ -21,13 +21,6 @@ export const ascOptions = [
     order: "asc"
   },
   {
-    label: "Hotkey",
-    value: "aschotkey",
-    key: "key",
-    isDisabled: false,
-    order: "asc"
-  },
-  {
     label: "Text",
     value: "asctext",
     key: "textData",
@@ -35,9 +28,23 @@ export const ascOptions = [
     order: "asc"
   },
   {
+    label: "Hotkey",
+    value: "aschotkey",
+    key: "key",
+    isDisabled: false,
+    order: "asc"
+  },
+  {
     label: "Language",
     value: "asclanguage",
     key: "lang",
+    isDisabled: false,
+    order: "asc"
+  },
+  {
+    label: "Tag",
+    value: "asctag",
+    key: "tag",
     isDisabled: false,
     order: "asc"
   }
@@ -66,13 +73,6 @@ export const descOptions = [
     order: "desc"
   },
   {
-    label: "Hotkey",
-    value: "deschotkey",
-    key: "key",
-    isDisabled: false,
-    order: "desc"
-  },
-  {
     label: "Text",
     value: "desctext",
     key: "textData",
@@ -80,9 +80,23 @@ export const descOptions = [
     order: "desc"
   },
   {
+    label: "Hotkey",
+    value: "deschotkey",
+    key: "key",
+    isDisabled: false,
+    order: "desc"
+  },
+  {
     label: "Language",
     value: "desclanguage",
     key: "lang",
+    isDisabled: false,
+    order: "desc"
+  },
+  {
+    label: "Tag",
+    value: "desctag",
+    key: "tag",
     isDisabled: false,
     order: "desc"
   }

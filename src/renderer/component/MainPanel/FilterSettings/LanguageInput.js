@@ -48,6 +48,8 @@ const LanguageInput = props => {
         Select Language. Allows multi-selection.
       </FilterDescription>
       <Select
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         placeholder={null}
         isMulti
         options={setLanguageOptions(languageFilterOpt)}

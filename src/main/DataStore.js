@@ -5,6 +5,7 @@ const _ = require("lodash");
 const shortid = require("shortid");
 const FileSync = require("lowdb/adapters/FileSync");
 const Clip = require("./Clip");
+const arraySort = require("array-sort");
 
 const TRASH_LIMIT_DAY = 24;
 const DELETE_LIMIT_DAY = 24;
@@ -170,92 +171,121 @@ module.exports = class DataStore {
       id
     } = settings.createFilterParam();
 
-    return (
-      this.DB.get(this.storeName)
-        // filter by keywords
-        .filter(item => {
-          return keywords.every(keyword => {
-            if (keyword[0] === "-") {
-              return !item.textData
-                .toLowerCase()
-                .includes(keyword.slice(1).toLowerCase());
-            } else {
-              return item.textData
-                .toLowerCase()
-                .includes(keyword.toLowerCase());
-            }
-          });
-        })
-        // filter by id
-        .filter(item =>
-          id[0] === "__DEFAULT__" ? item : id.some(i => item.id.includes(i))
-        )
-        // filter by data type
-        .filter(item => {
-          return dataType.some(type => {
-            return item.mainFormat === type;
-          });
-        })
-        // filter by status
-        .filter(item => {
-          return status.every(st => {
-            if (st.hasOwnProperty("isFaved")) {
-              return (
-                item.isFaved === st.isFaved && item.isTrashed === st.isTrashed
-              );
-            } else {
-              return item.isTrashed === st.isTrashed;
-            }
-          });
-        })
-        // filter by hot key
-        .filter(item => {
-          if (hotKey[0] === "__DEFAULT__") {
-            return item;
-          } else if (hotKey[0] === "__SET__") {
-            return item.key !== "";
-          } else if (hotKey[0] === "__UNSET__") {
-            return item.key === "";
+    const filteredClips = this.DB.get(this.storeName)
+      // filter by keywords
+      .filter(item => {
+        return keywords.every(keyword => {
+          if (keyword[0] === "-") {
+            return !item.textData
+              .toLowerCase()
+              .includes(keyword.slice(1).toLowerCase());
           } else {
-            return hotKey.some(hk => {
-              return item.key === hk;
-            });
+            return item.textData.toLowerCase().includes(keyword.toLowerCase());
           }
-        })
-        // filter by hash tag
-        .filter(item => {
-          if (hashTag[0] === "__DEFAULT__") {
-            return item;
-          } else if (hashTag[0] === "__SET__") {
-            return item.tag.length !== 0;
-          } else if (hashTag[0] === "__UNSET__") {
-            return item.tag.length === 0;
+        });
+      })
+      // filter by id
+      .filter(item =>
+        id[0] === "__DEFAULT__" ? item : id.some(i => item.id.includes(i))
+      )
+      // filter by data type
+      .filter(item => {
+        return dataType.some(type => {
+          return item.mainFormat === type;
+        });
+      })
+      // filter by status
+      .filter(item => {
+        return status.every(st => {
+          if (st.hasOwnProperty("isFaved")) {
+            return (
+              item.isFaved === st.isFaved && item.isTrashed === st.isTrashed
+            );
           } else {
-            return item.tag.some(tag => hashTag.includes(tag.value));
+            return item.isTrashed === st.isTrashed;
           }
-        })
-        // filter by language
-        .filter(item => {
-          if (language[0] === "__DEFAULT__") {
-            return item;
-          } else if (language[0] === "__SET__") {
-            // return item.lang !== "";
-            return item.lang.length !== 0;
-          } else if (language[0] === "__UNSET__") {
-            // return item.lang === "";
-            return item.lang.length === 0;
-          } else {
-            // return language.some(ln => {
-            //   return item.lang === ln;
-            // });
-            return item.lang.some(lang => language.includes(lang.value));
+        });
+      })
+      // filter by hot key
+      .filter(item => {
+        if (hotKey[0] === "__DEFAULT__") {
+          return item;
+        } else if (hotKey[0] === "__SET__") {
+          return item.key !== "";
+        } else if (hotKey[0] === "__UNSET__") {
+          return item.key === "";
+        } else {
+          return hotKey.some(hk => {
+            return item.key === hk;
+          });
+        }
+      })
+      // filter by hash tag
+      .filter(item => {
+        if (hashTag[0] === "__DEFAULT__") {
+          return item;
+        } else if (hashTag[0] === "__SET__") {
+          return item.tag.length !== 0;
+        } else if (hashTag[0] === "__UNSET__") {
+          return item.tag.length === 0;
+        } else {
+          return item.tag.some(tag => hashTag.includes(tag.value));
+        }
+      })
+      // filter by language
+      .filter(item => {
+        if (language[0] === "__DEFAULT__") {
+          return item;
+        } else if (language[0] === "__SET__") {
+          // return item.lang !== "";
+          return item.lang.length !== 0;
+        } else if (language[0] === "__UNSET__") {
+          // return item.lang === "";
+          return item.lang.length === 0;
+        } else {
+          // return language.some(ln => {
+          //   return item.lang === ln;
+          // });
+          return item.lang.some(lang => language.includes(lang.value));
+        }
+      })
+      // sort
+      // .orderBy(sortBy, orderBy)
+      // .map("id")
+      .value();
+    const sortedClips = this._sortClips(filteredClips, sortBy, orderBy);
+    const sortedIds = sortedClips.map(clip => clip.id);
+    return sortedIds;
+  }
+
+  _sortClips(filteredClips, sortBy, orderBy) {
+    const sortFuncs = sortBy.map((sBy, i) =>
+      orderBy[i] === "asc"
+        ? (a, b) => {
+            // const _a = Array.isArray(a[sBy])
+            //   ? a[sBy].toString().trim()
+            //   : a[sBy].trim();
+            // const _b = Array.isArray(b[sBy])
+            //   ? b[sBy].toString().trim()
+            //   : b[sBy].trim();
+            const _a = a[sBy].toString().trim();
+            const _b = b[sBy].toString().trim();
+            return _a.localeCompare(_b);
           }
-        })
-        // sort
-        .orderBy(sortBy, orderBy)
-        .map("id")
-        .value()
+        : (a, b) => {
+            // const _a = Array.isArray(a[sBy])
+            //   ? a[sBy].toString().trim()
+            //   : a[sBy].trim();
+            // const _b = Array.isArray(b[sBy])
+            //   ? b[sBy].toString().trim()
+            //   : b[sBy].trim();
+            const _a = a[sBy].toString().trim();
+            const _b = b[sBy].toString().trim();
+            return _b.localeCompare(_a);
+          }
     );
+
+    return arraySort(filteredClips, ...sortFuncs);
   }
 
   update(props) {

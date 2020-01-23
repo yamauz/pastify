@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   /* background-color: #0c0f1f; */
   transition: background-color 0.3s;
-  background-color: ${props => (props.isFilter ? "#241f3e" : "#0c0f1f")};
+  background-color: ${props => (props.isFilter ? "#331313" : "#0c0f1f")};
   color: #b5b5b5;
   width: 301px;
   cursor: default;

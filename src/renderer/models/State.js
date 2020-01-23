@@ -17,7 +17,8 @@ const StateRecord = Record({
   isFold: false,
   notify: true,
   // detailType: "DEFAULT",
-  detailType: "preferences",
+  // detailType: "preferences",
+  detailType: "filter-sort-settings",
   moment: new Date().getTime(),
   addMode: "",
   itemsTimeLine: OrderedMap(),
@@ -83,7 +84,10 @@ const StateRecord = Record({
   launchKeyDuration: "",
   maxTextLength: "",
   maxImageSize: "",
-  clipForApplyLabel: undefined
+  clipForApplyLabel: undefined,
+  disableClipListener: false,
+  onIconDataURL: "",
+  offIconDataURL: ""
 });
 
 class State extends StateRecord {
@@ -117,6 +121,7 @@ class State extends StateRecord {
       "settings",
       "readPreferences"
     ).dispatch();
+    const iconDataURL = new Message("settings", "createIconDataURL").dispatch();
     const { alwaysOnTop, isFold, isCompact } = new Message(
       "settings",
       "readWin"
@@ -131,8 +136,10 @@ class State extends StateRecord {
       filtersList,
       ...filterOptSelected,
       ...preferencesOptSelected,
+      ...iconDataURL,
       hashTagOptions,
-      keyOptions
+      keyOptions,
+      iconDataURL
     });
   }
 

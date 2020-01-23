@@ -322,6 +322,9 @@ export default handleActions(
     },
     CLEAR_FILTER_SORT_SETTINGS: state => {
       return state.clearFilterSortSettings();
+    },
+    SET_CLIP_LISTENER_STATE: (state, { payload: disableClipListener }) => {
+      return state.set("disableClipListener", disableClipListener);
     }
   },
   new State()

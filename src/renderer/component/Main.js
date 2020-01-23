@@ -20,7 +20,9 @@ import {
   addImportClips,
   setIdsFromDatastore,
   callActionOnItemList,
-  setUserFilterByKey
+  setUserFilterByKey,
+  updateWinState,
+  setClipListenerState
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -104,14 +106,16 @@ const Main = props => {
     importClips,
     setIdsFromDatastore,
     callActionOnItemList,
-    setUserFilterByKey
+    setUserFilterByKey,
+    updateWinState,
+    setClipListenerState
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
       switch (triger) {
-        case "TEST":
-          const { appName } = args;
-          console.log(appName);
+        case "DISABLE_PASTIFY":
+          const { disableClipListener } = args;
+          setClipListenerState(disableClipListener);
           break;
         case "SHOW":
           const { command } = args;
@@ -179,6 +183,7 @@ const Main = props => {
     e => {
       const { shiftKey, ctrlKey, altKey } = e;
 
+      console.log(keycode(e));
       switch (keycode(e)) {
         case "=": {
           if (!ctrlKey) return;
@@ -225,6 +230,12 @@ const Main = props => {
           const action = "showPreferences";
           callActionOnItemList(action);
           setIdsFromDatastore();
+          updateWinState("alwaysOnTop");
+          break;
+        }
+        case "`": {
+          if (!ctrlKey) return;
+          updateWinState("alwaysOnTop");
           break;
         }
         default:
@@ -363,5 +374,7 @@ export default connect(mapStateToProps, {
   importClips,
   setIdsFromDatastore,
   callActionOnItemList,
-  setUserFilterByKey
+  setUserFilterByKey,
+  updateWinState,
+  setClipListenerState
 })(Main);

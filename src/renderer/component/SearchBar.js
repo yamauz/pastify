@@ -306,6 +306,7 @@ const filterOptions = (inputValue, searchOpt) => {
         _options = options.filter(i => {
           return inputKeys.every(key => i.key.toLowerCase().includes(key));
         });
+        console.log(_options);
         break;
       case "lang":
         // _options = options.filter(i => {

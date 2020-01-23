@@ -49,6 +49,8 @@ const StatusInput = props => {
         Select one of item status Normal/Faved/Trashed
       </FilterDescription>
       <Select
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         noOptionsMessage={() => null}
         menuPosition={"fixed"}
         placeholder={null}

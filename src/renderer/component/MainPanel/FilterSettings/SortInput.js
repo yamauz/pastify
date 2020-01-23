@@ -61,6 +61,8 @@ const SortInput = props => {
         Select a combination of sort order and key. Allows multi-selection.
       </FilterDescription>
       <Select
+        closeMenuOnScroll={true}
+        menuShouldBlockScroll={true}
         isMulti
         name="sort"
         placeholder={null}

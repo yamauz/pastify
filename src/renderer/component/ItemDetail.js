@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "@emotion/styled";
-import { TabPanel } from "../../util/react-web-tabs-item/lib";
 // Components
 import TextDetail from "./TextDetail";
 import ImageDetail from "./ImageDetail";

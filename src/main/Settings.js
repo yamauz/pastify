@@ -1,6 +1,8 @@
 const path = require("path");
+const { nativeImage } = require("electron");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
+const { APP_DIR, TRAY_ICON_PATH } = require("../common/settings");
 
 module.exports = class Settings {
   constructor() {
@@ -74,6 +76,14 @@ module.exports = class Settings {
   initialLoad() {
     const data = this.DB.get("FILTER").value();
     return data;
+  }
+
+  createIconDataURL() {
+    const onIconPath = path.join(APP_DIR, TRAY_ICON_PATH.on);
+    const offIconPath = path.join(APP_DIR, TRAY_ICON_PATH.off);
+    const onIconDataURL = nativeImage.createFromPath(onIconPath).toDataURL();
+    const offIconDataURL = nativeImage.createFromPath(offIconPath).toDataURL();
+    return { onIconDataURL, offIconDataURL };
   }
 
   createFilterParam() {

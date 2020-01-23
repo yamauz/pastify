@@ -35,7 +35,6 @@ module.exports = class Clip {
     const textExtract = this.extractDataList.get("TEXT");
     this.textData = textExtract;
 
-    console.log(this.mainFormat);
     switch (this.mainFormat) {
       case "TEXT":
         this._resizeText();
