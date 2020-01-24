@@ -325,6 +325,12 @@ export default handleActions(
     },
     SET_CLIP_LISTENER_STATE: (state, { payload: disableClipListener }) => {
       return state.set("disableClipListener", disableClipListener);
+    },
+    SET_MAX_DAY_TRASH: (state, { payload: value }) => {
+      return state.setMaxDayTrash(value);
+    },
+    SET_MAX_DAY_DELETE: (state, { payload: value }) => {
+      return state.setMaxDayDelete(value);
     }
   },
   new State()

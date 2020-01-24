@@ -17,8 +17,8 @@ const StateRecord = Record({
   isFold: false,
   notify: true,
   // detailType: "DEFAULT",
-  // detailType: "preferences",
-  detailType: "filter-sort-settings",
+  detailType: "preferences",
+  // detailType: "filter-sort-settings",
   moment: new Date().getTime(),
   addMode: "",
   itemsTimeLine: OrderedMap(),
@@ -87,7 +87,9 @@ const StateRecord = Record({
   clipForApplyLabel: undefined,
   disableClipListener: false,
   onIconDataURL: "",
-  offIconDataURL: ""
+  offIconDataURL: "",
+  maxDayTrash: "",
+  maxDayDelete: ""
 });
 
 class State extends StateRecord {
@@ -1090,6 +1092,17 @@ class State extends StateRecord {
     const args = { maxFileLength };
     new Message("settings", "updatePreferences", args).dispatch();
     return this.set("maxFileLength", maxFileLength);
+  }
+
+  setMaxDayTrash(maxDayTrash) {
+    const args = { maxDayTrash };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("maxDayTrash", maxDayTrash);
+  }
+  setMaxDayDelete(maxDayDelete) {
+    const args = { maxDayDelete };
+    new Message("settings", "updatePreferences", args).dispatch();
+    return this.set("maxDayDelete", maxDayDelete);
   }
   saveClipForApplyLabel(id) {
     const clip = this._getClipStateById(id);

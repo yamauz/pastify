@@ -12,6 +12,8 @@ import LaunchKeyInput from "./LaunchKeyInput";
 import MaxTextLengthInput from "./MaxTextLengthInput";
 import MaxImageSize from "./MaxImageSize";
 import MaxFileLength from "./MaxFileLength";
+import MaxDayTrash from "./MaxDayTrash";
+import MaxDayDelete from "./MaxDayDelete";
 import HotKeyInput from "./HotKeyInput";
 import HashTagInput from "./HashTagInput";
 import LanguageInput from "./LanguageInput";
@@ -69,18 +71,21 @@ const Preferences = props => {
       <ContainerLeft></ContainerLeft>
       <ContainerRight>
         <Title>Preferences</Title>
-        <SubTitle>Launch Options</SubTitle>
+        <SubTitle>Launch</SubTitle>
         <LaunchKeyInput />
-        <SubTitle>Block Options</SubTitle>
+        <SubTitle>Block</SubTitle>
         <BlockKeywordsInput />
         <BlockDataTypesInput />
         <BlockTextLengthRangeInput />
         <BlockImageSizeRangeInput />
         <BlockFileCountInput />
-        <SubTitle>Resize Options</SubTitle>
+        <SubTitle>Resize</SubTitle>
         <MaxTextLengthInput />
         <MaxImageSize />
         <MaxFileLength />
+        <SubTitle>TimeLine</SubTitle>
+        <MaxDayTrash />
+        <MaxDayDelete />
         {/* <StatusInput /> */}
         {/* <LanguageInput /> */}
         {/* <HashTagInput /> */}

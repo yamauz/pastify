@@ -6,9 +6,19 @@ const shortid = require("shortid");
 const FileSync = require("lowdb/adapters/FileSync");
 const Clip = require("./Clip");
 const arraySort = require("array-sort");
-
-const TRASH_LIMIT_DAY = 24;
-const DELETE_LIMIT_DAY = 24;
+const colors = require("colors");
+colors.setTheme({
+  silly: "rainbow",
+  input: "grey",
+  verbose: "cyan",
+  prompt: "grey",
+  info: "green",
+  data: "grey",
+  help: "cyan",
+  warn: "yellow",
+  debug: "blue",
+  error: "red"
+});
 
 module.exports = class DataStore {
   constructor(settings) {
@@ -389,24 +399,46 @@ module.exports = class DataStore {
   }
 
   _initialize() {
+    const { maxDayTrash, maxDayDelete } = this.settings.readPreferences();
+    let trashCount = 0;
+    let deleteCount = 0;
+
     // Trash item by limit day
     this.DB.get(this.storeName)
       .each(item => {
-        const timeDiff = this._computeDiff(item.date, "HOUR");
-        if (!item.isFaved && timeDiff > TRASH_LIMIT_DAY) {
+        const timeDiff = this._computeDiff(item.date, "DAY");
+        if (maxDayTrash !== "" && !item.isFaved && timeDiff >= maxDayTrash) {
+          trashCount++;
           return (item.isTrashed = true);
         } else {
           return;
         }
       })
       .write();
+    if (trashCount !== 0) {
+      console.log(
+        colors.info(
+          `${trashCount} clips was trashed by exceeding ${maxDayTrash} days`
+        )
+      );
+    }
 
     // Delete item by limit day
     this.DB.get(this.storeName)
       .remove(item => {
-        const timeDiff = this._computeDiff(item.date, "HOUR");
-        return item.isTrashed && timeDiff > DELETE_LIMIT_DAY;
+        const timeDiff = this._computeDiff(item.date, "DAY");
+        if (maxDayDelete !== "" && timeDiff >= maxDayDelete) {
+          deleteCount++;
+          return true;
+        }
       })
       .write();
+    if (deleteCount !== 0) {
+      console.log(
+        colors.info(
+          `${deleteCount} clips was deleted by exceeding ${maxDayDelete} days`
+        )
+      );
+    }
   }
 };

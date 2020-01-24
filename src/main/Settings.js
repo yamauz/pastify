@@ -43,6 +43,8 @@ module.exports = class Settings {
         maxTextLength: 5,
         maxImageSize: 640,
         maxFileLength: 5,
+        maxDayTrash: 2,
+        maxDayDelete: 1,
         disableClipListener: false,
         isCompact: false,
         launchKeyDuration: 200,

@@ -116,7 +116,9 @@ export const {
   applyLangFilter,
   applyIdFilter,
   clearFilterSortSettings,
-  setClipListenerState
+  setClipListenerState,
+  setMaxDayTrash,
+  setMaxDayDelete
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -246,5 +248,7 @@ export const {
   APPLY_LANG_FILTER: option => option,
   APPLY_ID_FILTER: id => id,
   CLEAR_FILTER_SORT_SETTINGS: () => {},
-  SET_CLIP_LISTENER_STATE: disableClipListener => disableClipListener
+  SET_CLIP_LISTENER_STATE: disableClipListener => disableClipListener,
+  SET_MAX_DAY_TRASH: value => value,
+  SET_MAX_DAY_DELETE: value => value
 });
