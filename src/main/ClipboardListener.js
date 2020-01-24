@@ -1,4 +1,5 @@
 const ffi = require("ffi");
+const { dialog } = require("electron");
 const ref = require("ref");
 const Struct = require("ref-struct");
 const WndClassEx = Struct({
@@ -40,18 +41,36 @@ const user32 = new ffi.Library("user32", {
 });
 
 module.exports = class ClipboardListener {
+  constructor(app) {
+    this.app = app;
+  }
+
   subscribe(messageHandler) {
     const wProc = this._createCallback(messageHandler);
 
+    const errorMsgTitle = "Error";
+    const errorMsgContent = "failed to open clipboard";
+
     const wClass = this._createClass(wProc);
-    if (!wClass)
-      return console.log("\x1b[36m%s\x1b[0m", "failed to create class");
+    if (!wClass) {
+      dialog.showErrorBox(errorMsgTitle, errorMsgContent);
+      console.log("\x1b[36m%s\x1b[0m", "failed to create class");
+      this.app.quit();
+    }
 
     const atom = this._registerClass(wClass);
-    if (!atom) return;
+    if (!atom) {
+      dialog.showErrorBox(errorMsgTitle, errorMsgContent);
+      console.log("\x1b[36m%s\x1b[0m", "failed to register class");
+      this.app.quit();
+    }
 
     const wHandle = this._createWindow(wClass);
-    if (ref.isNull(wHandle)) return;
+    if (ref.isNull(wHandle)) {
+      dialog.showErrorBox(errorMsgTitle, errorMsgContent);
+      console.log("\x1b[36m%s\x1b[0m", "failed to create window");
+      this.app.quit();
+    }
 
     user32.AddClipboardFormatListener(wHandle);
     console.log(

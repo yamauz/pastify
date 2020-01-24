@@ -17,7 +17,7 @@ let tray;
 
 app.on("ready", () => {
   createResoucePath();
-  const clipboardListener = new ClipboardListener();
+  const clipboardListener = new ClipboardListener(app);
   const clipboardFormatFinder = new ClipboardFormatFinder();
   const settings = new Settings();
   const dataStore = new DataStore(settings);
