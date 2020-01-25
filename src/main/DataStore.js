@@ -40,13 +40,11 @@ module.exports = class DataStore {
     const { textValue } = props;
     const settings = this.settings;
     const clip = new Clip("TEXT", new Map([["TEXT", textValue]]), settings);
-    // const clip = new Clip("TEXT", new Map([["TEXT", ""]]));
     this.DB.get(this.storeName)
       .push(clip)
       .write();
     const args = { clip: [clip], mode: "MANUAL" };
     win.sendToRenderer("useIpc", "COPY", args);
-    // return clip.id;
   }
   createBySearchInputValue(props, { win }) {
     const { textValue } = props;
@@ -103,6 +101,12 @@ module.exports = class DataStore {
 
   readAll() {
     const data = this.DB.get(this.storeName).value();
+    return data;
+  }
+  readAllIds() {
+    const data = this.DB.get(this.storeName)
+      .map("id")
+      .value();
     return data;
   }
   readNotTrashed() {

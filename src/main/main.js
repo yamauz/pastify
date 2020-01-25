@@ -1,6 +1,8 @@
 const { app } = require("electron");
+const colors = require("colors");
 const path = require("path");
 const fs = require("fs");
+const del = require("del");
 const Window = require("./Window");
 const Key = require("./Key");
 const ClipboardListener = require("./ClipboardListener");
@@ -16,7 +18,7 @@ const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
 let tray;
 
 app.on("ready", () => {
-  createResoucePath();
+  const resoucePath = createResoucePath();
   const clipboardListener = new ClipboardListener(app);
   const clipboardFormatFinder = new ClipboardFormatFinder();
   const settings = new Settings();
@@ -33,6 +35,7 @@ app.on("ready", () => {
   const instances = { dataStore, filters, settings, pastify, win, key };
   win.setIpcListener(instances);
   win.setEventListener(settings, key);
+  deleteResouces(resoucePath, dataStore);
   win.open(settings);
 
   clipboardListener.subscribe((hwnd, uMsg, wParam, lParam) => {
@@ -107,5 +110,33 @@ const createResoucePath = () => {
       fs.mkdirSync(importImagePath);
     }
   }
-  return resourcePath;
+  return {
+    resourcePath,
+    tempPath,
+    imagesPath,
+    filesPath,
+    exportPath,
+    exportImagePath,
+    importPath,
+    importImagePath
+  };
+};
+
+const deleteResouces = (rPath, dataStore) => {
+  (async () => {
+    const imageFiles = fs.readdirSync(rPath.imagesPath);
+    const clipIds = dataStore.readAllIds();
+    const idsDelete = imageFiles.filter(id => !clipIds.includes(id));
+    const deletedFilePaths = await del(
+      [
+        path.resolve(rPath.importPath, "export.json"),
+        path.resolve(rPath.importImagePath, "*"),
+        path.resolve(rPath.exportPath, "export.json"),
+        path.resolve(rPath.exportImagePath, "*"),
+        path.resolve(rPath.filesPath, "*")
+      ].concat(idsDelete.map(id => path.resolve(rPath.imagesPath, id)))
+    );
+    console.log(colors.info("Deleted files:\n", deletedFilePaths.join("\n")));
+  })();
+  return;
 };

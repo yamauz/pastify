@@ -5,7 +5,7 @@ const webpack = require("webpack");
 const MODE = process.env.NODE_ENV;
 const configMain = {
   mode: MODE,
-  entry: "./src/main/main.js",
+  entry: ["@babel/polyfill", "./src/main/main.js"],
   target: "electron-main",
   output: {
     filename: "bundle-main.js"
