@@ -63,7 +63,7 @@ const GridMain = styled.div`
   grid-area: main;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px 1fr;
+  grid-template-rows: 35px 1fr;
   grid-template-areas:
     "searchbar"
     "itempanel";
