@@ -36,7 +36,6 @@ const StateRecord = Record({
   idSelected: "",
   prevTab: "",
   nextTab: "",
-  itemClipboard: { text: "empty", format: "" }, // display on footer
   menuTabSelected: "TimeLine",
   keyboardHandler: "",
   modalVisibility: false,
@@ -90,7 +89,8 @@ const StateRecord = Record({
   offIconDataURL: "",
   maxDayTrash: "",
   maxDayDelete: "",
-  isVim: false
+  isVim: false,
+  currentClipboardText: ""
 });
 
 class State extends StateRecord {
@@ -176,10 +176,6 @@ class State extends StateRecord {
       itemDist
         .set(itemName, this[itemName].set(item.id, item))
         .set(idName, this[idName].unshift(item.id))
-        .set("itemClipboard", {
-          text: item.textData,
-          format: item.mainFormat
-        })
         .set("addMode", addMode);
     });
   }

@@ -118,7 +118,8 @@ export const {
   clearFilterSortSettings,
   setClipListenerState,
   setMaxDayTrash,
-  setMaxDayDelete
+  setMaxDayDelete,
+  setCurrentClipboardText
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -250,5 +251,6 @@ export const {
   CLEAR_FILTER_SORT_SETTINGS: () => {},
   SET_CLIP_LISTENER_STATE: disableClipListener => disableClipListener,
   SET_MAX_DAY_TRASH: value => value,
-  SET_MAX_DAY_DELETE: value => value
+  SET_MAX_DAY_DELETE: value => value,
+  SET_CURRENT_CLIPBOARD_TEXT: currentClipboardText => currentClipboardText
 });

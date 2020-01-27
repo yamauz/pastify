@@ -1,4 +1,4 @@
-const { app } = require("electron");
+const { app, clipboard } = require("electron");
 const colors = require("colors");
 const path = require("path");
 const fs = require("fs");
@@ -42,6 +42,12 @@ app.on("ready", () => {
     // check the condition of clipboard listener
     if (uMsg !== 797) return;
     if (wParam === 0) return;
+
+    // send Renderer to show current clipboard text contents
+    win.sendToRenderer("useIpc", "CURRENT_CLIPBOARD", {
+      currentClipboardText: clipboard.readText()
+    });
+
     if (pastify.isCopiedBySelf) {
       console.log("Blocked because saved clipboard self");
       pastify.isCopiedBySelf = false;

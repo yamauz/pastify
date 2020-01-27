@@ -332,6 +332,9 @@ export default handleActions(
     },
     SET_MAX_DAY_DELETE: (state, { payload: value }) => {
       return state.setMaxDayDelete(value);
+    },
+    SET_CURRENT_CLIPBOARD_TEXT: (state, { payload: currentClipboardText }) => {
+      return state.set("currentClipboardText", currentClipboardText);
     }
   },
   new State()

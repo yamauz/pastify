@@ -68,7 +68,7 @@ const Mode = styled.p`
 `;
 
 const Container = props => {
-  const { itemClipboard, setKeyboardHandler, isVim } = props;
+  const { currentClipboardText, setKeyboardHandler, isVim } = props;
 
   return (
     <Wrapper id="footer">
@@ -82,7 +82,7 @@ const Container = props => {
           />
         </IconWrapper>
         <TextWrapper>
-          <ItemText>{itemClipboard.text}</ItemText>
+          <ItemText>{currentClipboardText}</ItemText>
         </TextWrapper>
       </Left>
       <Right>
@@ -107,7 +107,7 @@ const Container = props => {
 };
 
 const mapStateToProps = state => ({
-  itemClipboard: state.get("itemClipboard"),
+  currentClipboardText: state.get("currentClipboardText"),
   isVim: state.get("isVim")
 });
 

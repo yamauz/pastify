@@ -22,7 +22,8 @@ import {
   callActionOnItemList,
   setUserFilterByKey,
   updateWinState,
-  setClipListenerState
+  setClipListenerState,
+  setCurrentClipboardText
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -108,11 +109,16 @@ const Main = props => {
     callActionOnItemList,
     setUserFilterByKey,
     updateWinState,
-    setClipListenerState
+    setClipListenerState,
+    setCurrentClipboardText
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
       switch (triger) {
+        case "CURRENT_CLIPBOARD":
+          const { currentClipboardText } = args;
+          setCurrentClipboardText(currentClipboardText);
+          break;
         case "DISABLE_PASTIFY":
           const { disableClipListener } = args;
           setClipListenerState(disableClipListener);
@@ -378,5 +384,6 @@ export default connect(mapStateToProps, {
   callActionOnItemList,
   setUserFilterByKey,
   updateWinState,
-  setClipListenerState
+  setClipListenerState,
+  setCurrentClipboardText
 })(Main);
