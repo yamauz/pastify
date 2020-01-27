@@ -283,9 +283,11 @@ const Main = props => {
         scrollHide={true}
         resizeHide={true}
         className="item-tooltip"
-        afterShow={() => {
+        afterShow={e => {
+          const [id, index] = e.target.id.split(":");
+          console.log(index);
           setPrevFocusedElm(document.activeElement);
-          toggleClipToolTip();
+          toggleClipToolTip(id, index);
           setTimeout(() => {
             document.getElementById("item-tooltip").focus();
           }, 0);

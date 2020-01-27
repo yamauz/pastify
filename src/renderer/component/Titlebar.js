@@ -9,8 +9,9 @@ import Minimize from "../../icon/titlebar/minimize.svg";
 import UnMaximize from "../../icon/titlebar/unMaximize.svg";
 import StickOff from "../../icon/titlebar/stickoff.svg";
 import StickOn from "../../icon/titlebar/stickon.svg";
-import { APP_DIR, TRAY_ICON_PATH } from "../../common/settings";
 import path from "path";
+import { APP_DIR, TRAY_ICON_PATH } from "../../common/settings";
+import { APP_ICON } from "../../common/imageDataUrl";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -86,7 +87,9 @@ const TitleBar = props => {
     offIconDataURL
   } = props;
 
-  const imagePath = disableClipListener ? offIconDataURL : onIconDataURL;
+  const imagePath = disableClipListener
+    ? APP_ICON.LISTENER_OFF
+    : APP_ICON.LISTENER_ON;
 
   return (
     <Wrapper winFocus={winFocus}>

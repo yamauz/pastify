@@ -215,7 +215,7 @@ export const {
   UPDATE_WIN_STATE: props => props,
   SET_PREV_FOCUSED_ELM: elm => elm,
   SET_TOOL_TIP_ARROW_POS: pos => pos,
-  TOGGLE_CLIP_TOOL_TIP: () => {},
+  TOGGLE_CLIP_TOOL_TIP: (id, index) => ({ id, index }),
   SET_SEARCH_INPUT_VALUE: value => value,
   SET_SEARCH_OPT: (handle, args) => ({ handle, args }),
   SELECT_CLIP_TO_PASTE: (id, modifier) => ({ id, modifier }),

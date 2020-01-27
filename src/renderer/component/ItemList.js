@@ -94,7 +94,9 @@ const ItemList = props => {
         console.log("onBlur");
       }}
       onFocus={e => {
-        console.log("onFocus");
+        // console.log("onFocus");
+        // console.log(scrollToRow);
+        setScrollToRow(scrollToRow);
         setDetailType("ITEM");
         // setFocusItemList(true);
       }}
@@ -304,7 +306,7 @@ const handleKeyDown = props => {
         break;
       case "space":
         if (e.ctrlKey) return;
-        document.getElementById(`${idSelected}-option`).click();
+        document.getElementById(`${idSelected}:${scrollToRow}`).click();
         break;
       case "j":
         if (scrollToRow === ids.size - 1) return;

@@ -13,7 +13,7 @@ module.exports = class Pastify {
   copyClipId(props) {
     const { id } = props;
     this.isCopiedBySelf = true;
-    CF.get("TEXT").write(id);
+    CF.get("TEXT").writeId(id);
     return null;
   }
 

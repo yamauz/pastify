@@ -39,6 +39,23 @@ const IconWrapper = styled.div`
   pointer-events: ${props => (props.isOpenClipToolTip ? "none" : "auto")};
 `;
 
+const TooltipIconWrapper = styled.div`
+  background-size: 15px 15px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%23eeeeee%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M328%20256c0%2039.8-32.2%2072-72%2072s-72-32.2-72-72%2032.2-72%2072-72%2072%2032.2%2072%2072zm104-72c-39.8%200-72%2032.2-72%2072s32.2%2072%2072%2072%2072-32.2%2072-72-32.2-72-72-72zm-352%200c-39.8%200-72%2032.2-72%2072s32.2%2072%2072%2072%2072-32.2%2072-72-32.2-72-72-72z%22%2F%3E%3C%2Fsvg%3E");
+  border-radius: 50%;
+  height: 22px;
+  width: 22px;
+  padding-top: 2px;
+  padding-left: 2px;
+  transition: background-color 0.1s;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  pointer-events: ${props => (props.isOpenClipToolTip ? "none" : "auto")};
+`;
+
 const EditButtons = props => {
   const {
     id,
@@ -80,22 +97,16 @@ const EditButtons = props => {
       >
         {toggleTrashIcon(isTrashed)}
       </IconWrapper>
-      <IconWrapper
+      <TooltipIconWrapper
         isOpenClipToolTip={isOpenClipToolTip}
         data-tip={`${id}:${index}`}
         data-place={"left"}
         data-for="global"
-        id={`${id}-option`}
-        // data-iscapture={true}
-        // onClick={e => {
-        //   e.stopPropagation();
-        //   setTimeout(() => {
-        //     setScrollToRow(index);
-        //   }, 200);
-        // }}
+        // id={`${id}-option`}
+        id={`${id}:${index}`}
       >
-        {renderToolTipIcon()}
-      </IconWrapper>
+        {/* {renderToolTipIcon()} */}
+      </TooltipIconWrapper>
     </Wrapper>
   );
 };

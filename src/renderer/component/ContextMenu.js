@@ -41,7 +41,8 @@ const Component = props => {
       isOpen={isOpen}
       data-tip={`${id}:${index}`}
       data-place={"left"}
-      id={`${id}-option`}
+      // id={`${id}-option`}
+      id={`${id}:${index}`}
       data-for="global"
       isOpenClipToolTip={isOpenClipToolTip}
     ></Wrapper>

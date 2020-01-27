@@ -157,6 +157,7 @@ class State extends StateRecord {
 
   copyClip(isReturn, copyOnly, copyAs) {
     const id = this.get("idSelected");
+    console.log(id);
     const args = { id, isReturn, copyOnly, copyAs };
     new Message("pastify", "copyClip", args).dispatch();
     return this;
@@ -1184,6 +1185,20 @@ class State extends StateRecord {
         .set("searchInputValue", "")
         .set("searchOpt", this._getEmptySearchOpt());
     });
+  }
+
+  toggleClipToolTip(id, index) {
+    const isOpenClipToolTip = this.get("isOpenClipToolTip");
+    if (isOpenClipToolTip) {
+      return this.set("isOpenClipToolTip", !isOpenClipToolTip);
+    } else {
+      return this.withMutations(state => {
+        state
+          .set("isOpenClipToolTip", !isOpenClipToolTip)
+          .set("scrollToRow", Number(index))
+          .set("idSelected", id);
+      });
+    }
   }
 
   _getModifierKeys() {

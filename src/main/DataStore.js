@@ -431,7 +431,7 @@ module.exports = class DataStore {
     this.DB.get(this.storeName)
       .remove(item => {
         const timeDiff = this._computeDiff(item.date, "DAY");
-        if (maxDayDelete !== "" && timeDiff >= maxDayDelete) {
+        if (maxDayDelete !== "" && timeDiff >= maxDayDelete && item.isTrashed) {
           deleteCount++;
           return true;
         }
