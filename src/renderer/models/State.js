@@ -89,7 +89,8 @@ const StateRecord = Record({
   onIconDataURL: "",
   offIconDataURL: "",
   maxDayTrash: "",
-  maxDayDelete: ""
+  maxDayDelete: "",
+  isVim: false
 });
 
 class State extends StateRecord {
@@ -1199,6 +1200,12 @@ class State extends StateRecord {
           .set("idSelected", id);
       });
     }
+  }
+
+  setKeyboardMode() {
+    const isVim = !this.get("isVim");
+    new Message("settings", "updatePreferences", { isVim }).dispatch();
+    return this.set("isVim", isVim);
   }
 
   _getModifierKeys() {

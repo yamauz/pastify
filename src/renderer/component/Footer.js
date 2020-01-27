@@ -58,7 +58,7 @@ const ModeWrapper = styled.div`
   width: 45px;
 `;
 const Mode = styled.p`
-  cursor: pointer;
+  pointer-events: auto;
   user-select: none;
   text-align: left;
   padding-left: 3px;
@@ -68,7 +68,7 @@ const Mode = styled.p`
 `;
 
 const Container = props => {
-  const { itemClipboard, setKeyboardHandler, keyboardHandler } = props;
+  const { itemClipboard, setKeyboardHandler, isVim } = props;
 
   return (
     <Wrapper id="footer">
@@ -99,21 +99,16 @@ const Container = props => {
             setKeyboardHandler();
           }}
         >
-          <Mode>{checkMode(keyboardHandler)}</Mode>
+          <Mode>{isVim ? "Vim" : "Default"}</Mode>
         </ModeWrapper>
       </Right>
     </Wrapper>
   );
 };
 
-const checkMode = mode => {
-  const _mode = mode === "" ? "normal" : mode;
-  return _mode;
-};
-
 const mapStateToProps = state => ({
   itemClipboard: state.get("itemClipboard"),
-  keyboardHandler: state.get("keyboardHandler")
+  isVim: state.get("isVim")
 });
 
 export default connect(mapStateToProps, { setKeyboardHandler })(Container);

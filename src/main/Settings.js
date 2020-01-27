@@ -51,7 +51,8 @@ module.exports = class Settings {
         launchKeyOpt: {
           label: "Shift *2",
           value: "shift-double"
-        }
+        },
+        isVim: false
       }
     };
     this.disableClipListener = false;

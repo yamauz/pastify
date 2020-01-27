@@ -76,7 +76,7 @@ export default handleActions(
       return state.set("menuTabSelected", menuTab);
     },
     SET_KEYBOARD_HANDLER: state => {
-      return state.setKeyboardHandler();
+      return state.setKeyboardMode();
     },
     SET_ITEM_TAG: (state, { payload: itemTag }) => {
       return state.setItemTag(itemTag);

@@ -45,7 +45,7 @@ const Wrapper = styled.div`
 `;
 
 const TextDetail = props => {
-  const { id, data, itemIdAddedManually, keyboardHandler, setItemText } = props;
+  const { id, data, itemIdAddedManually, isVim, setItemText } = props;
 
   useEffect(() => {
     if (itemIdAddedManually !== "_UNSET_") {
@@ -66,7 +66,7 @@ const TextDetail = props => {
         showPrintMargin={false}
         style={{ lineHeight: 1.5 }}
         fontSize={"13px"}
-        keyboardHandler={keyboardHandler}
+        keyboardHandler={isVim ? "vim" : null}
         debounceChangePeriod={1000}
         onChange={textData => {
           setItemText({ id, textData });
@@ -97,7 +97,7 @@ const setModeByLang = lang => {
 };
 
 const mapStateToProps = state => ({
-  keyboardHandler: state.get("keyboardHandler"),
+  isVim: state.get("isVim"),
   itemIdAddedManually: state.get("itemIdAddedManually")
 });
 
