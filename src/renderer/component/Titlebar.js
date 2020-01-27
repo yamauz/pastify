@@ -59,8 +59,11 @@ const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  margin-left: 5px;
+  /* border: solid 1px white; */
 `;
 
 const ImageWrapper = styled.div`
