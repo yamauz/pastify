@@ -43,7 +43,7 @@ const Modal = props => {
         }}
         duration={50}
         showCloseButton={false}
-        closeOnEsc={true}
+        closeOnEsc={false}
         customStyles={{
           backgroundColor: "#111514",
           borderRadius: 0

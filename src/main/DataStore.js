@@ -276,23 +276,11 @@ module.exports = class DataStore {
     const sortFuncs = sortBy.map((sBy, i) =>
       orderBy[i] === "asc"
         ? (a, b) => {
-            // const _a = Array.isArray(a[sBy])
-            //   ? a[sBy].toString().trim()
-            //   : a[sBy].trim();
-            // const _b = Array.isArray(b[sBy])
-            //   ? b[sBy].toString().trim()
-            //   : b[sBy].trim();
             const _a = a[sBy].toString().trim();
             const _b = b[sBy].toString().trim();
             return _a.localeCompare(_b);
           }
         : (a, b) => {
-            // const _a = Array.isArray(a[sBy])
-            //   ? a[sBy].toString().trim()
-            //   : a[sBy].trim();
-            // const _b = Array.isArray(b[sBy])
-            //   ? b[sBy].toString().trim()
-            //   : b[sBy].trim();
             const _a = a[sBy].toString().trim();
             const _b = b[sBy].toString().trim();
             return _b.localeCompare(_a);
@@ -351,8 +339,15 @@ module.exports = class DataStore {
       .map("tag")
       .value();
     const tagsFlat = tags.flatMap(v => v);
-    const tagsOptions = _.uniq(tagsFlat.filter(tag => tag !== ""));
-    return tagsOptions;
+    // const tagsOptions = _.uniq(tagsFlat.filter(tag => tag !== ""));
+    const tagsOptions = _.uniqBy(
+      tagsFlat.filter(tag => tag.length !== 0),
+      "label"
+    );
+    const sortedTagsOptions = arraySort(tagsOptions, function(a, b) {
+      return a.label.localeCompare(b.label);
+    });
+    return sortedTagsOptions;
   }
   getKeyOptions() {
     const keys = this.DB.get(this.storeName)
@@ -360,7 +355,10 @@ module.exports = class DataStore {
       .value();
     const keysFlat = keys.flatMap(v => v);
     const keysUniq = _.uniq(keysFlat.filter(key => key !== ""));
-    const keysOptions = keysUniq.map(key => {
+    const sortedKeysUniq = arraySort(keysUniq, function(a, b) {
+      return a.localeCompare(b);
+    });
+    const keysOptions = sortedKeysUniq.map(key => {
       return {
         label: key,
         value: key
