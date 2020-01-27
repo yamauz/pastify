@@ -6,6 +6,7 @@ import "../../util/react-web-tabs-item/dist/react-web-tabs.css";
 // Components
 import Item from "./Item";
 import ItemCompact from "./ItemCompact";
+import NoClipList from "./NoClipList";
 import { connect } from "react-redux";
 import {
   setItemTagHeight,
@@ -89,16 +90,9 @@ const ItemList = props => {
   return (
     <Wrapper
       tabIndex={1}
-      onBlur={e => {
-        // setFocusItemList(false);
-        console.log("onBlur");
-      }}
       onFocus={e => {
-        // console.log("onFocus");
-        // console.log(scrollToRow);
         setScrollToRow(scrollToRow);
         setDetailType("ITEM");
-        // setFocusItemList(true);
       }}
       onDoubleClick={e => {
         if (e.target.id === "item-list") return;
@@ -167,7 +161,9 @@ const ItemList = props => {
                     ...params
                   })
                 }
-                noRowsRenderer={() => <div>No Item Found</div>}
+                noRowsRenderer={() => {
+                  return <NoClipList />;
+                }}
               />
             )}
           </ArrowKeyStepper>
