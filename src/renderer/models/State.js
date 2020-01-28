@@ -8,6 +8,7 @@ import searchInputOptionsAll from "./../../common/searchInputOptionsAll";
 import _ from "lodash";
 import * as React from "react";
 import toast from "toasted-notes";
+import Toast from "../component/Toast";
 
 const StateRecord = Record({
   alwaysOnTop: false,
@@ -291,7 +292,7 @@ class State extends StateRecord {
   favItem(id) {
     const keyPath = ["itemsTimeLine", id, "isFaved"];
     const isFaved = !this.getIn(keyPath);
-    isFaved ? this._toast(`Fav : ${id}`) : this._toast(`UnFav : ${id}`);
+    isFaved ? this._toast("FAV_ON", { id }) : this._toast("FAV_OFF", { id });
     const value = { isFaved };
     new Message("dataStore", "update", { id, value }).dispatch();
     return this.setIn(keyPath, isFaved);
@@ -1263,10 +1264,11 @@ class State extends StateRecord {
 
   _deleteClip(clip) {}
 
-  _toast(message) {
+  _toast(messageKey, args) {
+    console.log(messageKey, args);
     const notify = this.get("notify");
     if (notify) {
-      toast.notify(message, {
+      toast.notify(<Toast messageKey={messageKey} args={args} />, {
         position: "bottom-right",
         duration: 2000
       });
