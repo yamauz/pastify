@@ -23,7 +23,8 @@ import {
   setUserFilterByKey,
   updateWinState,
   setClipListenerState,
-  setCurrentClipboardText
+  setCurrentClipboardText,
+  showExportToast
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -110,7 +111,8 @@ const Main = props => {
     setUserFilterByKey,
     updateWinState,
     setClipListenerState,
-    setCurrentClipboardText
+    setCurrentClipboardText,
+    showExportToast
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -133,9 +135,13 @@ const Main = props => {
           break;
         }
         case "IMPORT": {
-          const { clip } = args;
-          addImportClips(clip);
+          const { status, clip } = args;
+          addImportClips(status, clip);
           setIdsFromDatastore();
+          break;
+        }
+        case "EXPORT": {
+          showExportToast(args);
           break;
         }
         case "BLUR":
@@ -385,5 +391,6 @@ export default connect(mapStateToProps, {
   setUserFilterByKey,
   updateWinState,
   setClipListenerState,
-  setCurrentClipboardText
+  setCurrentClipboardText,
+  showExportToast
 })(Main);

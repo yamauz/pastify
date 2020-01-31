@@ -119,7 +119,8 @@ export const {
   setClipListenerState,
   setMaxDayTrash,
   setMaxDayDelete,
-  setCurrentClipboardText
+  setCurrentClipboardText,
+  showExportToast
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -222,7 +223,7 @@ export const {
   SELECT_CLIP_TO_PASTE: (id, modifier) => ({ id, modifier }),
   EXPORT_CLIPS: exportPath => exportPath,
   IMPORT_CLIPS: importPath => importPath,
-  ADD_IMPORT_CLIPS: clips => clips,
+  ADD_IMPORT_CLIPS: (status, clips) => ({ status, clips }),
   SET_USER_FILTER_BY_KEY: (keycode, modifier) => ({ keycode, modifier }),
   // [Preferences] Launch Key-------------------------------------
   SET_LAUNCH_KEY_OPTIONS: options => options,
@@ -252,5 +253,6 @@ export const {
   SET_CLIP_LISTENER_STATE: disableClipListener => disableClipListener,
   SET_MAX_DAY_TRASH: value => value,
   SET_MAX_DAY_DELETE: value => value,
-  SET_CURRENT_CLIPBOARD_TEXT: currentClipboardText => currentClipboardText
+  SET_CURRENT_CLIPBOARD_TEXT: currentClipboardText => currentClipboardText,
+  SHOW_EXPORT_TOAST: args => args
 });

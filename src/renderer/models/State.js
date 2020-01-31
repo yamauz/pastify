@@ -208,9 +208,9 @@ class State extends StateRecord {
       statusFilterOpt[0].value.isTrashed
     ) {
       if (clip.isTrashed) {
-        this._toast(`Recover : ${clip.id}`);
+        this._toast("TRASH_ON", { id: clip.id });
       } else {
-        this._toast(`Trash : ${clip.id}`);
+        this._toast("TRASH_OFF", { id: clip.id });
       }
       return this._setClipState(clip.id, "isTrashed", !clip.isTrashed);
     }
@@ -227,7 +227,7 @@ class State extends StateRecord {
     // console.log(`nextRow : ${nextRow}`);
     // console.log(`nextId : ${nextId}`);
 
-    this._toast(`Trash : ${clip.id}`);
+    this._toast("TRASH_ON", { id: clip.id });
     return this.withMutations(state => {
       state
         .setIn(["itemsTimeLine", clip.id, "isTrashed"], !clip.isTrashed)
@@ -299,7 +299,7 @@ class State extends StateRecord {
   }
   saveTag() {
     const id = this.get("idSelected");
-    this._toast(`Change Label : ${id}`);
+    this._toast("UPDATE_LABEL", { id });
     const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
       "itemsTimeLine",
       id,
@@ -996,9 +996,12 @@ class State extends StateRecord {
 
   exportClips(exportPath) {
     const idsTimeLine = this.get("idsTimeLine").toArray();
-    const _args = { idsTimeLine, exportPath };
-
-    new Message("pastify", "exportClips", _args).dispatch();
+    if (idsTimeLine.length === 0) {
+      this._toast("EXPORT_FAIL");
+    } else {
+      const _args = { idsTimeLine, exportPath };
+      new Message("pastify", "exportClips", _args).dispatch();
+    }
     return this;
   }
 
@@ -1008,11 +1011,17 @@ class State extends StateRecord {
     return this;
   }
 
-  addImportClips(clips) {
-    const allClipsRec = clips.map(clip => [clip.id, new ItemValue(clip)]);
-    const itemsTimeLine = this.get("itemsTimeLine");
-    return this.set("itemsTimeLine", itemsTimeLine.merge(allClipsRec));
-    // return this;
+  addImportClips(status, clips) {
+    if (status === "SUCCESS") {
+      console.log("asdasdf");
+      const allClipsRec = clips.map(clip => [clip.id, new ItemValue(clip)]);
+      const itemsTimeLine = this.get("itemsTimeLine");
+      this._toast("IMPORT_SUCCESS", { clipCount: clips.length });
+      return this.set("itemsTimeLine", itemsTimeLine.merge(allClipsRec));
+    } else {
+      this._toast("IMPORT_FAIL", {});
+      return this;
+    }
   }
 
   addBlockKeywordsOptions(keywords) {
@@ -1105,14 +1114,14 @@ class State extends StateRecord {
   }
   saveClipForApplyLabel(id) {
     const clip = this._getClipStateById(id);
-    this._toast(`Store Label : ${id}`);
+    this._toast("COPY_LABEL", { id });
     return this.set("clipForApplyLabel", clip);
   }
   applyClipLabel(idSelected) {
     if (this.get("clipForApplyLabel") === undefined) {
       return this;
     } else {
-      this._toast(`Apply Label : ${id}`);
+      this._toast("APPLY_LABEL", { id: idSelected });
       const { id, lang, tag, key } = this.get("clipForApplyLabel");
       const keyPath = ["key", "lang", "tag", "itemTagHeight"].map(prop => [
         "itemsTimeLine",
@@ -1203,6 +1212,16 @@ class State extends StateRecord {
     const isVim = !this.get("isVim");
     new Message("settings", "updatePreferences", { isVim }).dispatch();
     return this.set("isVim", isVim);
+  }
+
+  showExportToast(args) {
+    const { status, clipCount } = args;
+    if (status === "SUCCESS") {
+      this._toast("EXPORT_SUCCESS", { clipCount });
+    } else {
+      this._toast("EXPORT_FAIL");
+    }
+    return this;
   }
 
   _getModifierKeys() {

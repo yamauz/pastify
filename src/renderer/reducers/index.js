@@ -255,8 +255,8 @@ export default handleActions(
     IMPORT_CLIPS: (state, { payload: importPath }) => {
       return state.importClips(importPath);
     },
-    ADD_IMPORT_CLIPS: (state, { payload: clips }) => {
-      return state.addImportClips(clips);
+    ADD_IMPORT_CLIPS: (state, { payload: { status, clips } }) => {
+      return state.addImportClips(status, clips);
     },
     SET_USER_FILTER_BY_KEY: (state, { payload: { keycode, modifier } }) => {
       return state.setUserFilterByKey(keycode, modifier);
@@ -335,6 +335,9 @@ export default handleActions(
     },
     SET_CURRENT_CLIPBOARD_TEXT: (state, { payload: currentClipboardText }) => {
       return state.set("currentClipboardText", currentClipboardText);
+    },
+    SHOW_EXPORT_TOAST: (state, { payload: args }) => {
+      return state.showExportToast(args);
     }
   },
   new State()

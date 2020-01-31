@@ -52,6 +52,7 @@ module.exports = class Window {
       width,
       height,
       minWidth,
+      show: false,
       minHeight: 500,
       frame: false,
       webPreferences: {
@@ -81,7 +82,7 @@ module.exports = class Window {
     }
     console.log(`running on ${MODE} mode...`);
 
-    this.hide();
+    // this.hide();
     this._openDevTools();
   }
 
@@ -174,7 +175,9 @@ module.exports = class Window {
         break;
       }
       case "hide":
-        this.window.hide();
+        this.hide();
+        // this.isResizedByFolding = true;
+        // this.window.setSize(15, 15);
         break;
       case "alwaysOnTop":
         this.window.setAlwaysOnTop(!this.window.isAlwaysOnTop());
@@ -236,7 +239,8 @@ module.exports = class Window {
     user32.AttachThreadInput(windowThreadProcessId, currentThreadId, 0);
     this.window.setSkipTaskbar(true);
 
-    this.window.focus();
+    // this.window.focus();
+    // this.show();
     const args = { command };
     this.sendToRenderer("useIpc", "SHOW", args);
   }

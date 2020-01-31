@@ -39,7 +39,7 @@ module.exports = class Pastify {
     return null;
   }
 
-  exportClips(props, { dataStore }) {
+  exportClips(props, { dataStore, win }) {
     const { idsTimeLine, exportPath } = props;
     const clipsExport = dataStore.readClipsById(idsTimeLine);
     const imageClips = clipsExport.filter(clip => clip.mainFormat === "IMAGE");
@@ -73,6 +73,11 @@ module.exports = class Pastify {
     output.on("close", function() {
       const archive_size = archive.pointer();
       console.log(`complete! total size : ${archive_size} bytes`);
+      const args = {
+        status: "SUCCESS",
+        clipCount: idsTimeLine.length
+      };
+      win.sendToRenderer("useIpc", "EXPORT", args);
     });
 
     return null;
@@ -112,7 +117,9 @@ module.exports = class Pastify {
         }
       })
       .on("error", () => {
-        console.log("error!!!");
+        const args = { status: "FAIL" };
+        win.sendToRenderer("useIpc", "IMPORT", args);
+        console.log("import error!!!");
       })
       .promise()
       .then(() => {

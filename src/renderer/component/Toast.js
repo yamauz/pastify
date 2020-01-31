@@ -26,17 +26,36 @@ const Id = styled.span`
   color: #969494;
 `;
 
+const Filter = styled.span`
+  font-size: 10px;
+  color: #969494;
+`;
+
 const Component = props => {
-  const { messageKey } = props;
-  console.log(messageKey);
-  const _icon = ToastMessage.get(messageKey).icon;
-  const _component = ToastMessage.get(messageKey).component(props);
+  const { icon, message, toast } = ToastMessage.get(props.messageKey);
   return (
     <Wrapper>
-      <Icon icon={_icon} />
-      {_component}
+      <Icon icon={icon} />
+      {toast(props, message)}
     </Wrapper>
   );
+};
+
+const createToast = (_, message) => {
+  return <Message>{message}</Message>;
+};
+
+const createToastWithId = ({ args }, message) => {
+  return (
+    <Message>
+      {`${message} : `}
+      <Id>{args.id}</Id>
+    </Message>
+  );
+};
+
+const createToastWithClipCount = ({ args }, message) => {
+  return <Message>{`${message} ${args.clipCount} clips.`}</Message>;
 };
 
 const ToastMessage = new Map([
@@ -44,30 +63,88 @@ const ToastMessage = new Map([
     "FAV_ON",
     {
       icon: CLIP.FAV_ON,
-      component: props => {
-        const { args } = props;
-        return (
-          <Message>
-            {"Fav ON : "}
-            <Id>{args.id}</Id>
-          </Message>
-        );
-      }
+      message: "Fav ON",
+      toast: createToastWithId
     }
   ],
   [
     "FAV_OFF",
     {
       icon: CLIP.FAV_OFF,
-      component: props => {
-        const { args } = props;
-        return (
-          <Message>
-            {"Fav OFF : "}
-            <Id>{args.id}</Id>
-          </Message>
-        );
-      }
+      message: "Fav OFF",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "TRASH_ON",
+    {
+      icon: CLIP.TRASH_ON,
+      message: "Trash ON",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "TRASH_OFF",
+    {
+      icon: CLIP.TRASH_OFF,
+      message: "Trash OFF",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "UPDATE_LABEL",
+    {
+      icon: CLIP.LABEL_ON,
+      message: "Update Label",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "COPY_LABEL",
+    {
+      icon: CLIP.LABEL_ON,
+      message: "Copy Label",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "APPLY_LABEL",
+    {
+      icon: CLIP.LABEL_ON,
+      message: "Apply Label",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "IMPORT_SUCCESS",
+    {
+      icon: TOAST.SUCCESS,
+      message: "Imported",
+      toast: createToastWithClipCount
+    }
+  ],
+  [
+    "IMPORT_FAIL",
+    {
+      icon: TOAST.ERROR,
+      message: "Clip Importing Failed.",
+      toast: createToast
+    }
+  ],
+  [
+    "EXPORT_SUCCESS",
+    {
+      icon: TOAST.SUCCESS,
+      message: "Exported",
+      toast: createToastWithClipCount
+    }
+  ],
+  [
+    "EXPORT_FAIL",
+    {
+      icon: TOAST.ERROR,
+      message: "Clip Exporting Failed.",
+      toast: createToast
     }
   ]
 ]);

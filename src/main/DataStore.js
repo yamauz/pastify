@@ -95,7 +95,7 @@ module.exports = class DataStore {
         .write();
       return clip;
     });
-    const args = { clip: importFileRenamed };
+    const args = { status: "SUCCESS", clip: importFileRenamed };
     win.sendToRenderer("useIpc", "IMPORT", args);
   }
 
