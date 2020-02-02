@@ -49,7 +49,8 @@ const TextDetail = props => {
 
   useEffect(() => {
     if (itemIdAddedManually !== "_UNSET_") {
-      document.getElementsByClassName("ace_text-input")[0].focus();
+      // console.log(itemIdAddedManually);
+      // document.getElementsByClassName("ace_text-input")[0].focus();
     }
   });
   return (

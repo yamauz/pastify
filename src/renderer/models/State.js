@@ -173,6 +173,12 @@ class State extends StateRecord {
     return this.addItem(itemValue, itemName, idName, addMode);
   }
   addItem(item, itemName, idName, addMode) {
+    if (addMode === "AUTO") {
+      this._toast(`ADD_${item.mainFormat}`, { id: item.id });
+    } else {
+      this._toast("CREATE_NEW", { id: item.id });
+    }
+    console.log(addMode);
     return this.withMutations(itemDist => {
       itemDist
         .set(itemName, this[itemName].set(item.id, item))
@@ -565,7 +571,7 @@ class State extends StateRecord {
     const keyPath = ["itemsTimeLine", id, "lang"];
     return this.setIn(keyPath, langOpt);
   }
-  setIdsFromDatastore() {
+  setIdsFromDatastore(input) {
     const options = {
       sortOpt: this.get("sortOpt"),
       filterName: this.get("filterName"),
@@ -578,6 +584,25 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
+    if (input !== "filterName") {
+      if (
+        options.filterName.length !== 0 ||
+        options.sortOpt.length !== 0 ||
+        options.filterShortcutKeyOpt.length !== 0 ||
+        options.keywordFilterOpt.length !== 0 ||
+        options.idFilterOpt.length !== 0 ||
+        options.dataTypeFilterOpt.length !== 0 ||
+        options.statusFilterOpt.length !== 0 ||
+        options.hotKeyFilterOpt.length !== 0 ||
+        options.hashTagFilterOpt.length !== 0 ||
+        options.languageFilterOpt.length !== 0
+      ) {
+        this._toast("APPLY_FILTER", { filterName: this.get("filterName") });
+      } else {
+        this._toast("CLEAR_FILTER", {});
+      }
+    }
+
     new Message("settings", "updateFilter", options).dispatch();
 
     const idsFiltered = new Message(
@@ -814,6 +839,7 @@ class State extends StateRecord {
   }
   copyClipId() {
     const args = { id: this.get("idSelected") };
+    this._toast("COPY_CLIP_ID", args);
     new Message("pastify", "copyClipId", args).dispatch();
     return this;
   }
@@ -1013,7 +1039,6 @@ class State extends StateRecord {
 
   addImportClips(status, clips) {
     if (status === "SUCCESS") {
-      console.log("asdasdf");
       const allClipsRec = clips.map(clip => [clip.id, new ItemValue(clip)]);
       const itemsTimeLine = this.get("itemsTimeLine");
       this._toast("IMPORT_SUCCESS", { clipCount: clips.length });
@@ -1222,6 +1247,19 @@ class State extends StateRecord {
       this._toast("EXPORT_FAIL");
     }
     return this;
+  }
+  showAfterCopyToast(id) {
+    this._toast("COPY_CLIP", { id });
+    return this;
+  }
+
+  setClipListenerState(disableClipListener) {
+    if (disableClipListener) {
+      this._toast("MONITOR_OFF");
+    } else {
+      this._toast("MONITOR_ON");
+    }
+    return this.set("disableClipListener", disableClipListener);
   }
 
   _getModifierKeys() {

@@ -36,6 +36,7 @@ module.exports = class Pastify {
     if (!copyOnly) {
       this._pasteClip(settings, win, isReturn);
     }
+    win.sendToRenderer("useIpc", "AFTER_COPY", { id });
     return null;
   }
 

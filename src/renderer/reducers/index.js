@@ -108,8 +108,8 @@ export default handleActions(
     SET_LANG_OPTIONS_SELECTED: (state, { payload: options }) => {
       return state.setLangOptionsSelected(options);
     },
-    SET_IDS_FROM_DATASTORE: state => {
-      return state.setIdsFromDatastore();
+    SET_IDS_FROM_DATASTORE: (state, { payload: input }) => {
+      return state.setIdsFromDatastore(input);
     },
     SET_DETAIL_TYPE: (state, { payload: type }) => {
       return state.set("detailType", type);
@@ -325,7 +325,7 @@ export default handleActions(
       return state.clearFilterSortSettings();
     },
     SET_CLIP_LISTENER_STATE: (state, { payload: disableClipListener }) => {
-      return state.set("disableClipListener", disableClipListener);
+      return state.setClipListenerState(disableClipListener);
     },
     SET_MAX_DAY_TRASH: (state, { payload: value }) => {
       return state.setMaxDayTrash(value);
@@ -338,6 +338,9 @@ export default handleActions(
     },
     SHOW_EXPORT_TOAST: (state, { payload: args }) => {
       return state.showExportToast(args);
+    },
+    SHOW_AFTER_COPY_TOAST: (state, { payload: id }) => {
+      return state.showAfterCopyToast(id);
     }
   },
   new State()

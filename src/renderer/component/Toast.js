@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { TOAST, CLIP } from "../../common/imageDataUrl";
+import { TOAST, CLIP, FILTER } from "../../common/imageDataUrl";
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,6 +56,17 @@ const createToastWithId = ({ args }, message) => {
 
 const createToastWithClipCount = ({ args }, message) => {
   return <Message>{`${message} ${args.clipCount} clips.`}</Message>;
+};
+
+const createToastWithFilterName = ({ args }, message) => {
+  const { filterName } = args;
+  const _filterName = filterName === "" ? "Untitled" : filterName;
+  return (
+    <Message>
+      {`${message} : `}
+      <Filter>{_filterName}</Filter>
+    </Message>
+  );
 };
 
 const ToastMessage = new Map([
@@ -144,6 +155,94 @@ const ToastMessage = new Map([
     {
       icon: TOAST.ERROR,
       message: "Clip Exporting Failed.",
+      toast: createToast
+    }
+  ],
+  [
+    "CREATE_NEW",
+    {
+      icon: CLIP.FORMAT_TEXT,
+      message: "Added New",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "ADD_TEXT",
+    {
+      icon: CLIP.FORMAT_TEXT,
+      message: "Added",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "ADD_IMAGE",
+    {
+      icon: CLIP.FORMAT_IMAGE,
+      message: "Added",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "ADD_FILE",
+    {
+      icon: CLIP.FORMAT_FILE,
+      message: "Added",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "ADD_SHEET",
+    {
+      icon: CLIP.FORMAT_SHEET,
+      message: "Added",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "COPY_CLIP_ID",
+    {
+      icon: CLIP.CLIP,
+      message: "Copied ID",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "COPY_CLIP",
+    {
+      icon: CLIP.CLIP,
+      message: "Copied",
+      toast: createToastWithId
+    }
+  ],
+  [
+    "APPLY_FILTER",
+    {
+      icon: FILTER.ON,
+      message: "Filtered",
+      toast: createToastWithFilterName
+    }
+  ],
+  [
+    "CLEAR_FILTER",
+    {
+      icon: FILTER.OFF,
+      message: "Clear Filter",
+      toast: createToast
+    }
+  ],
+  [
+    "MONITOR_ON",
+    {
+      icon: TOAST.INFO,
+      message: "Clipboard Monitoring Started",
+      toast: createToast
+    }
+  ],
+  [
+    "MONITOR_OFF",
+    {
+      icon: TOAST.INFO,
+      message: "Clipboard Monitoring Paused",
       toast: createToast
     }
   ]

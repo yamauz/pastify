@@ -1,4 +1,5 @@
 .vscode/
+svg/
 build/
 dist/
 node_modules/

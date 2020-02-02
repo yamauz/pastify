@@ -120,7 +120,8 @@ export const {
   setMaxDayTrash,
   setMaxDayDelete,
   setCurrentClipboardText,
-  showExportToast
+  showExportToast,
+  showAfterCopyToast
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -163,7 +164,7 @@ export const {
   SET_SCROLL_TOP: scrollTop => scrollTop,
   SET_DATA_TYPE_OPTIONS_SELECTED: options => options,
   SET_LANG_OPTIONS_SELECTED: options => options,
-  SET_IDS_FROM_DATASTORE: () => {},
+  SET_IDS_FROM_DATASTORE: input => input,
   SET_DETAIL_TYPE: type => type,
   // Sort --------------------------------------------------------
   SET_SORT_OPTIONS: options => options,
@@ -254,5 +255,6 @@ export const {
   SET_MAX_DAY_TRASH: value => value,
   SET_MAX_DAY_DELETE: value => value,
   SET_CURRENT_CLIPBOARD_TEXT: currentClipboardText => currentClipboardText,
-  SHOW_EXPORT_TOAST: args => args
+  SHOW_EXPORT_TOAST: args => args,
+  SHOW_AFTER_COPY_TOAST: id => id
 });

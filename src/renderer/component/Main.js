@@ -24,7 +24,8 @@ import {
   updateWinState,
   setClipListenerState,
   setCurrentClipboardText,
-  showExportToast
+  showExportToast,
+  showAfterCopyToast
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -112,7 +113,8 @@ const Main = props => {
     updateWinState,
     setClipListenerState,
     setCurrentClipboardText,
-    showExportToast
+    showExportToast,
+    showAfterCopyToast
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
@@ -132,6 +134,11 @@ const Main = props => {
         case "COPY": {
           const { clip, mode } = args;
           addItemClipboard(clip, "TimeLine", mode);
+          break;
+        }
+        case "AFTER_COPY": {
+          const { id } = args;
+          showAfterCopyToast(id);
           break;
         }
         case "IMPORT": {
@@ -234,15 +241,14 @@ const Main = props => {
           if (!ctrlKey) return;
           const action = "showFilterSortSettings";
           callActionOnItemList(action);
-          setIdsFromDatastore();
+          // setIdsFromDatastore();
           break;
         }
         case "/": {
           if (!ctrlKey) return;
           const action = "showPreferences";
           callActionOnItemList(action);
-          setIdsFromDatastore();
-          updateWinState("alwaysOnTop");
+          // setIdsFromDatastore();
           break;
         }
         case "`": {
@@ -392,5 +398,6 @@ export default connect(mapStateToProps, {
   updateWinState,
   setClipListenerState,
   setCurrentClipboardText,
-  showExportToast
+  showExportToast,
+  showAfterCopyToast
 })(Main);

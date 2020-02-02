@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { setFilterName, setIdsFromDatastore } from "../../../actions";
-import Select from "react-select";
 
 import styled from "@emotion/styled";
-
-const includeColor = "#0B0B4F";
-const excludeColor = "#460505";
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -54,7 +50,7 @@ const Component = props => {
         value={filterName}
         onChange={e => {
           setFilterName(e.target.value);
-          setIdsFromDatastore();
+          setIdsFromDatastore("filterName");
         }}
       ></NameInput>
     </Wrapper>
