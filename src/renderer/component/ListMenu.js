@@ -10,7 +10,10 @@ import {
   deleteUserFilter,
   setPrevFocusedElm,
   exportClips,
-  importClips
+  importClips,
+  trashAllClips,
+  setUserFilter,
+  deleteAllTrashedClips
 } from "../actions";
 import Select, { components } from "react-select";
 import Cog from "../../icon/listheader/cog.svg";
@@ -18,6 +21,7 @@ import Cog from "../../icon/listheader/cog.svg";
 import styled from "@emotion/styled";
 
 import userDialog from "./../../common/dialog";
+import Message from "../models/Message";
 const dialog = window.require("electron").remote.dialog;
 
 const Wrapper = styled.div`
@@ -87,7 +91,10 @@ const Component = props => {
     prevFocusedElm,
     setPrevFocusedElm,
     exportClips,
-    importClips
+    importClips,
+    trashAllClips,
+    setUserFilter,
+    deleteAllTrashedClips
   } = props;
 
   const DropdownIndicator = props => {
@@ -182,26 +189,28 @@ const Component = props => {
         }}
         onChange={opt => {
           const { type, command, id } = opt;
-          switch (type) {
-            case "system":
-              callActionOnItemList(command);
-              break;
-            case "user":
-              callActionOnItemList(command, id);
-              break;
-            default:
-              break;
-          }
+          // switch (type) {
+          //   case "system":
+          //     callActionOnItemList(command);
+          //     break;
+          //   case "user":
+          //     callActionOnItemList(command, id);
+          //     break;
+          //   default:
+          //     break;
+          // }
 
           switch (command) {
-            case "trashAllItems":
-              setDetailType("DEFAULT");
-              setIdsFromDatastore();
+            case "trashAllClips":
+              _trashAllClips(props);
               break;
-            case "trashAllItemsWithoutFaved":
+            case "deleteAllTrashedClips":
+              _deleteAllTrashedClips(props);
+              break;
             case "clearFilterSortSettings":
             case "reloadFilterSortSettings":
             case "setUserFilter":
+              setUserFilter(id);
               setIdsFromDatastore();
               break;
             case "exportClips": {
@@ -238,6 +247,58 @@ const Component = props => {
       />
     </Wrapper>
   );
+};
+
+const _trashAllClips = ({
+  trashAllClips,
+  setDetailType,
+  setIdsFromDatastore
+}) => {
+  _setOpenDialogState(true);
+  const resNum = dialog.showMessageBox(null, userDialog.get("TRASH_ALL"));
+  switch (resNum) {
+    case 0:
+      trashAllClips(true);
+      setDetailType("DEFAULT");
+      setIdsFromDatastore(false);
+      break;
+    case 1:
+      trashAllClips(false);
+      setDetailType("DEFAULT");
+      setIdsFromDatastore(false);
+      break;
+    default:
+      break;
+  }
+  _setOpenDialogState(false);
+};
+
+const _deleteAllTrashedClips = ({
+  deleteAllTrashedClips,
+  setDetailType,
+  setIdsFromDatastore
+}) => {
+  _setOpenDialogState(true);
+  const resNum = dialog.showMessageBox(
+    null,
+    userDialog.get("DELETE_ALL_TRASHED_CLIPS")
+  );
+  switch (resNum) {
+    case 0:
+      deleteAllTrashedClips();
+      setDetailType("DEFAULT");
+      setIdsFromDatastore(false);
+      break;
+    default:
+      break;
+  }
+  _setOpenDialogState(false);
+};
+
+const _setOpenDialogState = isOpenDialog => {
+  new Message("win", "updateIsOpenDialog", {
+    isOpenDialog
+  }).dispatch();
 };
 
 const formatGroupLabel = data => (
@@ -362,13 +423,19 @@ const EDIT = [
     type: "system",
     label: "Add New",
     command: "addNewItem",
-    shortcutKey: "Ctrl+Shift+N"
+    shortcutKey: "F3"
   },
   {
     type: "system",
-    label: "Trash All",
-    command: "trashAllItems",
-    shortcutKey: "Ctrl+Shift+D"
+    label: "Trash All Clips on List",
+    command: "trashAllClips",
+    shortcutKey: "Ctrl+Shift+Del"
+  },
+  {
+    type: "edit",
+    label: "Delete All Trashed Clips ",
+    command: "deleteAllTrashedClips",
+    key: "Ctrl+Alt+Del"
   }
 ];
 
@@ -377,19 +444,19 @@ const FILTER_SETTINGS = [
     type: "system",
     label: "Open Setting panel",
     command: "showFilterSortSettings",
-    shortcutKey: "Ctrl+Shift+F"
+    shortcutKey: "F4"
   },
   {
     type: "system",
     label: "Clear",
     command: "clearFilterSortSettings",
-    shortcutKey: "Ctrl+Shift+C"
+    shortcutKey: "Ctrl+Space"
   },
   {
     type: "system",
     label: "Reload",
     command: "reloadFilterSortSettings",
-    shortcutKey: "Ctrl+Shift+C"
+    shortcutKey: "F5"
   }
 ];
 
@@ -398,19 +465,19 @@ const OTHER = [
     type: "other",
     label: "Import Clips",
     command: "importClips",
-    key: "Alt+I"
+    shortcutKey: "F6"
   },
   {
     type: "other",
     label: "Export Clips on The List",
     command: "exportClips",
-    key: "Alt+E"
+    shortcutKey: "F7"
   },
   {
     type: "system",
     label: "Preferences",
     command: "showPreferences",
-    key: "Alt+P"
+    shortcutKey: "F8"
   }
 ];
 
@@ -437,5 +504,8 @@ export default connect(mapStateToProps, {
   deleteUserFilter,
   setPrevFocusedElm,
   exportClips,
-  importClips
+  importClips,
+  trashAllClips,
+  setUserFilter,
+  deleteAllTrashedClips
 })(Component);

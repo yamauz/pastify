@@ -377,28 +377,90 @@ class State extends StateRecord {
     new Message("dataStore", "createByUser", args).dispatch();
     return this;
   }
-  trashAllItems() {
-    const idsTimeLine = this.get("idsTimeLine");
-    // this._updateItems(idsTimeLine.toArray(), { isTrashed: true });
-    const ids = idsTimeLine.toArray();
-    const value = { isTrashed: true };
-    new Message("dataStore", "updateAll", {
-      ids,
-      value
+  trashAllClips(deleteFav) {
+    if (deleteFav) {
+      const idsTimeLineNotFaved = this.get("idsTimeLine").filter(id => {
+        return (
+          !this.getIn(["itemsTimeLine", id, "isFaved"]) &&
+          !this.getIn(["itemsTimeLine", id, "isTrashed"])
+        );
+      });
+
+      const ids = idsTimeLineNotFaved.toArray();
+      console.log(ids);
+      this._toast("TRASH_ALL", { clipCount: ids.length });
+      const value = { isTrashed: true };
+      new Message("dataStore", "updateAll", {
+        ids,
+        value
+      }).dispatch();
+      return this.withMutations(state => {
+        // idsTimeLineNotFaved.forEach(id => {
+        ids.forEach(id => {
+          console.log(id);
+          state.setIn(["itemsTimeLine", id, "isTrashed"], true);
+        });
+      });
+    } else {
+      // const idsTimeLine = this.get("idsTimeLine");
+      const idsTimeLine = this.get("idsTimeLine").filter(id => {
+        return !this.getIn(["itemsTimeLine", id, "isTrashed"]);
+      });
+      const ids = idsTimeLine.toArray();
+      this._toast("TRASH_ALL", { clipCount: ids.length });
+      const value = { isTrashed: true };
+      new Message("dataStore", "updateAll", {
+        ids,
+        value
+      }).dispatch();
+
+      return this.withMutations(state => {
+        idsTimeLine.forEach(id => {
+          state.setIn(["itemsTimeLine", id, "isTrashed"], true);
+        });
+      });
+    }
+  }
+
+  deleteAllTrashedClips() {
+    console.log("---------------------------------------------");
+    const idsNext = this.get("idsTimeLine").filter(id => {
+      return !this.getIn(["itemsTimeLine", id, "isTrashed"]);
+    });
+    const allClipsTrashed = this.itemsTimeLine.filter(item =>
+      item.get("isTrashed")
+    );
+    const allClipsNotTrashed = this.itemsTimeLine.filter(
+      item => !item.get("isTrashed")
+    );
+    // const ids = idsTrashedOnList.toArray();
+    console.log(idsNext);
+    const allIdsTrashed = allClipsTrashed
+      .map(clip => {
+        return clip.get("id");
+      })
+      .toList()
+      .toArray();
+
+    new Message("dataStore", "deleteAll", {
+      ids: allIdsTrashed
     }).dispatch();
 
+    // this._toast(`Delete : ${clip.id}`);
+
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    console.log(allClipsTrashed);
+
     return this.withMutations(state => {
-      idsTimeLine.forEach(id => {
-        state.setIn(["itemsTimeLine", id, "isTrashed"], true);
-      });
+      state.set("idsTimeLine", List()).set("itemsTimeLine", allClipsNotTrashed);
     });
   }
+
   trashAllItemsWithoutFaved() {
     const idsTimeLineNotFaved = this.get("idsTimeLine").filter(id => {
       return !this.getIn(["itemsTimeLine", id, "isFaved"]);
     });
 
-    // this._updateItems(idsTimeLineNotFaved.toArray(), { isTrashed: true });
     const ids = idsTimeLineNotFaved.toArray();
     const value = { isTrashed: true };
     new Message("dataStore", "updateAll", {
@@ -571,7 +633,7 @@ class State extends StateRecord {
     const keyPath = ["itemsTimeLine", id, "lang"];
     return this.setIn(keyPath, langOpt);
   }
-  setIdsFromDatastore(input) {
+  setIdsFromDatastore(showToast = true) {
     const options = {
       sortOpt: this.get("sortOpt"),
       filterName: this.get("filterName"),
@@ -584,7 +646,7 @@ class State extends StateRecord {
       hashTagFilterOpt: this.get("hashTagFilterOpt"),
       languageFilterOpt: this.get("languageFilterOpt")
     };
-    if (input !== "filterName") {
+    if (showToast) {
       if (
         options.filterName.length !== 0 ||
         options.sortOpt.length !== 0 ||

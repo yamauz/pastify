@@ -50,7 +50,7 @@ const Component = props => {
         value={filterName}
         onChange={e => {
           setFilterName(e.target.value);
-          setIdsFromDatastore("filterName");
+          setIdsFromDatastore(false);
         }}
       ></NameInput>
     </Wrapper>

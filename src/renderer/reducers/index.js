@@ -108,8 +108,8 @@ export default handleActions(
     SET_LANG_OPTIONS_SELECTED: (state, { payload: options }) => {
       return state.setLangOptionsSelected(options);
     },
-    SET_IDS_FROM_DATASTORE: (state, { payload: input }) => {
-      return state.setIdsFromDatastore(input);
+    SET_IDS_FROM_DATASTORE: (state, { payload: showToast }) => {
+      return state.setIdsFromDatastore(showToast);
     },
     SET_DETAIL_TYPE: (state, { payload: type }) => {
       return state.set("detailType", type);
@@ -341,6 +341,15 @@ export default handleActions(
     },
     SHOW_AFTER_COPY_TOAST: (state, { payload: id }) => {
       return state.showAfterCopyToast(id);
+    },
+    TRASH_ALL_CLIPS: (state, { payload: deleteFav }) => {
+      return state.trashAllClips(deleteFav);
+    },
+    DELETE_ALL_TRASHED_CLIPS: state => {
+      return state.deleteAllTrashedClips();
+    },
+    SET_USER_FILTER: (state, { payload: id }) => {
+      return state.setUserFilter(id);
     }
   },
   new State()

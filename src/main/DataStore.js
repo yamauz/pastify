@@ -303,19 +303,19 @@ module.exports = class DataStore {
   updateAll(props) {
     const { ids, value } = props;
     ids.forEach(id => {
-      if (value.hasOwnProperty("isTrashed")) {
-        if (value.isTrashed) {
-          const isTrashedMaster = this.DB.get(this.storeName)
-            .find({ id })
-            .value().isTrashed;
-          if (isTrashedMaster) {
-            this.DB.get(this.storeName)
-              .remove({ id })
-              .write();
-            return;
-          }
-        }
-      }
+      // if (value.hasOwnProperty("isTrashed")) {
+      //   if (value.isTrashed) {
+      //     const isTrashedMaster = this.DB.get(this.storeName)
+      //       .find({ id })
+      //       .value().isTrashed;
+      //     if (isTrashedMaster) {
+      //       this.DB.get(this.storeName)
+      //         .remove({ id })
+      //         .write();
+      //       return;
+      //     }
+      //   }
+      // }
       this.DB.get(this.storeName)
         .find({ id })
         .assign(value)
@@ -331,6 +331,13 @@ module.exports = class DataStore {
       .remove({ id })
       .write();
 
+    return null;
+  }
+
+  deleteAll({ ids }) {
+    this.DB.get(this.storeName)
+      .remove(clip => ids.includes(clip.id))
+      .write();
     return null;
   }
 

@@ -44,6 +44,7 @@ const Main = styled.div`
 
 const Container = props => {
   const { ids, setIdSelected } = props;
+  console.log(ids);
 
   return (
     <Wrapper>

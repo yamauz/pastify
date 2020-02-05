@@ -103,6 +103,14 @@ const ToastMessage = new Map([
     }
   ],
   [
+    "TRASH_ALL",
+    {
+      icon: CLIP.TRASH_ON,
+      message: "Trashed",
+      toast: createToastWithClipCount
+    }
+  ],
+  [
     "UPDATE_LABEL",
     {
       icon: CLIP.LABEL_ON,

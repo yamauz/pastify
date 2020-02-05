@@ -11,6 +11,28 @@ module.exports = new Map([
     }
   ],
   [
+    "TRASH_ALL",
+    {
+      type: "info",
+      buttons: ["Yes (but Excluding Faved Clips)", "Yes ", "Cancel "],
+      cancelId: 2,
+      message: "Trash All Clips",
+      detail: "You will trash all clips on list. you sure you want to do this?"
+      // checkboxLabel: "Do not display this dialog again."
+    }
+  ],
+  [
+    "DELETE_ALL_TRASHED_CLIPS",
+    {
+      type: "info",
+      buttons: ["Yes", "no"],
+      cancelId: 1,
+      message: "Delete All Trashed Clips",
+      detail: "You will delete all trashed clips. you sure you want to do this?"
+      // checkboxLabel: "Do not display this dialog again."
+    }
+  ],
+  [
     "EXPORT_CLIPS",
     {
       title: "Export Clips on The List",

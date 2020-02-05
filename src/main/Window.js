@@ -72,6 +72,7 @@ module.exports = class Window {
     this.lastActiveWindowClassName = this._getCurrentWindowClassName();
     this.prevWidth = settings.readWin().width;
     this.isResizedByFolding = false;
+    this.isOpenDialog = false;
   }
   open() {
     // Check running mode by NODE_ENV
@@ -99,7 +100,7 @@ module.exports = class Window {
     });
     this.window.on("blur", () => {
       const { alwaysOnTop } = settings.readWin();
-      if (!alwaysOnTop && !key.shiftKey) {
+      if (!alwaysOnTop && !key.shiftKey && !this.isOpenDialog) {
         this.hide();
       } else {
         this.sendToRenderer("useIpc", "BLUR");
@@ -157,6 +158,10 @@ module.exports = class Window {
       console.log("onClosed");
       win = null;
     });
+  }
+
+  updateIsOpenDialog({ isOpenDialog }) {
+    this.isOpenDialog = isOpenDialog;
   }
 
   updateWinState(state, { settings }) {
