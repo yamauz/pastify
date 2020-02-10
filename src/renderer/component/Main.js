@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ReactTooltip from "react-tooltip";
 import keycode from "keycode";
+import path from "path";
 // Redux
 import { connect } from "react-redux";
 import {
@@ -25,7 +26,8 @@ import {
   setClipListenerState,
   setCurrentClipboardText,
   showExportToast,
-  showAfterCopyToast
+  showAfterCopyToast,
+  showSubscriptionSettings
 } from "../actions";
 // Components
 import Container from "./Container";
@@ -114,11 +116,19 @@ const Main = props => {
     setClipListenerState,
     setCurrentClipboardText,
     showExportToast,
-    showAfterCopyToast
+    showAfterCopyToast,
+    showSubscriptionSettings
   } = props;
   useEffect(() => {
     ipcRenderer.on("useIpc", (event, triger, args) => {
       switch (triger) {
+        case "SECOND_INSTANCE":
+          console.log(args);
+          const importFilePath = args.commandLine.filter(
+            filePath => path.extname(filePath) === ".pastify"
+          );
+          importClips(importFilePath[0]);
+          break;
         case "CURRENT_CLIPBOARD":
           const { currentClipboardText } = args;
           setCurrentClipboardText(currentClipboardText);
@@ -144,7 +154,7 @@ const Main = props => {
         case "IMPORT": {
           const { status, clip } = args;
           addImportClips(status, clip);
-          setIdsFromDatastore();
+          setIdsFromDatastore(false);
           break;
         }
         case "EXPORT": {
@@ -222,6 +232,10 @@ const Main = props => {
         case ",": {
           if (!ctrlKey) return;
           toggleListMode();
+          break;
+        }
+        case "f1": {
+          showSubscriptionSettings();
           break;
         }
         case "f5": {
@@ -399,5 +413,6 @@ export default connect(mapStateToProps, {
   setClipListenerState,
   setCurrentClipboardText,
   showExportToast,
-  showAfterCopyToast
+  showAfterCopyToast,
+  showSubscriptionSettings
 })(Main);

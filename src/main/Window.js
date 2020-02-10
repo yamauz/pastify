@@ -250,6 +250,10 @@ module.exports = class Window {
     this.sendToRenderer("useIpc", "SHOW", args);
   }
 
+  getVisibility() {
+    return this.window.isVisible();
+  }
+
   showLastActiveWindow(settings) {
     const { alwaysOnTop } = settings.readWin();
     const desktopClassName = ["Progman", "WorkerW"];

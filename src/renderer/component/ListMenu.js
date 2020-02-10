@@ -13,7 +13,12 @@ import {
   importClips,
   trashAllClips,
   setUserFilter,
-  deleteAllTrashedClips
+  deleteAllTrashedClips,
+  showFilterSortSettings,
+  showPreferences,
+  clearFilterSortSettings,
+  reloadFilterSortSettings,
+  showSubscriptionSettings
 } from "../actions";
 import Select, { components } from "react-select";
 import Cog from "../../icon/listheader/cog.svg";
@@ -92,9 +97,12 @@ const Component = props => {
     setPrevFocusedElm,
     exportClips,
     importClips,
-    trashAllClips,
     setUserFilter,
-    deleteAllTrashedClips
+    showFilterSortSettings,
+    showPreferences,
+    clearFilterSortSettings,
+    reloadFilterSortSettings,
+    showSubscriptionSettings
   } = props;
 
   const DropdownIndicator = props => {
@@ -207,11 +215,24 @@ const Component = props => {
             case "deleteAllTrashedClips":
               _deleteAllTrashedClips(props);
               break;
+            case "showFilterSortSettings":
+              showFilterSortSettings();
+              break;
+            case "showPreferences":
+              showPreferences();
+              break;
             case "clearFilterSortSettings":
+              clearFilterSortSettings();
+              break;
             case "reloadFilterSortSettings":
+              reloadFilterSortSettings();
+              break;
             case "setUserFilter":
               setUserFilter(id);
               setIdsFromDatastore();
+              break;
+            case "showSubscriptionSettings":
+              showSubscriptionSettings();
               break;
             case "exportClips": {
               const path = dialog.showSaveDialog(
@@ -478,6 +499,12 @@ const OTHER = [
     label: "Preferences",
     command: "showPreferences",
     shortcutKey: "F8"
+  },
+  {
+    type: "system",
+    label: "Open Subscription Settings",
+    command: "showSubscriptionSettings",
+    shortcutKey: "F8"
   }
 ];
 
@@ -507,5 +534,10 @@ export default connect(mapStateToProps, {
   importClips,
   trashAllClips,
   setUserFilter,
-  deleteAllTrashedClips
+  deleteAllTrashedClips,
+  showFilterSortSettings,
+  showPreferences,
+  clearFilterSortSettings,
+  reloadFilterSortSettings,
+  showSubscriptionSettings
 })(Component);

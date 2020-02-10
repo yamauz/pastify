@@ -124,7 +124,11 @@ export const {
   showAfterCopyToast,
   trashAllClips,
   setUserFilter,
-  deleteAllTrashedClips
+  deleteAllTrashedClips,
+  showFilterSortSettings,
+  showPreferences,
+  reloadFilterSortSettings,
+  showSubscriptionSettings
 } = createActions({
   COPY_CLIP_ID: id => id,
   COPY_CLIP: (event, copyAs = "_ORIGINAL_") => {
@@ -262,5 +266,10 @@ export const {
   SHOW_AFTER_COPY_TOAST: id => id,
   TRASH_ALL_CLIPS: deleteFav => deleteFav,
   SET_USER_FILTER: id => id,
-  DELETE_ALL_TRASHED_CLIPS: () => {}
+  DELETE_ALL_TRASHED_CLIPS: () => {},
+  SHOW_FILTER_SORT_SETTINGS: () => {},
+  SHOW_PREFERENCES: () => {},
+  CLEAR_FILTER_SORT_SETTINGS: () => {},
+  RELOAD_FILTER_SORT_SETTINGS: () => {},
+  SHOW_SUBSCRIPTION_SETTINGS: () => {}
 });

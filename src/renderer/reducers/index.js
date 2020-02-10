@@ -350,6 +350,21 @@ export default handleActions(
     },
     SET_USER_FILTER: (state, { payload: id }) => {
       return state.setUserFilter(id);
+    },
+    SHOW_FILTER_SORT_SETTINGS: state => {
+      return state.showFilterSortSettings();
+    },
+    SHOW_PREFERENCES: state => {
+      return state.showPreferences();
+    },
+    CLEAR_FILTER_SORT_SETTINGS: state => {
+      return state.clearFilterSortSettings();
+    },
+    RELOAD_FILTER_SORT_SETTINGS: state => {
+      return state.reloadFilterSortSettings();
+    },
+    SHOW_SUBSCRIPTION_SETTINGS: state => {
+      return state.showSubscriptionSettings();
     }
   },
   new State()

@@ -18,7 +18,8 @@ const StateRecord = Record({
   isFold: false,
   notify: true,
   // detailType: "DEFAULT",
-  detailType: "preferences",
+  // detailType: "preferences",
+  detailType: "subscription",
   // detailType: "filter-sort-settings",
   moment: new Date().getTime(),
   addMode: "",
@@ -395,14 +396,12 @@ class State extends StateRecord {
         value
       }).dispatch();
       return this.withMutations(state => {
-        // idsTimeLineNotFaved.forEach(id => {
         ids.forEach(id => {
           console.log(id);
           state.setIn(["itemsTimeLine", id, "isTrashed"], true);
         });
       });
     } else {
-      // const idsTimeLine = this.get("idsTimeLine");
       const idsTimeLine = this.get("idsTimeLine").filter(id => {
         return !this.getIn(["itemsTimeLine", id, "isTrashed"]);
       });
@@ -433,8 +432,6 @@ class State extends StateRecord {
     const allClipsNotTrashed = this.itemsTimeLine.filter(
       item => !item.get("isTrashed")
     );
-    // const ids = idsTrashedOnList.toArray();
-    console.log(idsNext);
     const allIdsTrashed = allClipsTrashed
       .map(clip => {
         return clip.get("id");
@@ -446,10 +443,7 @@ class State extends StateRecord {
       ids: allIdsTrashed
     }).dispatch();
 
-    // this._toast(`Delete : ${clip.id}`);
-
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    console.log(allClipsTrashed);
+    this._toast("DELETE_ALL", { clipCount: allIdsTrashed.length });
 
     return this.withMutations(state => {
       state.set("idsTimeLine", List()).set("itemsTimeLine", allClipsNotTrashed);
@@ -491,13 +485,21 @@ class State extends StateRecord {
     const isFold = this.get("isFold");
     if (isFold) {
       new Message("win", "updateWinState", "unfoldWindow").dispatch();
-      // setTimeout(() => {
-      //   document.getElementById("keyword-input").focus();
-      // }, 200);
     }
     return this.withMutations(state => {
       state
         .set("detailType", "preferences")
+        .set("itemIdAddedManually", "_UNSET_");
+    });
+  }
+  showSubscriptionSettings() {
+    const isFold = this.get("isFold");
+    if (isFold) {
+      new Message("win", "updateWinState", "unfoldWindow").dispatch();
+    }
+    return this.withMutations(state => {
+      state
+        .set("detailType", "subscription")
         .set("itemIdAddedManually", "_UNSET_");
     });
   }
@@ -1384,9 +1386,10 @@ class State extends StateRecord {
   _deleteClip(clip) {}
 
   _toast(messageKey, args) {
-    console.log(messageKey, args);
     const notify = this.get("notify");
-    if (notify) {
+    const isVisible = new Message("win", "getVisibility", {}).dispatch();
+    console.log(isVisible);
+    if (notify && isVisible) {
       toast.notify(<Toast messageKey={messageKey} args={args} />, {
         position: "bottom-right",
         duration: 2000

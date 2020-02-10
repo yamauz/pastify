@@ -6,6 +6,7 @@ import { setItemText } from "../actions";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { maxlengthContentEditable } from "maxlength-contenteditable";
+import sanitize from "sanitize-filename";
 const APP_PATH = window.require("electron").remote.app.getAppPath();
 
 const Wrapper = styled.div`
@@ -97,6 +98,10 @@ const ImageDetail = props => {
               html={data.textData}
               className="content-editable"
               onChange={_.debounce(e => {
+                console.log(sanitize(e.target.value));
+                if (sanitize(e.target.value) === "") {
+                  return;
+                }
                 const textData = e.target.value;
                 setItemText({ id, textData });
               }, 500)}

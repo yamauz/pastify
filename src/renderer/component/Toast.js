@@ -111,6 +111,14 @@ const ToastMessage = new Map([
     }
   ],
   [
+    "DELETE_ALL",
+    {
+      icon: CLIP.TRASH_ON,
+      message: "Deleted",
+      toast: createToastWithClipCount
+    }
+  ],
+  [
     "UPDATE_LABEL",
     {
       icon: CLIP.LABEL_ON,

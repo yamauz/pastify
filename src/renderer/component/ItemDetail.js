@@ -8,6 +8,7 @@ import SheetDetail from "./SheetDetail";
 import FileDetail from "./FileDetail";
 import FilterSettings from "./MainPanel/FilterSettings/FilterSettings";
 import Preferences from "./MainPanel/Preferences/Preferences";
+import Subscription from "./MainPanel/Subscription/Subscription";
 import _ from "lodash";
 
 const DetailWrapper = styled.div`
@@ -37,6 +38,8 @@ const ItemDetail = props => {
       return <FilterSettings></FilterSettings>;
     case "preferences":
       return <Preferences></Preferences>;
+    case "subscription":
+      return <Subscription></Subscription>;
     case "DEFAULT":
       return <div>default</div>;
     case "ITEM":

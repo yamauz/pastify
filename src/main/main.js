@@ -1,4 +1,4 @@
-const { app, clipboard } = require("electron");
+const { app, clipboard, dialog } = require("electron");
 const colors = require("colors");
 const path = require("path");
 const fs = require("fs");
@@ -15,7 +15,23 @@ const DataStore = require("./DataStore");
 const Filters = require("./Filters");
 const Settings = require("./Settings");
 const distDir = process.env.PORTABLE_EXECUTABLE_DIR || ".";
-let tray;
+let tray, win;
+
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+}
+app.on("second-instance", (event, commandLine, workingDirectory) => {
+  // dialog.showErrorBox(
+  //   "This is second-instance",
+  //   `comandLine : ${commandLine} , workingDirectory :  ${workingDirectory}`
+  // );
+  win.showPastify();
+  win.sendToRenderer("useIpc", "SECOND_INSTANCE", {
+    commandLine,
+    workingDirectory
+  });
+});
 
 app.on("ready", () => {
   const resoucePath = createResoucePath();
@@ -25,7 +41,7 @@ app.on("ready", () => {
   const dataStore = new DataStore(settings);
   const filters = new Filters();
   const pastify = new Pastify();
-  const win = new Window(settings);
+  win = new Window(settings);
   tray = new PastifyTray(settings, win);
   const key = new Key(win, settings, tray);
   key.register("shift", "", settings);
